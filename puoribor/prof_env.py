@@ -14,6 +14,7 @@ from __future__ import annotations
 import sys
 from dataclasses import dataclass
 from typing import Callable, Deque, Dict, Optional
+import time
 
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
@@ -277,12 +278,14 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             A copy of the object with the restored state.
         """
 
+        start = time.perf_counter()
+
         if pre_step_fn is not None:
             pre_step_fn(state, agent_id, action)
 
         action = np.asanyarray(action).astype(np.int_)
         action_type, x, y = action
-        if not self._check_in_range((x, y)):
+        if not self._check_in_range(np.array([x, y])):
             raise ValueError(f"out of board: {(x, y)}")
         if not 0 <= agent_id <= 1:
             raise ValueError(f"invalid agent_id: {agent_id}")
@@ -292,6 +295,8 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         memory_cells = np.copy(state.memory_cells)
         cut_ones = [[], []]
         open_ones = [[], []]
+
+        print(f"1 : {time.perf_counter() - start}")
 
         if action_type == 0:  # Move piece
             current_pos = np.argwhere(state.board[agent_id] == 1)[0]
@@ -325,7 +330,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
 
                 original_jump_pos = current_pos + 2 * (opponent_pos - current_pos)
                 if self._check_in_range(
-                    (original_jump_pos[0], original_jump_pos[1])
+                    original_jump_pos
                 ) and not self._check_wall_blocked(
                     board, current_pos, original_jump_pos
                 ):
@@ -393,8 +398,9 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             if memory_cells[1][x+1][y+1][1] == 3:   cut_ones[1].append((x+1, y+1))
 
         elif action_type == 3:  # Rotate section
+            region_top_left = np.array([x, y])
             if not self._check_in_range(
-                (x, y),
+                region_top_left,
                 bottom_right=np.array([self.board_size - 3, self.board_size - 3]),
             ):
                 raise ValueError("rotation region out of board")
@@ -481,12 +487,16 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
                                         open_ones[agent_id].append((coordinate_y, coordinate_x))
         else:
             raise ValueError(f"invalid action_type: {action_type}")
+        
+        print(f"2 : {time.perf_counter() - start}")
 
         if action_type > 0:
             
             directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
 
             for agent_id in range(2):
+
+                print(f"3 : {time.perf_counter() - start}")
 
                 visited = set(cut_ones[agent_id])
                 q = Deque(cut_ones[agent_id])
@@ -499,7 +509,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
                     in_pri_q.discard(here)
                     for dir_id, (dx, dy) in enumerate(directions):
                         there = (here[0] + dx, here[1] + dy)
-                        if (not self._check_in_range(there)) or self._check_wall_blocked(board, np.array(here), np.array(there)):
+                        if (not self._check_in_range(np.array(there))) or self._check_wall_blocked(board, np.array(here), np.array(there)):
                             continue
                         if there in visited:
                             continue
@@ -509,20 +519,26 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
                         else:
                             if memory_cells[agent_id][there[0]][there[1]][0] < 99999:
                                 in_pri_q.add(there)
+
+                print(f"4 : {time.perf_counter() - start}")
                 
                 for element in in_pri_q:
                     pri_q.put((memory_cells[agent_id][element[0]][element[1]][0], element))
+
+                print(f"5 : {time.perf_counter() - start}")
 
                 while not pri_q.empty():
                     dist, here = pri_q.get()
                     for dir_id, (dx, dy) in enumerate(directions):
                         there = (here[0] + dx, here[1] + dy)
-                        if (not self._check_in_range(there)) or self._check_wall_blocked(board, np.array(here), np.array(there)):
+                        if (not self._check_in_range(np.array(there))) or self._check_wall_blocked(board, np.array(here), np.array(there)):
                             continue
                         if memory_cells[agent_id][there[0]][there[1]][0] > dist + 1:
                             memory_cells[agent_id][there[0]][there[1]][0] = dist + 1
                             memory_cells[agent_id][there[0]][there[1]][1] = (dir_id + 2) % 4
                             pri_q.put((memory_cells[agent_id][there[0]][there[1]][0], there))
+
+                print(f"6 : {time.perf_counter() - start}")
             
             if not self._check_path_exists(board, memory_cells, 0) or not self._check_path_exists(board, memory_cells, 1):
                 if action_type == 3:
@@ -540,10 +556,10 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             post_step_fn(next_state, agent_id, action)
         return next_state
 
-    def _check_in_range(self, pos: tuple, bottom_right=None) -> np.bool_:
+    def _check_in_range(self, pos: NDArray[np.int_], bottom_right=None) -> np.bool_:
         if bottom_right is None:
-            bottom_right = self.board_size
-        return ((0 <= pos[0] < bottom_right) and (0 <= pos[1] < bottom_right))
+            bottom_right = np.array([self.board_size, self.board_size])
+        return np.all(np.logical_and(np.array([0, 0]) <= pos, pos < bottom_right))
 
     def _check_path_exists(self, board: NDArray[np.int_], memory_cells: NDArray[np.int_], agent_id: int) -> bool:
         agent_pos = tuple(np.argwhere(board[agent_id] == 1)[0])
@@ -605,7 +621,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
                 here = q.popleft()
                 for dir_id, (dx, dy) in enumerate(directions):
                     there = (here[0] + dx, here[1] + dy)
-                    if (not self._check_in_range(there)) or self._check_wall_blocked(board, np.array(here), np.array(there)):
+                    if (not self._check_in_range(np.array(there))) or self._check_wall_blocked(board, np.array(here), np.array(there)):
                         continue
                     if there in visited:
                         continue
