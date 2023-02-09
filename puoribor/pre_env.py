@@ -395,7 +395,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         elif action_type == 3:  # Rotate section
             if not self._check_in_range(
                 (x, y),
-                bottom_right=np.array([self.board_size - 3, self.board_size - 3]),
+                bottom_right=self.board_size - 3
             ):
                 raise ValueError("rotation region out of board")
             elif walls_remaining[agent_id] < 2:
@@ -540,7 +540,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             post_step_fn(next_state, agent_id, action)
         return next_state
 
-    def _check_in_range(self, pos: tuple, bottom_right=None) -> np.bool_:
+    def _check_in_range(self, pos: tuple, bottom_right: int=None) -> np.bool_:
         if bottom_right is None:
             bottom_right = self.board_size
         return ((0 <= pos[0] < bottom_right) and (0 <= pos[1] < bottom_right))
@@ -555,20 +555,15 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         current_pos: NDArray[np.int_],
         new_pos: NDArray[np.int_],
     ) -> bool:
-        delta = new_pos - current_pos
-        right_check = delta[0] > 0 and np.any(
-            board[3, current_pos[0] : new_pos[0], current_pos[1]]
-        )
-        left_check = delta[0] < 0 and np.any(
-            board[3, new_pos[0] : current_pos[0], current_pos[1]]
-        )
-        down_check = delta[1] > 0 and np.any(
-            board[2, current_pos[0], current_pos[1] : new_pos[1]]
-        )
-        up_check = delta[1] < 0 and np.any(
-            board[2, current_pos[0], new_pos[1] : current_pos[1]]
-        )
-        return bool(right_check or left_check or down_check or up_check)
+        if new_pos[0] > current_pos[0]:
+            return np.any(board[3, current_pos[0] : new_pos[0], current_pos[1]])
+        if new_pos[0] < current_pos[0]:
+            return np.any(board[3, new_pos[0] : current_pos[0], current_pos[1]])
+        if new_pos[1] > current_pos[1]:
+            return np.any(board[2, current_pos[0], current_pos[1] : new_pos[1]])
+        if new_pos[1] < current_pos[1]:
+            return np.any(board[2, current_pos[0], new_pos[1] : current_pos[1]])
+        return False
 
     def _check_wins(self, board: NDArray[np.int_]) -> bool:
         return bool(board[0, :, -1].sum() or board[1, :, 0].sum())
