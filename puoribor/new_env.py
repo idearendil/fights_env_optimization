@@ -555,20 +555,15 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         current_pos: NDArray[np.int_],
         new_pos: NDArray[np.int_],
     ) -> bool:
-        delta = new_pos - current_pos
-        right_check = delta[0] > 0 and np.any(
-            board[3, current_pos[0] : new_pos[0], current_pos[1]]
-        )
-        left_check = delta[0] < 0 and np.any(
-            board[3, new_pos[0] : current_pos[0], current_pos[1]]
-        )
-        down_check = delta[1] > 0 and np.any(
-            board[2, current_pos[0], current_pos[1] : new_pos[1]]
-        )
-        up_check = delta[1] < 0 and np.any(
-            board[2, current_pos[0], new_pos[1] : current_pos[1]]
-        )
-        return bool(right_check or left_check or down_check or up_check)
+        if new_pos[0] > current_pos[0]:
+            return np.any(board[3, current_pos[0] : new_pos[0], current_pos[1]])
+        if new_pos[0] < current_pos[0]:
+            return np.any(board[3, new_pos[0] : current_pos[0], current_pos[1]])
+        if new_pos[1] > current_pos[1]:
+            return np.any(board[2, current_pos[0], current_pos[1] : new_pos[1]])
+        if new_pos[1] < current_pos[1]:
+            return np.any(board[2, current_pos[0], new_pos[1] : current_pos[1]])
+        return False
 
     def _check_wins(self, board: NDArray[np.int_]) -> bool:
         return bool(board[0, :, -1].sum() or board[1, :, 0].sum())
