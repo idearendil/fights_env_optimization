@@ -484,7 +484,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
 
         if action_type > 0:
             
-            directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+            directions = ((0, -1), (1, 0), (0, 1), (-1, 0))
 
             for agent_id in range(2):
 
@@ -581,7 +581,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         :returns:
             A state which board is same as the input.
         """
-        directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+        directions = ((0, -1), (1, 0), (0, 1), (-1, 0))
 
         memory_cells = np.zeros((2, self.board_size, self.board_size, 2), dtype=np.int_)
 
