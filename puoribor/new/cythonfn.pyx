@@ -35,9 +35,9 @@ def fast_step(
     open_ones = [set(), set()]
 
     if action_type == 0:  # Move piece
-        current_pos = np.argwhere(pre_board[agent_id] == 1)[0]
+        current_pos = np.argwhere(pre_board[agent_id])[0]
         new_pos = np.array([x, y])
-        opponent_pos = np.argwhere(pre_board[1 - agent_id] == 1)[0]
+        opponent_pos = np.argwhere(pre_board[1 - agent_id])[0]
         if np.all(new_pos == opponent_pos):
             raise ValueError("cannot move to opponent's position")
 
@@ -61,19 +61,19 @@ def fast_step(
                 # Only diagonal jumps are permitted.
                 # Agents cannot simply move in diagonal direction.
                 raise ValueError("cannot move diagonally")
-            elif _check_wall_blocked(board, tuple(current_pos), tuple(opponent_pos)):
+            elif _check_wall_blocked(board, current_pos[0], current_pos[1], opponent_pos[0], opponent_pos[1]):
                 raise ValueError("cannot jump over walls")
 
             original_jump_pos = current_pos + 2 * (opponent_pos - current_pos)
             if _check_in_range(original_jump_pos[0], original_jump_pos[1]) and not _check_wall_blocked(
-                board, tuple(current_pos), tuple(original_jump_pos)
+                board, current_pos[0], current_pos[1], original_jump_pos[0], original_jump_pos[1]
             ):
                 raise ValueError(
                     "cannot diagonally jump if linear jump is possible"
                 )
-            elif _check_wall_blocked(board, tuple(opponent_pos), tuple(new_pos)):
+            elif _check_wall_blocked(board, opponent_pos[0], opponent_pos[1], new_pos[0], new_pos[1]):
                 raise ValueError("cannot jump over walls")
-        elif _check_wall_blocked(board, tuple(current_pos), tuple(new_pos)):
+        elif _check_wall_blocked(board, current_pos[0], current_pos[1], new_pos[0], new_pos[1]):
             raise ValueError("cannot jump over walls")
 
         board[agent_id][tuple(current_pos)] = 0
@@ -240,7 +240,7 @@ def fast_step(
                     there = (here[0] + dx, here[1] + dy)
                     if there in visited:
                         continue
-                    if (not _check_in_range(there[0], there[1])) or _check_wall_blocked(board, here, there):
+                    if (not _check_in_range(there[0], there[1])) or _check_wall_blocked(board, here[0], here[1], there[0], there[1]):
                         continue
                     if memory_cells_view[agent_id, there[0], there[1], 1] == (dir_id + 2) % 4:
                         q.append(there)
@@ -256,7 +256,7 @@ def fast_step(
                 dist, here = pri_q.get()
                 for dir_id, (dx, dy) in enumerate(directions):
                     there = (here[0] + dx, here[1] + dy)
-                    if (not _check_in_range(there[0], there[1])) or _check_wall_blocked(board, here, there):
+                    if (not _check_in_range(there[0], there[1])) or _check_wall_blocked(board, here[0], here[1], there[0], there[1]):
                         continue
                     if memory_cells_view[agent_id, there[0], there[1], 0] > dist + 1:
                         memory_cells_view[agent_id, there[0], there[1], 0] = dist + 1
@@ -275,22 +275,22 @@ def _check_in_range(int pos_x, int pos_y, int bottom_right = 9) -> bool:
     return (0 <= pos_x < bottom_right and 0 <= pos_y < bottom_right)
 
 def _check_path_exists(board, memory_cells, agent_id: int) -> bool:
-    agent_pos = np.argwhere(board[agent_id] == 1)[0]
+    agent_pos = np.argwhere(board[agent_id])[0]
     return memory_cells[agent_id, agent_pos[0], agent_pos[1], 0] < 99999
 
 def _check_wall_blocked(
     board,
-    current_pos: tuple,
-    new_pos: tuple,
+    int cx, int cy,
+    int nx, int ny,
 ) -> bool:
-    if new_pos[0] > current_pos[0]:
-        return np.any(board[3, current_pos[0] : new_pos[0], current_pos[1]])
-    if new_pos[0] < current_pos[0]:
-        return np.any(board[3, new_pos[0] : current_pos[0], current_pos[1]])
-    if new_pos[1] > current_pos[1]:
-        return np.any(board[2, current_pos[0], current_pos[1] : new_pos[1]])
-    if new_pos[1] < current_pos[1]:
-        return np.any(board[2, current_pos[0], new_pos[1] : current_pos[1]])
+    if nx > cx:
+        return np.any(board[3, cx : nx, cy])
+    if nx < cx:
+        return np.any(board[3, nx : cx, cy])
+    if ny > cy:
+        return np.any(board[2, cx, cy : ny])
+    if ny < cy:
+        return np.any(board[2, cx, ny : cy])
     return False
 
 def _check_wins(board) -> bool:
