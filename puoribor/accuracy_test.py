@@ -50,6 +50,8 @@ class TestAgent(BaseAgent):
         original_actions = self._get_all_actions_original(original_state)
         faster_actions = self._get_all_actions_faster(faster_state)
         if not original_actions == faster_actions:
+            print(original_actions)
+            print(faster_actions)
             raise ValueError(f"original actions and faster actions are different!!")
         return self._rng.choice(original_actions)
 

@@ -290,7 +290,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         board = np.copy(state.board)
         walls_remaining = np.copy(state.walls_remaining)
         memory_cells = np.copy(state.memory_cells)
-        cut_ones = [set(), set()]
+        close_ones = [set(), set()]
         open_ones = [set(), set()]
 
         if action_type == 0:  # Move piece
@@ -356,15 +356,15 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             walls_remaining[agent_id] -= 1
             board[4, x, y] = 1
 
-            if memory_cells[0][x][y][1] == 2:   cut_ones[0].add((x, y))
-            if memory_cells[0][x][y+1][1] == 0:   cut_ones[0].add((x, y+1))
-            if memory_cells[1][x][y][1] == 2:   cut_ones[1].add((x, y))
-            if memory_cells[1][x][y+1][1] == 0:   cut_ones[1].add((x, y+1))
+            if memory_cells[0][x][y][1] == 2:   close_ones[0].add((x, y))
+            elif memory_cells[0][x][y+1][1] == 0:   close_ones[0].add((x, y+1))
+            if memory_cells[1][x][y][1] == 2:   close_ones[1].add((x, y))
+            elif memory_cells[1][x][y+1][1] == 0:   close_ones[1].add((x, y+1))
 
-            if memory_cells[0][x+1][y][1] == 2:   cut_ones[0].add((x+1, y))
-            if memory_cells[0][x+1][y+1][1] == 0:   cut_ones[0].add((x+1, y+1))
-            if memory_cells[1][x+1][y][1] == 2:   cut_ones[1].add((x+1, y))
-            if memory_cells[1][x+1][y+1][1] == 0:   cut_ones[1].add((x+1, y+1))
+            if memory_cells[0][x+1][y][1] == 2:   close_ones[0].add((x+1, y))
+            elif memory_cells[0][x+1][y+1][1] == 0:   close_ones[0].add((x+1, y+1))
+            if memory_cells[1][x+1][y][1] == 2:   close_ones[1].add((x+1, y))
+            elif memory_cells[1][x+1][y+1][1] == 0:   close_ones[1].add((x+1, y+1))
 
         elif action_type == 2:  # Place wall vertically
             if walls_remaining[agent_id] == 0:
@@ -382,15 +382,15 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             walls_remaining[agent_id] -= 1
             board[5, x, y] = 1
 
-            if memory_cells[0][x][y][1] == 1:   cut_ones[0].add((x, y))
-            if memory_cells[0][x+1][y][1] == 3:   cut_ones[0].add((x+1, y))
-            if memory_cells[1][x][y][1] == 1:   cut_ones[1].add((x, y))
-            if memory_cells[1][x+1][y][1] == 3:   cut_ones[1].add((x+1, y))
+            if memory_cells[0][x][y][1] == 1:   close_ones[0].add((x, y))
+            elif memory_cells[0][x+1][y][1] == 3:   close_ones[0].add((x+1, y))
+            if memory_cells[1][x][y][1] == 1:   close_ones[1].add((x, y))
+            elif memory_cells[1][x+1][y][1] == 3:   close_ones[1].add((x+1, y))
 
-            if memory_cells[0][x][y+1][1] == 1:   cut_ones[0].add((x, y+1))
-            if memory_cells[0][x+1][y+1][1] == 3:   cut_ones[0].add((x+1, y+1))
-            if memory_cells[1][x][y+1][1] == 1:   cut_ones[1].add((x, y+1))
-            if memory_cells[1][x+1][y+1][1] == 3:   cut_ones[1].add((x+1, y+1))
+            if memory_cells[0][x][y+1][1] == 1:   close_ones[0].add((x, y+1))
+            elif memory_cells[0][x+1][y+1][1] == 3:   close_ones[0].add((x+1, y+1))
+            if memory_cells[1][x][y+1][1] == 1:   close_ones[1].add((x, y+1))
+            elif memory_cells[1][x+1][y+1][1] == 3:   close_ones[1].add((x+1, y+1))
 
         elif action_type == 3:  # Rotate section
             if not self._check_in_range(
@@ -452,41 +452,33 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
 
             walls_remaining[agent_id] -= 2
 
-            for coordinate_x in range(x, x+4, 1):
-                for coordinate_y in range(y-1, y+4, 1):
-                    if coordinate_y >= 0 and coordinate_y <= 7:
-                        if board[2][coordinate_x][coordinate_y]:
-                            if (coordinate_x, coordinate_y) not in horizontal_walls:
-                                if memory_cells[0][coordinate_x][coordinate_y][1] == 2:   cut_ones[0].add((coordinate_x, coordinate_y))
-                                if memory_cells[0][coordinate_x][coordinate_y+1][1] == 0:   cut_ones[0].add((coordinate_x, coordinate_y+1))
-                                if memory_cells[1][coordinate_x][coordinate_y][1] == 2:   cut_ones[1].add((coordinate_x, coordinate_y))
-                                if memory_cells[1][coordinate_x][coordinate_y+1][1] == 0:   cut_ones[1].add((coordinate_x, coordinate_y+1))
+            for cx in range(x, x+4, 1):
+                for cy in range(y-1, y+4, 1):
+                    if cy >= 0 and cy <= 7:
+                        if board[2][cx][cy]:
+                            if (cx, cy) not in horizontal_walls:
+                                if memory_cells[0][cx][cy][1] == 2:   close_ones[0].add((cx, cy))
+                                elif memory_cells[0][cx][cy+1][1] == 0:   close_ones[0].add((cx, cy+1))
+                                if memory_cells[1][cx][cy][1] == 2:   close_ones[1].add((cx, cy))
+                                elif memory_cells[1][cx][cy+1][1] == 0:   close_ones[1].add((cx, cy+1))
                         else:
-                            if (coordinate_x, coordinate_y) in horizontal_walls:
-                                if memory_cells[0][coordinate_x][coordinate_y][0] > memory_cells[0][coordinate_x][coordinate_y+1][0] + 1:
-                                    open_ones[0].add((coordinate_x, coordinate_y+1))
-                                if memory_cells[0][coordinate_x][coordinate_y+1][0] > memory_cells[0][coordinate_x][coordinate_y][0] + 1:
-                                    open_ones[0].add((coordinate_x, coordinate_y))
-                                if memory_cells[1][coordinate_x][coordinate_y][0] > memory_cells[1][coordinate_x][coordinate_y+1][0] + 1:
-                                    open_ones[1].add((coordinate_x, coordinate_y+1))
-                                if memory_cells[1][coordinate_x][coordinate_y+1][0] > memory_cells[1][coordinate_x][coordinate_y][0] + 1:
-                                    open_ones[1].add((coordinate_x, coordinate_y))
-                        if board[3][coordinate_y][coordinate_x]:
-                            if (coordinate_y, coordinate_x) not in vertical_walls:
-                                if memory_cells[0][coordinate_y][coordinate_x][1] == 1:   cut_ones[0].add((coordinate_y, coordinate_x))
-                                if memory_cells[0][coordinate_y+1][coordinate_x][1] == 3:   cut_ones[0].add((coordinate_y+1, coordinate_x))
-                                if memory_cells[1][coordinate_y][coordinate_x][1] == 1:   cut_ones[1].add((coordinate_y, coordinate_x))
-                                if memory_cells[1][coordinate_y+1][coordinate_x][1] == 3:   cut_ones[1].add((coordinate_y+1, coordinate_x))
+                            if (cx, cy) in horizontal_walls:
+                                if memory_cells[0][cx][cy][0] > memory_cells[0][cx][cy+1][0] + 1:   open_ones[0].add((cx, cy+1))
+                                elif memory_cells[0][cx][cy+1][0] > memory_cells[0][cx][cy][0] + 1: open_ones[0].add((cx, cy))
+                                if memory_cells[1][cx][cy][0] > memory_cells[1][cx][cy+1][0] + 1:   open_ones[1].add((cx, cy+1))
+                                elif memory_cells[1][cx][cy+1][0] > memory_cells[1][cx][cy][0] + 1: open_ones[1].add((cx, cy))
+                        if board[3][cy][cx]:
+                            if (cy, cx) not in vertical_walls:
+                                if memory_cells[0][cy][cx][1] == 1:   close_ones[0].add((cy, cx))
+                                elif memory_cells[0][cy+1][cx][1] == 3:   close_ones[0].add((cy+1, cx))
+                                if memory_cells[1][cy][cx][1] == 1:   close_ones[1].add((cy, cx))
+                                elif memory_cells[1][cy+1][cx][1] == 3:   close_ones[1].add((cy+1, cx))
                         else:
-                            if (coordinate_y, coordinate_x) in vertical_walls:
-                                if memory_cells[0][coordinate_y][coordinate_x][0] > memory_cells[0][coordinate_y+1][coordinate_x][0] + 1:
-                                    open_ones[0].add((coordinate_y+1, coordinate_x))
-                                if memory_cells[0][coordinate_y+1][coordinate_x][0] > memory_cells[0][coordinate_y][coordinate_x][0] + 1:
-                                    open_ones[0].add((coordinate_y, coordinate_x))
-                                if memory_cells[1][coordinate_y][coordinate_x][0] > memory_cells[1][coordinate_y+1][coordinate_x][0] + 1:
-                                    open_ones[1].add((coordinate_y+1, coordinate_x))
-                                if memory_cells[1][coordinate_y+1][coordinate_x][0] > memory_cells[1][coordinate_y][coordinate_x][0] + 1:
-                                    open_ones[1].add((coordinate_y, coordinate_x))
+                            if (cy, cx) in vertical_walls:
+                                if memory_cells[0][cy][cx][0] > memory_cells[0][cy+1][cx][0] + 1:   open_ones[0].add((cy+1, cx))
+                                elif memory_cells[0][cy+1][cx][0] > memory_cells[0][cy][cx][0] + 1: open_ones[0].add((cy, cx))
+                                if memory_cells[1][cy][cx][0] > memory_cells[1][cy+1][cx][0] + 1:   open_ones[1].add((cy+1, cx))
+                                elif memory_cells[1][cy+1][cx][0] > memory_cells[1][cy][cx][0] + 1: open_ones[1].add((cy, cx))
         else:
             raise ValueError(f"invalid action_type: {action_type}")
 
@@ -496,8 +488,8 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
 
             for agent_id in range(2):
 
-                visited = cut_ones[agent_id]
-                q = Deque(cut_ones[agent_id])
+                visited = close_ones[agent_id]
+                q = Deque(close_ones[agent_id])
                 in_pri_q = open_ones[agent_id]
                 pri_q = PriorityQueue()
                 while q:
