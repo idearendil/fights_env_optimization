@@ -1,6 +1,5 @@
-import sys
-
 import numpy as np
+cimport numpy as np
 
 from queue import PriorityQueue
 from collections import deque
