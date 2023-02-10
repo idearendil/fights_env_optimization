@@ -41,23 +41,9 @@ class FasterAgent(BaseAgent):
         self.agent_id = agent_id  # type: ignore
         self._rng = np.random.default_rng(seed)
 
-    def _get_all_actions(self, state: new_env.PuoriborState):
-        actions = []
-        for action_type in [0, 1, 2, 3]:
-            for coordinate_x in range(new_env.PuoriborEnv.board_size):
-                for coordinate_y in range(new_env.PuoriborEnv.board_size):
-                    action = [action_type, coordinate_x, coordinate_y]
-                    try:
-                        new_env.PuoriborEnv().step(state, self.agent_id, action)
-                    except:
-                        ...
-                    else:
-                        actions.append(action)
-        return actions
-
     def __call__(self, state: new_env.PuoriborState) -> new_env.PuoriborAction:
-        actions = self._get_all_actions(state)
-        return self._rng.choice(actions)
+        legal_actions_np = new_env.PuoriborEnv().legal_actions(state, self.agent_id)
+        return self._rng.choice(np.argwhere(legal_actions_np == 1))
 
 def run_original():
     assert pre_env.PuoriborEnv.env_id == RandomAgent.env_id

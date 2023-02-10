@@ -39,30 +39,32 @@ class TestAgent(BaseAgent):
         return actions
     
     def _get_all_actions_faster(self, state: new_env.PuoriborState):
+        legal_actions_np = new_env.PuoriborEnv().legal_actions(state, self.agent_id)
         actions = []
         for action_type in [0, 1, 2, 3]:
             for coordinate_x in range(new_env.PuoriborEnv.board_size):
                 for coordinate_y in range(new_env.PuoriborEnv.board_size):
                     action = [action_type, coordinate_x, coordinate_y]
-                    try:
-                        new_env.PuoriborEnv().step(state, self.agent_id, action)
-                    except:
-                        ...
-                    else:
+                    if legal_actions_np[action_type, coordinate_x, coordinate_y]:
                         actions.append(action)
         return actions
 
     def __call__(self, original_state: pre_env.PuoriborState, faster_state: new_env.PuoriborState) -> pre_env.PuoriborAction:
         original_actions = self._get_all_actions_original(original_state)
         faster_actions = self._get_all_actions_faster(faster_state)
-        assert original_actions == faster_actions
+        if not original_actions == faster_actions:
+            print(original_actions)
+            print(faster_actions)
+            print(np.argwhere(original_state.board[self.agent_id])[0])
+            print(np.argwhere(faster_state.board[self.agent_id])[0])
+            raise ValueError(f"original actions and faster actions are different!!")
         return self._rng.choice(original_actions)
 
 def run():
     assert pre_env.PuoriborEnv.env_id == TestAgent.env_id
     start = time.time()
 
-    for game in range(10):
+    for game in range(100):
 
         print(game)
 
