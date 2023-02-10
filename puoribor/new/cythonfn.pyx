@@ -223,53 +223,61 @@ def fast_step(
 
     if action_type > 0:
         
-        directions = ((0, -1), (1, 0), (0, 1), (-1, 0))
-
-        for agent_id in range(2):
-
-            visited = close_ones[agent_id]
-            q = deque(close_ones[agent_id])
-            in_pri_q = open_ones[agent_id]
-            pri_q = PriorityQueue()
-            while q:
-                here = q.popleft()
-                memory_cells_view[agent_id, here[0], here[1], 0] = 99999
-                memory_cells_view[agent_id, here[0], here[1], 1] = -1
-                in_pri_q.discard(here)
-                for dir_id, (dx, dy) in enumerate(directions):
-                    there = (here[0] + dx, here[1] + dy)
-                    if there in visited:
-                        continue
-                    if (not _check_in_range(there[0], there[1], board_size)) or _check_wall_blocked(board, here[0], here[1], there[0], there[1]):
-                        continue
-                    if memory_cells_view[agent_id, there[0], there[1], 1] == (dir_id + 2) % 4:
-                        q.append(there)
-                        visited.add(there)
-                    else:
-                        if memory_cells_view[agent_id, there[0], there[1], 0] < 99999:
-                            in_pri_q.add(there)
-            
-            for element in in_pri_q:
-                pri_q.put((memory_cells[agent_id, element[0], element[1], 0], element))
-
-            while not pri_q.empty():
-                dist, here = pri_q.get()
-                for dir_id, (dx, dy) in enumerate(directions):
-                    there = (here[0] + dx, here[1] + dy)
-                    if (not _check_in_range(there[0], there[1], board_size)) or _check_wall_blocked(board, here[0], here[1], there[0], there[1]):
-                        continue
-                    if memory_cells_view[agent_id, there[0], there[1], 0] > dist + 1:
-                        memory_cells_view[agent_id, there[0], there[1], 0] = dist + 1
-                        memory_cells_view[agent_id, there[0], there[1], 1] = (dir_id + 2) % 4
-                        pri_q.put((memory_cells_view[agent_id, there[0], there[1], 0], there))
+        update_memory_cells(board, close_ones, open_ones, memory_cells_view, board_size)
         
-        if not _check_path_exists(board, memory_cells, 0) or not _check_path_exists(board, memory_cells, 1):
+        if not _check_path_exists(board, memory_cells_view, 0) or not _check_path_exists(board, memory_cells_view, 1):
             if action_type == 3:
                 raise ValueError("cannot rotate to block all paths")
             else:
                 raise ValueError("cannot place wall blocking all paths")
 
     return (board, walls_remaining, memory_cells, _check_wins(board))
+
+cdef update_memory_cells(board, close_ones, open_ones, int [:,:,:,:] memory_cells_view, int board_size):
+
+    cdef int dir_id, dx, dy, dist
+
+    directions = ((0, -1), (1, 0), (0, 1), (-1, 0))
+
+    for agent_id in range(2):
+
+        visited = close_ones[agent_id]
+        q = deque(close_ones[agent_id])
+        in_pri_q = open_ones[agent_id]
+        pri_q = PriorityQueue()
+        while q:
+            here = q.popleft()
+            memory_cells_view[agent_id, here[0], here[1], 0] = 99999
+            memory_cells_view[agent_id, here[0], here[1], 1] = -1
+            in_pri_q.discard(here)
+            for dir_id, (dx, dy) in enumerate(directions):
+                there = (here[0] + dx, here[1] + dy)
+                if there in visited:
+                    continue
+                if (not _check_in_range(there[0], there[1], board_size)) or _check_wall_blocked(board, here[0], here[1], there[0], there[1]):
+                    continue
+                if memory_cells_view[agent_id, there[0], there[1], 1] == (dir_id + 2) % 4:
+                    q.append(there)
+                    visited.add(there)
+                else:
+                    if memory_cells_view[agent_id, there[0], there[1], 0] < 99999:
+                        in_pri_q.add(there)
+        
+        for element in in_pri_q:
+            pri_q.put((memory_cells_view[agent_id, element[0], element[1], 0], element))
+
+        while not pri_q.empty():
+            dist, here = pri_q.get()
+            for dir_id, (dx, dy) in enumerate(directions):
+                there = (here[0] + dx, here[1] + dy)
+                if (not _check_in_range(there[0], there[1], board_size)) or _check_wall_blocked(board, here[0], here[1], there[0], there[1]):
+                    continue
+                if memory_cells_view[agent_id, there[0], there[1], 0] > dist + 1:
+                    memory_cells_view[agent_id, there[0], there[1], 0] = dist + 1
+                    memory_cells_view[agent_id, there[0], there[1], 1] = (dir_id + 2) % 4
+                    pri_q.put((memory_cells_view[agent_id, there[0], there[1], 0], there))
+    
+    return
 
 def build_memory_cells(board, walls_remaining, done, board_size):
 
@@ -310,17 +318,7 @@ def build_memory_cells(board, walls_remaining, done, board_size):
     return memory_cells
 
 def legal_actions(state, int agent_id, int board_size):
-    """
-    Find possible actions for the agent.
-
-    :arg state:
-        Current state of the environment.
-    :arg agent_id:
-        Agent_id of the agent.
     
-    :returns:
-        A numpy array of shape (4, 9, 9) which is one-hot encoding of possible actions.
-    """
     cdef int dir_x, dir_y, action_type, next_pos_x, next_pos_y, coordinate_x, coordinate_y
 
     legal_actions_np = np.zeros((4, 9, 9), dtype=np.int_)
@@ -359,9 +357,9 @@ def legal_actions(state, int agent_id, int board_size):
 cdef _check_in_range(int pos_x, int pos_y, int bottom_right = 9):
     return (0 <= pos_x < bottom_right and 0 <= pos_y < bottom_right)
 
-cdef _check_path_exists(board, memory_cells, agent_id: int):
+cdef _check_path_exists(board, int [:,:,:,:] memory_cells_view, agent_id: int):
     agent_pos = np.argwhere(board[agent_id])[0]
-    return memory_cells[agent_id, agent_pos[0], agent_pos[1], 0] < 99999
+    return memory_cells_view[agent_id, agent_pos[0], agent_pos[1], 0] < 99999
 
 cdef _check_wall_blocked(board, int cx, int cy, int nx, int ny):
     if nx > cx:
