@@ -80,8 +80,10 @@ def run_faster():
     print(f"{end - start} sec")
 
 if __name__ == "__main__":
-    run_faster()
+    
     run_original()
     run_faster()
+    
     run_original()
+    run_faster()
     

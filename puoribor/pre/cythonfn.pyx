@@ -21,7 +21,12 @@ def fast_step(
 ):
 
     action = np.asanyarray(action).astype(np.int_)
-    action_type, x, y = action
+
+    cdef int action_type, x, y
+    action_type = action[0]
+    x = action[1]
+    y = action[2]
+    
     if not _check_in_range((x, y)):
         raise ValueError(f"out of board: {(x, y)}")
     if not 0 <= agent_id <= 1:

@@ -16,16 +16,18 @@ def fast_step(
     pre_board,
     pre_walls_remaining,
     pre_memory_cells,
-    agent_id,
+    agent_id_py,
     action
 ):
 
-    action = np.asanyarray(action).astype(np.int_)
-
     cdef int action_type, x, y
+    cdef int agent_id
+
     action_type = action[0]
     x = action[1]
     y = action[2]
+
+    agent_id = agent_id_py
     
     if not _check_in_range((x, y)):
         raise ValueError(f"out of board: {(x, y)}")
