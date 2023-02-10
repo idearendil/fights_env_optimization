@@ -76,8 +76,8 @@ def fast_step(
         elif _check_wall_blocked(board, current_pos[0], current_pos[1], new_pos[0], new_pos[1]):
             raise ValueError("cannot jump over walls")
 
-        board[agent_id][tuple(current_pos)] = 0
-        board[agent_id][tuple(new_pos)] = 1
+        board_view[agent_id, current_pos[0], current_pos[1]] = 0
+        board_view[agent_id, new_pos[0], new_pos[1]] = 1
 
     elif action_type == 1:  # Place wall horizontally
         if walls_remaining_view[agent_id] == 0:
