@@ -14,7 +14,6 @@ from __future__ import annotations
 import sys
 from dataclasses import dataclass
 from typing import Callable, Deque, Dict, Optional
-import time
 
 import numpy as np
 from numpy.typing import ArrayLike, NDArray
@@ -278,14 +277,12 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             A copy of the object with the restored state.
         """
 
-        start = time.perf_counter()
-
         if pre_step_fn is not None:
             pre_step_fn(state, agent_id, action)
 
         action = np.asanyarray(action).astype(np.int_)
         action_type, x, y = action
-        if not self._check_in_range(np.array([x, y])):
+        if not self._check_in_range((x, y)):
             raise ValueError(f"out of board: {(x, y)}")
         if not 0 <= agent_id <= 1:
             raise ValueError(f"invalid agent_id: {agent_id}")
@@ -293,10 +290,8 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         board = np.copy(state.board)
         walls_remaining = np.copy(state.walls_remaining)
         memory_cells = np.copy(state.memory_cells)
-        cut_ones = [[], []]
-        open_ones = [[], []]
-
-        print(f"1 : {time.perf_counter() - start}")
+        close_ones = [set(), set()]
+        open_ones = [set(), set()]
 
         if action_type == 0:  # Move piece
             current_pos = np.argwhere(state.board[agent_id] == 1)[0]
@@ -325,21 +320,21 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
                     # Only diagonal jumps are permitted.
                     # Agents cannot simply move in diagonal direction.
                     raise ValueError("cannot move diagonally")
-                elif self._check_wall_blocked(board, current_pos, opponent_pos):
+                elif self._check_wall_blocked(board, tuple(current_pos), tuple(opponent_pos)):
                     raise ValueError("cannot jump over walls")
 
                 original_jump_pos = current_pos + 2 * (opponent_pos - current_pos)
                 if self._check_in_range(
-                    original_jump_pos
+                    (original_jump_pos[0], original_jump_pos[1])
                 ) and not self._check_wall_blocked(
-                    board, current_pos, original_jump_pos
+                    board, tuple(current_pos), tuple(original_jump_pos)
                 ):
                     raise ValueError(
                         "cannot diagonally jump if linear jump is possible"
                     )
-                elif self._check_wall_blocked(board, opponent_pos, new_pos):
+                elif self._check_wall_blocked(board, tuple(opponent_pos), tuple(new_pos)):
                     raise ValueError("cannot jump over walls")
-            elif self._check_wall_blocked(board, current_pos, new_pos):
+            elif self._check_wall_blocked(board, tuple(current_pos), tuple(new_pos)):
                 raise ValueError("cannot jump over walls")
 
             board[agent_id][tuple(current_pos)] = 0
@@ -361,15 +356,15 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             walls_remaining[agent_id] -= 1
             board[4, x, y] = 1
 
-            if memory_cells[0][x][y][1] == 2:   cut_ones[0].append((x, y))
-            if memory_cells[0][x][y+1][1] == 0:   cut_ones[0].append((x, y+1))
-            if memory_cells[1][x][y][1] == 2:   cut_ones[1].append((x, y))
-            if memory_cells[1][x][y+1][1] == 0:   cut_ones[1].append((x, y+1))
+            if memory_cells[0, x, y, 1] == 2:   close_ones[0].add((x, y))
+            elif memory_cells[0, x, y+1, 1] == 0:   close_ones[0].add((x, y+1))
+            if memory_cells[1, x, y, 1] == 2:   close_ones[1].add((x, y))
+            elif memory_cells[1, x, y+1, 1] == 0:   close_ones[1].add((x, y+1))
 
-            if memory_cells[0][x+1][y][1] == 2:   cut_ones[0].append((x+1, y))
-            if memory_cells[0][x+1][y+1][1] == 0:   cut_ones[0].append((x+1, y+1))
-            if memory_cells[1][x+1][y][1] == 2:   cut_ones[1].append((x+1, y))
-            if memory_cells[1][x+1][y+1][1] == 0:   cut_ones[1].append((x+1, y+1))
+            if memory_cells[0, x+1, y, 1] == 2:   close_ones[0].add((x+1, y))
+            elif memory_cells[0, x+1, y+1, 1] == 0:   close_ones[0].add((x+1, y+1))
+            if memory_cells[1, x+1, y, 1] == 2:   close_ones[1].add((x+1, y))
+            elif memory_cells[1, x+1, y+1, 1] == 0:   close_ones[1].add((x+1, y+1))
 
         elif action_type == 2:  # Place wall vertically
             if walls_remaining[agent_id] == 0:
@@ -387,21 +382,20 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             walls_remaining[agent_id] -= 1
             board[5, x, y] = 1
 
-            if memory_cells[0][x][y][1] == 1:   cut_ones[0].append((x, y))
-            if memory_cells[0][x+1][y][1] == 3:   cut_ones[0].append((x+1, y))
-            if memory_cells[1][x][y][1] == 1:   cut_ones[1].append((x, y))
-            if memory_cells[1][x+1][y][1] == 3:   cut_ones[1].append((x+1, y))
+            if memory_cells[0, x, y, 1] == 1:   close_ones[0].add((x, y))
+            elif memory_cells[0, x+1, y, 1] == 3:   close_ones[0].add((x+1, y))
+            if memory_cells[1, x, y, 1] == 1:   close_ones[1].add((x, y))
+            elif memory_cells[1, x+1, y, 1] == 3:   close_ones[1].add((x+1, y))
 
-            if memory_cells[0][x][y+1][1] == 1:   cut_ones[0].append((x, y+1))
-            if memory_cells[0][x+1][y+1][1] == 3:   cut_ones[0].append((x+1, y+1))
-            if memory_cells[1][x][y+1][1] == 1:   cut_ones[1].append((x, y+1))
-            if memory_cells[1][x+1][y+1][1] == 3:   cut_ones[1].append((x+1, y+1))
+            if memory_cells[0, x, y+1, 1] == 1:   close_ones[0].add((x, y+1))
+            elif memory_cells[0, x+1, y+1, 1] == 3:   close_ones[0].add((x+1, y+1))
+            if memory_cells[1, x, y+1, 1] == 1:   close_ones[1].add((x, y+1))
+            elif memory_cells[1, x+1, y+1, 1] == 3:   close_ones[1].add((x+1, y+1))
 
         elif action_type == 3:  # Rotate section
-            region_top_left = np.array([x, y])
             if not self._check_in_range(
-                region_top_left,
-                bottom_right=np.array([self.board_size - 3, self.board_size - 3]),
+                (x, y),
+                bottom_right=self.board_size - 3
             ):
                 raise ValueError("rotation region out of board")
             elif walls_remaining[agent_id] < 2:
@@ -413,9 +407,9 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             for coordinate_x in range(x, x+4, 1):
                 for coordinate_y in range(y-1, y+4, 1):
                     if coordinate_y >= 0 and coordinate_y <= 7:
-                        if board[2][coordinate_x][coordinate_y]:
+                        if board[2, coordinate_x, coordinate_y]:
                             horizontal_walls.add((coordinate_x, coordinate_y))
-                        if board[3][coordinate_y][coordinate_x]:
+                        if board[3, coordinate_y, coordinate_x]:
                             vertical_walls.add((coordinate_y, coordinate_x))
 
             padded_horizontal = np.pad(board[2], 1, constant_values=0)
@@ -458,87 +452,77 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
 
             walls_remaining[agent_id] -= 2
 
-            for coordinate_x in range(x, x+4, 1):
-                for coordinate_y in range(y-1, y+4, 1):
-                    if coordinate_y >= 0 and coordinate_y <= 7:
-                        if board[2][coordinate_x][coordinate_y]:
-                            if (coordinate_x, coordinate_y) not in horizontal_walls:
-                                for agent_id in range(2):
-                                    if memory_cells[agent_id][coordinate_x][coordinate_y][1] == 2:   cut_ones[agent_id].append((coordinate_x, coordinate_y))
-                                    if memory_cells[agent_id][coordinate_x][coordinate_y+1][1] == 0:   cut_ones[agent_id].append((coordinate_x, coordinate_y+1))
+            for cx in range(x, x+4, 1):
+                for cy in range(y-1, y+4, 1):
+                    if cy >= 0 and cy <= 7:
+                        if board[2, cx, cy]:
+                            if (cx, cy) not in horizontal_walls:
+                                if memory_cells[0, cx, cy, 1] == 2:   close_ones[0].add((cx, cy))
+                                elif memory_cells[0, cx, cy+1, 1] == 0:   close_ones[0].add((cx, cy+1))
+                                if memory_cells[1, cx, cy, 1] == 2:   close_ones[1].add((cx, cy))
+                                elif memory_cells[1, cx, cy+1, 1] == 0:   close_ones[1].add((cx, cy+1))
                         else:
-                            if (coordinate_x, coordinate_y) in horizontal_walls:
-                                for agent_id in range(2):
-                                    if memory_cells[agent_id][coordinate_x][coordinate_y][0] > memory_cells[agent_id][coordinate_x][coordinate_y+1][0] + 1:
-                                        open_ones[agent_id].append((coordinate_x, coordinate_y+1))
-                                    if memory_cells[agent_id][coordinate_x][coordinate_y+1][0] > memory_cells[agent_id][coordinate_x][coordinate_y][0] + 1:
-                                        open_ones[agent_id].append((coordinate_x, coordinate_y))
-                        if board[3][coordinate_y][coordinate_x]:
-                            if (coordinate_y, coordinate_x) not in vertical_walls:
-                                for agent_id in range(2):
-                                    if memory_cells[agent_id][coordinate_y][coordinate_x][1] == 1:   cut_ones[agent_id].append((coordinate_y, coordinate_x))
-                                    if memory_cells[agent_id][coordinate_y+1][coordinate_x][1] == 3:   cut_ones[agent_id].append((coordinate_y+1, coordinate_x))
+                            if (cx, cy) in horizontal_walls:
+                                if memory_cells[0, cx, cy, 0] > memory_cells[0, cx, cy+1, 0] + 1:   open_ones[0].add((cx, cy+1))
+                                elif memory_cells[0, cx, cy+1, 0] > memory_cells[0, cx, cy, 0] + 1: open_ones[0].add((cx, cy))
+                                if memory_cells[1, cx, cy, 0] > memory_cells[1, cx, cy+1, 0] + 1:   open_ones[1].add((cx, cy+1))
+                                elif memory_cells[1, cx, cy+1, 0] > memory_cells[1, cx, cy, 0] + 1: open_ones[1].add((cx, cy))
+                        if board[3, cy, cx]:
+                            if (cy, cx) not in vertical_walls:
+                                if memory_cells[0, cy, cx, 1] == 1:   close_ones[0].add((cy, cx))
+                                elif memory_cells[0, cy+1, cx, 1] == 3:   close_ones[0].add((cy+1, cx))
+                                if memory_cells[1, cy, cx, 1] == 1:   close_ones[1].add((cy, cx))
+                                elif memory_cells[1, cy+1, cx, 1] == 3:   close_ones[1].add((cy+1, cx))
                         else:
-                            if (coordinate_y, coordinate_x) in vertical_walls:
-                                for agent_id in range(2):
-                                    if memory_cells[agent_id][coordinate_y][coordinate_x][0] > memory_cells[agent_id][coordinate_y+1][coordinate_x][0] + 1:
-                                        open_ones[agent_id].append((coordinate_y+1, coordinate_x))
-                                    if memory_cells[agent_id][coordinate_y+1][coordinate_x][0] > memory_cells[agent_id][coordinate_y][coordinate_x][0] + 1:
-                                        open_ones[agent_id].append((coordinate_y, coordinate_x))
+                            if (cy, cx) in vertical_walls:
+                                if memory_cells[0, cy, cx, 0] > memory_cells[0, cy+1, cx, 0] + 1:   open_ones[0].add((cy+1, cx))
+                                elif memory_cells[0, cy+1, cx, 0] > memory_cells[0, cy, cx, 0] + 1: open_ones[0].add((cy, cx))
+                                if memory_cells[1, cy, cx, 0] > memory_cells[1, cy+1, cx, 0] + 1:   open_ones[1].add((cy+1, cx))
+                                elif memory_cells[1, cy+1, cx, 0] > memory_cells[1, cy, cx, 0] + 1: open_ones[1].add((cy, cx))
         else:
             raise ValueError(f"invalid action_type: {action_type}")
-        
-        print(f"2 : {time.perf_counter() - start}")
 
         if action_type > 0:
             
-            directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+            directions = ((0, -1), (1, 0), (0, 1), (-1, 0))
 
             for agent_id in range(2):
 
-                print(f"3 : {time.perf_counter() - start}")
-
-                visited = set(cut_ones[agent_id])
-                q = Deque(cut_ones[agent_id])
-                in_pri_q = set(open_ones[agent_id])
+                visited = close_ones[agent_id]
+                q = Deque(close_ones[agent_id])
+                in_pri_q = open_ones[agent_id]
                 pri_q = PriorityQueue()
                 while q:
                     here = q.popleft()
-                    memory_cells[agent_id][here[0]][here[1]][0] = 99999
-                    memory_cells[agent_id][here[0]][here[1]][1] = -1
+                    memory_cells[agent_id, here[0], here[1], 0] = 99999
+                    memory_cells[agent_id, here[0], here[1], 1] = -1
                     in_pri_q.discard(here)
                     for dir_id, (dx, dy) in enumerate(directions):
                         there = (here[0] + dx, here[1] + dy)
-                        if (not self._check_in_range(np.array(there))) or self._check_wall_blocked(board, np.array(here), np.array(there)):
-                            continue
                         if there in visited:
                             continue
-                        if memory_cells[agent_id][there[0]][there[1]][1] == (dir_id + 2) % 4:
+                        if (not self._check_in_range(there)) or self._check_wall_blocked(board, here, there):
+                            continue
+                        if memory_cells[agent_id, there[0], there[1], 1] == (dir_id + 2) % 4:
                             q.append(there)
                             visited.add(there)
                         else:
-                            if memory_cells[agent_id][there[0]][there[1]][0] < 99999:
+                            if memory_cells[agent_id, there[0], there[1], 0] < 99999:
                                 in_pri_q.add(there)
-
-                print(f"4 : {time.perf_counter() - start}")
                 
                 for element in in_pri_q:
-                    pri_q.put((memory_cells[agent_id][element[0]][element[1]][0], element))
-
-                print(f"5 : {time.perf_counter() - start}")
+                    pri_q.put((memory_cells[agent_id, element[0], element[1], 0], element))
 
                 while not pri_q.empty():
                     dist, here = pri_q.get()
                     for dir_id, (dx, dy) in enumerate(directions):
                         there = (here[0] + dx, here[1] + dy)
-                        if (not self._check_in_range(np.array(there))) or self._check_wall_blocked(board, np.array(here), np.array(there)):
+                        if (not self._check_in_range(there)) or self._check_wall_blocked(board, here, there):
                             continue
-                        if memory_cells[agent_id][there[0]][there[1]][0] > dist + 1:
-                            memory_cells[agent_id][there[0]][there[1]][0] = dist + 1
-                            memory_cells[agent_id][there[0]][there[1]][1] = (dir_id + 2) % 4
-                            pri_q.put((memory_cells[agent_id][there[0]][there[1]][0], there))
-
-                print(f"6 : {time.perf_counter() - start}")
+                        if memory_cells[agent_id, there[0], there[1], 0] > dist + 1:
+                            memory_cells[agent_id, there[0], there[1], 0] = dist + 1
+                            memory_cells[agent_id, there[0], there[1], 1] = (dir_id + 2) % 4
+                            pri_q.put((memory_cells[agent_id, there[0], there[1], 0], there))
             
             if not self._check_path_exists(board, memory_cells, 0) or not self._check_path_exists(board, memory_cells, 1):
                 if action_type == 3:
@@ -555,39 +539,77 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         if post_step_fn is not None:
             post_step_fn(next_state, agent_id, action)
         return next_state
+    
+    def legal_actions(self, state: PuoriborState, agent_id: int) -> NDArray[np.int_]:
+        """
+        Find possible actions for the agent.
 
-    def _check_in_range(self, pos: NDArray[np.int_], bottom_right=None) -> np.bool_:
+        :arg state:
+            Current state of the environment.
+        :arg agent_id:
+            Agent_id of the agent.
+        
+        :returns:
+            A numpy array of shape (4, 9, 9) which is one-hot encoding of possible actions.
+        """
+        legal_actions_np = np.zeros((4, 9, 9), dtype=np.int_)
+        now_pos = tuple(np.argwhere(state.board[agent_id] == 1)[0])
+        directions = ((0, -2), (-1, -1), (0, -1), (1, -1), (-2, 0), (-1, 0), (1, 0), (2, 0), (-1, 1), (0, 1), (1, 1), (0, 2))
+        for dir_x, dir_y in directions:
+            next_pos = (now_pos[0] + dir_x, now_pos[1] + dir_y)
+            if self._check_in_range(next_pos):
+                try:
+                    self.step(state, agent_id, (0, next_pos[0], next_pos[1]))
+                except:
+                    ...
+                else:
+                    legal_actions_np[0, next_pos[0], next_pos[1]] = 1
+        for action_type in (1, 2):
+            for coordinate_x in range(self.board_size-1):
+                for coordinate_y in range(self.board_size-1):
+                    try:
+                        self.step(state, agent_id, (action_type, coordinate_x, coordinate_y))
+                    except:
+                        ...
+                    else:
+                        legal_actions_np[action_type, coordinate_x, coordinate_y] = 1
+        for coordinate_x in range(self.board_size-3):
+            for coordinate_y in range(self.board_size-3):
+                try:
+                    self.step(state, agent_id, (3, coordinate_x, coordinate_y))
+                except:
+                    ...
+                else:
+                    legal_actions_np[3, coordinate_x, coordinate_y] = 1
+        return legal_actions_np
+
+    def _check_in_range(self, pos: tuple, bottom_right: int = None) -> np.bool_:
         if bottom_right is None:
-            bottom_right = np.array([self.board_size, self.board_size])
-        return np.all(np.logical_and(np.array([0, 0]) <= pos, pos < bottom_right))
+            bottom_right = self.board_size
+        return ((0 <= pos[0] < bottom_right) and (0 <= pos[1] < bottom_right))
 
     def _check_path_exists(self, board: NDArray[np.int_], memory_cells: NDArray[np.int_], agent_id: int) -> bool:
-        agent_pos = tuple(np.argwhere(board[agent_id] == 1)[0])
-        return memory_cells[agent_id][agent_pos[0]][agent_pos[1]][0] < 99999
+        agent_pos = np.argwhere(board[agent_id] == 1)[0]
+        return memory_cells[agent_id, agent_pos[0], agent_pos[1], 0] < 99999
 
     def _check_wall_blocked(
         self,
         board: NDArray[np.int_],
-        current_pos: NDArray[np.int_],
-        new_pos: NDArray[np.int_],
+        current_pos: tuple,
+        new_pos: tuple,
     ) -> bool:
-        delta = new_pos - current_pos
-        right_check = delta[0] > 0 and np.any(
-            board[3, current_pos[0] : new_pos[0], current_pos[1]]
-        )
-        left_check = delta[0] < 0 and np.any(
-            board[3, new_pos[0] : current_pos[0], current_pos[1]]
-        )
-        down_check = delta[1] > 0 and np.any(
-            board[2, current_pos[0], current_pos[1] : new_pos[1]]
-        )
-        up_check = delta[1] < 0 and np.any(
-            board[2, current_pos[0], new_pos[1] : current_pos[1]]
-        )
-        return bool(right_check or left_check or down_check or up_check)
+        if new_pos[0] > current_pos[0]:
+            return np.any(board[3, current_pos[0] : new_pos[0], current_pos[1]])
+        if new_pos[0] < current_pos[0]:
+            return np.any(board[3, new_pos[0] : current_pos[0], current_pos[1]])
+        if new_pos[1] > current_pos[1]:
+            return np.any(board[2, current_pos[0], current_pos[1] : new_pos[1]])
+        if new_pos[1] < current_pos[1]:
+            return np.any(board[2, current_pos[0], new_pos[1] : current_pos[1]])
+        return False
 
     def _check_wins(self, board: NDArray[np.int_]) -> bool:
-        return bool(board[0, :, -1].sum() or board[1, :, 0].sum())
+        return board[0, :, -1].any() or board[1, :, 0].any()
 
     def _build_state(self, board: NDArray[np.int_], walls_remaining: NDArray[np.int_], done: bool) -> PuoriborState:
         """
@@ -597,7 +619,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         :returns:
             A state which board is same as the input.
         """
-        directions = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+        directions = ((0, -1), (1, 0), (0, 1), (-1, 0))
 
         memory_cells = np.zeros((2, self.board_size, self.board_size, 2), dtype=np.int_)
 
@@ -608,25 +630,25 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             if agent_id == 0:
                 for coordinate_x in range(self.board_size):
                     q.append((coordinate_x, self.board_size-1))
-                    memory_cells[agent_id][coordinate_x][self.board_size-1][0] = 0
-                    memory_cells[agent_id][coordinate_x][self.board_size-1][1] = 2
+                    memory_cells[agent_id, coordinate_x, self.board_size-1, 0] = 0
+                    memory_cells[agent_id, coordinate_x, self.board_size-1, 1] = 2
                     visited.add((coordinate_x, self.board_size-1))
             else:
                 for coordinate_x in range(self.board_size):
                     q.append((coordinate_x, 0))
-                    memory_cells[agent_id][coordinate_x][0][0] = 0
-                    memory_cells[agent_id][coordinate_x][0][1] = 0
+                    memory_cells[agent_id, coordinate_x, 0, 0] = 0
+                    memory_cells[agent_id, coordinate_x, 0, 1] = 0
                     visited.add((coordinate_x, 0))
             while q:
                 here = q.popleft()
                 for dir_id, (dx, dy) in enumerate(directions):
                     there = (here[0] + dx, here[1] + dy)
-                    if (not self._check_in_range(np.array(there))) or self._check_wall_blocked(board, np.array(here), np.array(there)):
+                    if (not self._check_in_range(there)) or self._check_wall_blocked(board, here, there):
                         continue
                     if there in visited:
                         continue
-                    memory_cells[agent_id][there[0]][there[1]][0] = memory_cells[agent_id][here[0]][here[1]][0] + 1
-                    memory_cells[agent_id][there[0]][there[1]][1] = (dir_id + 2) % 4
+                    memory_cells[agent_id, there[0], there[1], 0] = memory_cells[agent_id, here[0], here[1], 0] + 1
+                    memory_cells[agent_id, there[0], there[1], 1] = (dir_id + 2) % 4
                     q.append(there)
                     visited.add(there)
         

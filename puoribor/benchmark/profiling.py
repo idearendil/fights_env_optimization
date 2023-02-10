@@ -1,12 +1,16 @@
 """
-Puoribor Environment Speed Test
+Puoribor Environment Profiling
 """
 
 import numpy as np
 import time
 
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+
 from fights.base import BaseAgent
-import new_env
+from new import new_env
 import prof_env
 
 class FasterAgent(BaseAgent):

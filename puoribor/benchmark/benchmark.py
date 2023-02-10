@@ -1,13 +1,17 @@
 """
-Puoribor Environment Speed Test
+Puoribor Environment Benchmark
 """
+
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 import numpy as np
 import time
 
 from fights.base import BaseAgent
-import pre_env
-import new_env
+from pre import pre_env
+from new import new_env
 
 class RandomAgent(BaseAgent):
     env_id = ("puoribor", 3)  # type: ignore

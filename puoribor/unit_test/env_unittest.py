@@ -3,7 +3,11 @@ from copy import deepcopy
 
 import numpy as np
 
-from new_env import PuoriborEnv, PuoriborState
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+
+from new.new_env import PuoriborEnv, PuoriborState
 
 
 class TestPuoriborEnv(unittest.TestCase):

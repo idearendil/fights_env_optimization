@@ -1,11 +1,11 @@
 """
-Othello Environment Speed Test
+New Puoribor Environment Accuracy Test with Old Puoribor Environment.
 """
 
 import re
 import sys
-
-sys.path.append("../")
+import os
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
 import colorama
 
@@ -14,8 +14,8 @@ import time
 from colorama import Fore, Style
 
 from fights.base import BaseAgent
-import new_env
-import pre_env
+from new import new_env
+from pre import pre_env
 
 class TestAgent(BaseAgent):
     env_id = ("puoribor", 3)  # type: ignore
