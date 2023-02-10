@@ -20,23 +20,24 @@ def fast_step(
     action
 ):
 
-    cdef int action_type, x, y
-    cdef int agent_id
+    cdef int action_type = action[0]
+    cdef int x = action[1]
+    cdef int y = action[2]
+    cdef int agent_id = agent_id_py
 
-    action_type = action[0]
-    x = action[1]
-    y = action[2]
+    board = np.copy(pre_board)
+    walls_remaining = np.copy(pre_walls_remaining)
+    memory_cells = np.copy(pre_memory_cells)
 
-    agent_id = agent_id_py
+    cdef int [:,:,:] board_view = board
+    cdef int [:] walls_remaining_view = walls_remaining
+    cdef int [:,:,:,:] memory_cells_view = memory_cells
     
     if not _check_in_range((x, y)):
         raise ValueError(f"out of board: {(x, y)}")
     if not 0 <= agent_id <= 1:
         raise ValueError(f"invalid agent_id: {agent_id}")
 
-    board = np.copy(pre_board)
-    walls_remaining = np.copy(pre_walls_remaining)
-    memory_cells = np.copy(pre_memory_cells)
     close_ones = [set(), set()]
     open_ones = [set(), set()]
 
@@ -88,7 +89,7 @@ def fast_step(
         board[agent_id][tuple(new_pos)] = 1
 
     elif action_type == 1:  # Place wall horizontally
-        if walls_remaining[agent_id] == 0:
+        if walls_remaining_view[agent_id] == 0:
             raise ValueError(f"no walls left for agent {agent_id}")
         if y == 8:
             raise ValueError("cannot place wall on the edge")
@@ -96,25 +97,25 @@ def fast_step(
             raise ValueError("right section out of board")
         elif np.any(board[2, x : x + 2, y]):
             raise ValueError("wall already placed")
-        elif board[5, x, y]:
+        elif board_view[5, x, y]:
             raise ValueError("cannot create intersecting walls")
-        board[2, x, y] = 1 + agent_id
-        board[2, x + 1, y] = 1 + agent_id
-        walls_remaining[agent_id] -= 1
-        board[4, x, y] = 1
+        board_view[2, x, y] = 1 + agent_id
+        board_view[2, x + 1, y] = 1 + agent_id
+        walls_remaining_view[agent_id] -= 1
+        board_view[4, x, y] = 1
 
-        if memory_cells[0, x, y, 1] == 2:   close_ones[0].add((x, y))
-        elif memory_cells[0, x, y+1, 1] == 0:   close_ones[0].add((x, y+1))
-        if memory_cells[1, x, y, 1] == 2:   close_ones[1].add((x, y))
-        elif memory_cells[1, x, y+1, 1] == 0:   close_ones[1].add((x, y+1))
+        if memory_cells_view[0, x, y, 1] == 2:   close_ones[0].add((x, y))
+        elif memory_cells_view[0, x, y+1, 1] == 0:   close_ones[0].add((x, y+1))
+        if memory_cells_view[1, x, y, 1] == 2:   close_ones[1].add((x, y))
+        elif memory_cells_view[1, x, y+1, 1] == 0:   close_ones[1].add((x, y+1))
 
-        if memory_cells[0, x+1, y, 1] == 2:   close_ones[0].add((x+1, y))
-        elif memory_cells[0, x+1, y+1, 1] == 0:   close_ones[0].add((x+1, y+1))
-        if memory_cells[1, x+1, y, 1] == 2:   close_ones[1].add((x+1, y))
-        elif memory_cells[1, x+1, y+1, 1] == 0:   close_ones[1].add((x+1, y+1))
+        if memory_cells_view[0, x+1, y, 1] == 2:   close_ones[0].add((x+1, y))
+        elif memory_cells_view[0, x+1, y+1, 1] == 0:   close_ones[0].add((x+1, y+1))
+        if memory_cells_view[1, x+1, y, 1] == 2:   close_ones[1].add((x+1, y))
+        elif memory_cells_view[1, x+1, y+1, 1] == 0:   close_ones[1].add((x+1, y+1))
 
     elif action_type == 2:  # Place wall vertically
-        if walls_remaining[agent_id] == 0:
+        if walls_remaining_view[agent_id] == 0:
             raise ValueError(f"no walls left for agent {agent_id}")
         if x == 8:
             raise ValueError("cannot place wall on the edge")
@@ -122,22 +123,22 @@ def fast_step(
             raise ValueError("right section out of board")
         elif np.any(board[3, x, y : y + 2]):
             raise ValueError("wall already placed")
-        elif board[4, x, y]:
+        elif board_view[4, x, y]:
             raise ValueError("cannot create intersecting walls")
-        board[3, x, y] = 1 + agent_id
-        board[3, x, y + 1] = 1 + agent_id
-        walls_remaining[agent_id] -= 1
-        board[5, x, y] = 1
+        board_view[3, x, y] = 1 + agent_id
+        board_view[3, x, y + 1] = 1 + agent_id
+        walls_remaining_view[agent_id] -= 1
+        board_view[5, x, y] = 1
 
-        if memory_cells[0, x, y, 1] == 1:   close_ones[0].add((x, y))
-        elif memory_cells[0, x+1, y, 1] == 3:   close_ones[0].add((x+1, y))
-        if memory_cells[1, x, y, 1] == 1:   close_ones[1].add((x, y))
-        elif memory_cells[1, x+1, y, 1] == 3:   close_ones[1].add((x+1, y))
+        if memory_cells_view[0, x, y, 1] == 1:   close_ones[0].add((x, y))
+        elif memory_cells_view[0, x+1, y, 1] == 3:   close_ones[0].add((x+1, y))
+        if memory_cells_view[1, x, y, 1] == 1:   close_ones[1].add((x, y))
+        elif memory_cells_view[1, x+1, y, 1] == 3:   close_ones[1].add((x+1, y))
 
-        if memory_cells[0, x, y+1, 1] == 1:   close_ones[0].add((x, y+1))
-        elif memory_cells[0, x+1, y+1, 1] == 3:   close_ones[0].add((x+1, y+1))
-        if memory_cells[1, x, y+1, 1] == 1:   close_ones[1].add((x, y+1))
-        elif memory_cells[1, x+1, y+1, 1] == 3:   close_ones[1].add((x+1, y+1))
+        if memory_cells_view[0, x, y+1, 1] == 1:   close_ones[0].add((x, y+1))
+        elif memory_cells_view[0, x+1, y+1, 1] == 3:   close_ones[0].add((x+1, y+1))
+        if memory_cells_view[1, x, y+1, 1] == 1:   close_ones[1].add((x, y+1))
+        elif memory_cells_view[1, x+1, y+1, 1] == 3:   close_ones[1].add((x+1, y+1))
 
     elif action_type == 3:  # Rotate section
         if not _check_in_range(
@@ -145,7 +146,7 @@ def fast_step(
             bottom_right=6
         ):
             raise ValueError("rotation region out of board")
-        elif walls_remaining[agent_id] < 2:
+        elif walls_remaining_view[agent_id] < 2:
             raise ValueError(f"less than two walls left for agent {agent_id}")
 
         horizontal_walls = set()
@@ -154,9 +155,9 @@ def fast_step(
         for coordinate_x in range(x, x+4, 1):
             for coordinate_y in range(y-1, y+4, 1):
                 if coordinate_y >= 0 and coordinate_y <= 7:
-                    if board[2, coordinate_x, coordinate_y]:
+                    if board_view[2, coordinate_x, coordinate_y]:
                         horizontal_walls.add((coordinate_x, coordinate_y))
-                    if board[3, coordinate_y, coordinate_x]:
+                    if board_view[3, coordinate_y, coordinate_x]:
                         vertical_walls.add((coordinate_y, coordinate_x))
 
         padded_horizontal = np.pad(board[2], 1, constant_values=0)
@@ -192,40 +193,40 @@ def fast_step(
         board[3] = padded_vertical[1:-1, 1:-1]
         board[4] = padded_horizontal_midpoints[1:-1, 1:-1]
         board[5] = padded_vertical_midpoints[1:-1, 1:-1]
-        board[2, :, 8] = 0
-        board[3, 8, :] = 0
-        board[4, :, 8] = 0
-        board[5, 8, :] = 0
+        board_view[2, :, 8] = 0
+        board_view[3, 8, :] = 0
+        board_view[4, :, 8] = 0
+        board_view[5, 8, :] = 0
 
-        walls_remaining[agent_id] -= 2
+        walls_remaining_view[agent_id] -= 2
 
         for cx in range(x, x+4, 1):
             for cy in range(y-1, y+4, 1):
                 if cy >= 0 and cy <= 7:
-                    if board[2, cx, cy]:
+                    if board_view[2, cx, cy]:
                         if (cx, cy) not in horizontal_walls:
-                            if memory_cells[0, cx, cy, 1] == 2:   close_ones[0].add((cx, cy))
-                            elif memory_cells[0, cx, cy+1, 1] == 0:   close_ones[0].add((cx, cy+1))
-                            if memory_cells[1, cx, cy, 1] == 2:   close_ones[1].add((cx, cy))
-                            elif memory_cells[1, cx, cy+1, 1] == 0:   close_ones[1].add((cx, cy+1))
+                            if memory_cells_view[0, cx, cy, 1] == 2:   close_ones[0].add((cx, cy))
+                            elif memory_cells_view[0, cx, cy+1, 1] == 0:   close_ones[0].add((cx, cy+1))
+                            if memory_cells_view[1, cx, cy, 1] == 2:   close_ones[1].add((cx, cy))
+                            elif memory_cells_view[1, cx, cy+1, 1] == 0:   close_ones[1].add((cx, cy+1))
                     else:
                         if (cx, cy) in horizontal_walls:
-                            if memory_cells[0, cx, cy, 0] > memory_cells[0, cx, cy+1, 0] + 1:   open_ones[0].add((cx, cy+1))
-                            elif memory_cells[0, cx, cy+1, 0] > memory_cells[0, cx, cy, 0] + 1: open_ones[0].add((cx, cy))
-                            if memory_cells[1, cx, cy, 0] > memory_cells[1, cx, cy+1, 0] + 1:   open_ones[1].add((cx, cy+1))
-                            elif memory_cells[1, cx, cy+1, 0] > memory_cells[1, cx, cy, 0] + 1: open_ones[1].add((cx, cy))
-                    if board[3, cy, cx]:
+                            if memory_cells_view[0, cx, cy, 0] > memory_cells_view[0, cx, cy+1, 0] + 1:   open_ones[0].add((cx, cy+1))
+                            elif memory_cells_view[0, cx, cy+1, 0] > memory_cells_view[0, cx, cy, 0] + 1: open_ones[0].add((cx, cy))
+                            if memory_cells_view[1, cx, cy, 0] > memory_cells_view[1, cx, cy+1, 0] + 1:   open_ones[1].add((cx, cy+1))
+                            elif memory_cells_view[1, cx, cy+1, 0] > memory_cells_view[1, cx, cy, 0] + 1: open_ones[1].add((cx, cy))
+                    if board_view[3, cy, cx]:
                         if (cy, cx) not in vertical_walls:
-                            if memory_cells[0, cy, cx, 1] == 1:   close_ones[0].add((cy, cx))
-                            elif memory_cells[0, cy+1, cx, 1] == 3:   close_ones[0].add((cy+1, cx))
-                            if memory_cells[1, cy, cx, 1] == 1:   close_ones[1].add((cy, cx))
-                            elif memory_cells[1, cy+1, cx, 1] == 3:   close_ones[1].add((cy+1, cx))
+                            if memory_cells_view[0, cy, cx, 1] == 1:   close_ones[0].add((cy, cx))
+                            elif memory_cells_view[0, cy+1, cx, 1] == 3:   close_ones[0].add((cy+1, cx))
+                            if memory_cells_view[1, cy, cx, 1] == 1:   close_ones[1].add((cy, cx))
+                            elif memory_cells_view[1, cy+1, cx, 1] == 3:   close_ones[1].add((cy+1, cx))
                     else:
                         if (cy, cx) in vertical_walls:
-                            if memory_cells[0, cy, cx, 0] > memory_cells[0, cy+1, cx, 0] + 1:   open_ones[0].add((cy+1, cx))
-                            elif memory_cells[0, cy+1, cx, 0] > memory_cells[0, cy, cx, 0] + 1: open_ones[0].add((cy, cx))
-                            if memory_cells[1, cy, cx, 0] > memory_cells[1, cy+1, cx, 0] + 1:   open_ones[1].add((cy+1, cx))
-                            elif memory_cells[1, cy+1, cx, 0] > memory_cells[1, cy, cx, 0] + 1: open_ones[1].add((cy, cx))
+                            if memory_cells_view[0, cy, cx, 0] > memory_cells_view[0, cy+1, cx, 0] + 1:   open_ones[0].add((cy+1, cx))
+                            elif memory_cells_view[0, cy+1, cx, 0] > memory_cells_view[0, cy, cx, 0] + 1: open_ones[0].add((cy, cx))
+                            if memory_cells_view[1, cy, cx, 0] > memory_cells_view[1, cy+1, cx, 0] + 1:   open_ones[1].add((cy+1, cx))
+                            elif memory_cells_view[1, cy+1, cx, 0] > memory_cells_view[1, cy, cx, 0] + 1: open_ones[1].add((cy, cx))
     else:
         raise ValueError(f"invalid action_type: {action_type}")
 
@@ -241,8 +242,8 @@ def fast_step(
             pri_q = PriorityQueue()
             while q:
                 here = q.popleft()
-                memory_cells[agent_id, here[0], here[1], 0] = 99999
-                memory_cells[agent_id, here[0], here[1], 1] = -1
+                memory_cells_view[agent_id, here[0], here[1], 0] = 99999
+                memory_cells_view[agent_id, here[0], here[1], 1] = -1
                 in_pri_q.discard(here)
                 for dir_id, (dx, dy) in enumerate(directions):
                     there = (here[0] + dx, here[1] + dy)
@@ -250,11 +251,11 @@ def fast_step(
                         continue
                     if (not _check_in_range(there)) or _check_wall_blocked(board, here, there):
                         continue
-                    if memory_cells[agent_id, there[0], there[1], 1] == (dir_id + 2) % 4:
+                    if memory_cells_view[agent_id, there[0], there[1], 1] == (dir_id + 2) % 4:
                         q.append(there)
                         visited.add(there)
                     else:
-                        if memory_cells[agent_id, there[0], there[1], 0] < 99999:
+                        if memory_cells_view[agent_id, there[0], there[1], 0] < 99999:
                             in_pri_q.add(there)
             
             for element in in_pri_q:
@@ -266,10 +267,10 @@ def fast_step(
                     there = (here[0] + dx, here[1] + dy)
                     if (not _check_in_range(there)) or _check_wall_blocked(board, here, there):
                         continue
-                    if memory_cells[agent_id, there[0], there[1], 0] > dist + 1:
-                        memory_cells[agent_id, there[0], there[1], 0] = dist + 1
-                        memory_cells[agent_id, there[0], there[1], 1] = (dir_id + 2) % 4
-                        pri_q.put((memory_cells[agent_id, there[0], there[1], 0], there))
+                    if memory_cells_view[agent_id, there[0], there[1], 0] > dist + 1:
+                        memory_cells_view[agent_id, there[0], there[1], 0] = dist + 1
+                        memory_cells_view[agent_id, there[0], there[1], 1] = (dir_id + 2) % 4
+                        pri_q.put((memory_cells_view[agent_id, there[0], there[1], 0], there))
         
         if not _check_path_exists(board, memory_cells, 0) or not _check_path_exists(board, memory_cells, 1):
             if action_type == 3:
