@@ -457,28 +457,36 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
                     if coordinate_y >= 0 and coordinate_y <= 7:
                         if board[2][coordinate_x][coordinate_y]:
                             if (coordinate_x, coordinate_y) not in horizontal_walls:
-                                for agent_id in range(2):
-                                    if memory_cells[agent_id][coordinate_x][coordinate_y][1] == 2:   cut_ones[agent_id].add((coordinate_x, coordinate_y))
-                                    if memory_cells[agent_id][coordinate_x][coordinate_y+1][1] == 0:   cut_ones[agent_id].add((coordinate_x, coordinate_y+1))
+                                if memory_cells[0][coordinate_x][coordinate_y][1] == 2:   cut_ones[0].add((coordinate_x, coordinate_y))
+                                if memory_cells[0][coordinate_x][coordinate_y+1][1] == 0:   cut_ones[0].add((coordinate_x, coordinate_y+1))
+                                if memory_cells[1][coordinate_x][coordinate_y][1] == 2:   cut_ones[1].add((coordinate_x, coordinate_y))
+                                if memory_cells[1][coordinate_x][coordinate_y+1][1] == 0:   cut_ones[1].add((coordinate_x, coordinate_y+1))
                         else:
                             if (coordinate_x, coordinate_y) in horizontal_walls:
-                                for agent_id in range(2):
-                                    if memory_cells[agent_id][coordinate_x][coordinate_y][0] > memory_cells[agent_id][coordinate_x][coordinate_y+1][0] + 1:
-                                        open_ones[agent_id].add((coordinate_x, coordinate_y+1))
-                                    if memory_cells[agent_id][coordinate_x][coordinate_y+1][0] > memory_cells[agent_id][coordinate_x][coordinate_y][0] + 1:
-                                        open_ones[agent_id].add((coordinate_x, coordinate_y))
+                                if memory_cells[0][coordinate_x][coordinate_y][0] > memory_cells[0][coordinate_x][coordinate_y+1][0] + 1:
+                                    open_ones[0].add((coordinate_x, coordinate_y+1))
+                                if memory_cells[0][coordinate_x][coordinate_y+1][0] > memory_cells[0][coordinate_x][coordinate_y][0] + 1:
+                                    open_ones[0].add((coordinate_x, coordinate_y))
+                                if memory_cells[1][coordinate_x][coordinate_y][0] > memory_cells[1][coordinate_x][coordinate_y+1][0] + 1:
+                                    open_ones[1].add((coordinate_x, coordinate_y+1))
+                                if memory_cells[1][coordinate_x][coordinate_y+1][0] > memory_cells[1][coordinate_x][coordinate_y][0] + 1:
+                                    open_ones[1].add((coordinate_x, coordinate_y))
                         if board[3][coordinate_y][coordinate_x]:
                             if (coordinate_y, coordinate_x) not in vertical_walls:
-                                for agent_id in range(2):
-                                    if memory_cells[agent_id][coordinate_y][coordinate_x][1] == 1:   cut_ones[agent_id].add((coordinate_y, coordinate_x))
-                                    if memory_cells[agent_id][coordinate_y+1][coordinate_x][1] == 3:   cut_ones[agent_id].add((coordinate_y+1, coordinate_x))
+                                if memory_cells[0][coordinate_y][coordinate_x][1] == 1:   cut_ones[0].add((coordinate_y, coordinate_x))
+                                if memory_cells[0][coordinate_y+1][coordinate_x][1] == 3:   cut_ones[0].add((coordinate_y+1, coordinate_x))
+                                if memory_cells[1][coordinate_y][coordinate_x][1] == 1:   cut_ones[1].add((coordinate_y, coordinate_x))
+                                if memory_cells[1][coordinate_y+1][coordinate_x][1] == 3:   cut_ones[1].add((coordinate_y+1, coordinate_x))
                         else:
                             if (coordinate_y, coordinate_x) in vertical_walls:
-                                for agent_id in range(2):
-                                    if memory_cells[agent_id][coordinate_y][coordinate_x][0] > memory_cells[agent_id][coordinate_y+1][coordinate_x][0] + 1:
-                                        open_ones[agent_id].add((coordinate_y+1, coordinate_x))
-                                    if memory_cells[agent_id][coordinate_y+1][coordinate_x][0] > memory_cells[agent_id][coordinate_y][coordinate_x][0] + 1:
-                                        open_ones[agent_id].add((coordinate_y, coordinate_x))
+                                if memory_cells[0][coordinate_y][coordinate_x][0] > memory_cells[0][coordinate_y+1][coordinate_x][0] + 1:
+                                    open_ones[0].add((coordinate_y+1, coordinate_x))
+                                if memory_cells[0][coordinate_y+1][coordinate_x][0] > memory_cells[0][coordinate_y][coordinate_x][0] + 1:
+                                    open_ones[0].add((coordinate_y, coordinate_x))
+                                if memory_cells[1][coordinate_y][coordinate_x][0] > memory_cells[1][coordinate_y+1][coordinate_x][0] + 1:
+                                    open_ones[1].add((coordinate_y+1, coordinate_x))
+                                if memory_cells[1][coordinate_y+1][coordinate_x][0] > memory_cells[1][coordinate_y][coordinate_x][0] + 1:
+                                    open_ones[1].add((coordinate_y, coordinate_x))
         else:
             raise ValueError(f"invalid action_type: {action_type}")
 
