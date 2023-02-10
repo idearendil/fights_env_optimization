@@ -25,16 +25,13 @@ class TestAgent(BaseAgent):
         self._rng = np.random.default_rng(seed)
 
     def _get_all_actions_original(self, state: pre_env.PuoriborState):
+        legal_actions_np = pre_env.PuoriborEnv().legal_actions(state, self.agent_id)
         actions = []
         for action_type in [0, 1, 2, 3]:
             for coordinate_x in range(pre_env.PuoriborEnv.board_size):
                 for coordinate_y in range(pre_env.PuoriborEnv.board_size):
                     action = [action_type, coordinate_x, coordinate_y]
-                    try:
-                        pre_env.PuoriborEnv().step(state, self.agent_id, action)
-                    except:
-                        ...
-                    else:
+                    if legal_actions_np[action_type, coordinate_x, coordinate_y]:
                         actions.append(action)
         return actions
     
@@ -53,10 +50,6 @@ class TestAgent(BaseAgent):
         original_actions = self._get_all_actions_original(original_state)
         faster_actions = self._get_all_actions_faster(faster_state)
         if not original_actions == faster_actions:
-            print(original_actions)
-            print(faster_actions)
-            print(np.argwhere(original_state.board[self.agent_id])[0])
-            print(np.argwhere(faster_state.board[self.agent_id])[0])
             raise ValueError(f"original actions and faster actions are different!!")
         return self._rng.choice(original_actions)
 
