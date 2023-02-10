@@ -1,16 +1,9 @@
 import sys
-from dataclasses import dataclass
-from typing import Callable, Deque, Dict, Optional
 
 import numpy as np
-from numpy.typing import ArrayLike, NDArray
 
 from queue import PriorityQueue
-
-if sys.version_info < (3, 10):
-    from typing_extensions import TypeAlias
-else:
-    from typing import TypeAlias
+from collections import deque
 
 def fast_step(
     pre_board,
@@ -33,7 +26,7 @@ def fast_step(
     cdef int [:] walls_remaining_view = walls_remaining
     cdef int [:,:,:,:] memory_cells_view = memory_cells
     
-    if not _check_in_range((x, y)):
+    if not _check_in_range(x, y):
         raise ValueError(f"out of board: {(x, y)}")
     if not 0 <= agent_id <= 1:
         raise ValueError(f"invalid agent_id: {agent_id}")
@@ -72,9 +65,7 @@ def fast_step(
                 raise ValueError("cannot jump over walls")
 
             original_jump_pos = current_pos + 2 * (opponent_pos - current_pos)
-            if _check_in_range(
-                (original_jump_pos[0], original_jump_pos[1])
-            ) and not _check_wall_blocked(
+            if _check_in_range(original_jump_pos[0], original_jump_pos[1]) and not _check_wall_blocked(
                 board, tuple(current_pos), tuple(original_jump_pos)
             ):
                 raise ValueError(
@@ -142,7 +133,7 @@ def fast_step(
 
     elif action_type == 3:  # Rotate section
         if not _check_in_range(
-            (x, y),
+            x, y,
             bottom_right=6
         ):
             raise ValueError("rotation region out of board")
@@ -237,7 +228,7 @@ def fast_step(
         for agent_id in range(2):
 
             visited = close_ones[agent_id]
-            q = Deque(close_ones[agent_id])
+            q = deque(close_ones[agent_id])
             in_pri_q = open_ones[agent_id]
             pri_q = PriorityQueue()
             while q:
@@ -249,7 +240,7 @@ def fast_step(
                     there = (here[0] + dx, here[1] + dy)
                     if there in visited:
                         continue
-                    if (not _check_in_range(there)) or _check_wall_blocked(board, here, there):
+                    if (not _check_in_range(there[0], there[1])) or _check_wall_blocked(board, here, there):
                         continue
                     if memory_cells_view[agent_id, there[0], there[1], 1] == (dir_id + 2) % 4:
                         q.append(there)
@@ -265,7 +256,7 @@ def fast_step(
                 dist, here = pri_q.get()
                 for dir_id, (dx, dy) in enumerate(directions):
                     there = (here[0] + dx, here[1] + dy)
-                    if (not _check_in_range(there)) or _check_wall_blocked(board, here, there):
+                    if (not _check_in_range(there[0], there[1])) or _check_wall_blocked(board, here, there):
                         continue
                     if memory_cells_view[agent_id, there[0], there[1], 0] > dist + 1:
                         memory_cells_view[agent_id, there[0], there[1], 0] = dist + 1
@@ -280,17 +271,15 @@ def fast_step(
 
     return (board, walls_remaining, memory_cells, _check_wins(board))
 
-def _check_in_range(pos: tuple, bottom_right: int = None) -> np.bool_:
-    if bottom_right is None:
-        bottom_right = 9
-    return ((0 <= pos[0] < bottom_right) and (0 <= pos[1] < bottom_right))
+def _check_in_range(int pos_x, int pos_y, int bottom_right = 9) -> bool:
+    return (0 <= pos_x < bottom_right and 0 <= pos_y < bottom_right)
 
-def _check_path_exists(board: NDArray[np.int_], memory_cells: NDArray[np.int_], agent_id: int) -> bool:
+def _check_path_exists(board, memory_cells, agent_id: int) -> bool:
     agent_pos = np.argwhere(board[agent_id] == 1)[0]
     return memory_cells[agent_id, agent_pos[0], agent_pos[1], 0] < 99999
 
 def _check_wall_blocked(
-    board: NDArray[np.int_],
+    board,
     current_pos: tuple,
     new_pos: tuple,
 ) -> bool:
@@ -304,5 +293,5 @@ def _check_wall_blocked(
         return np.any(board[2, current_pos[0], new_pos[1] : current_pos[1]])
     return False
 
-def _check_wins(board: NDArray[np.int_]) -> bool:
+def _check_wins(board) -> bool:
     return board[0, :, -1].any() or board[1, :, 0].any()
