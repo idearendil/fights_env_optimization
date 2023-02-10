@@ -25,6 +25,8 @@ def fast_step(
     cdef int [:,:,:] board_view = board
     cdef int [:] walls_remaining_view = walls_remaining
     cdef int [:,:,:,:] memory_cells_view = memory_cells
+
+    cdef int coordinate_x, coordinate_y, px, py, cx, cy
     
     if not _check_in_range(x, y, board_size):
         raise ValueError(f"out of board: {(x, y)}")
@@ -279,12 +281,13 @@ cdef update_memory_cells(board, close_ones, open_ones, int [:,:,:,:] memory_cell
     
     return
 
-def build_memory_cells(board, walls_remaining, done, board_size):
+def build_memory_cells(board, int board_size):
 
     directions = ((0, -1), (1, 0), (0, 1), (-1, 0))
 
     memory_cells = np.zeros((2, board_size, board_size, 2), dtype=np.int_)
     cdef int [:,:,:,:] memory_cells_view = memory_cells
+    cdef int coordinate_x, dir_id, dx, dy
 
     for agent_id in range(2):
         

@@ -351,7 +351,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         new_state = PuoriborState(
             board=board,
             walls_remaining=walls_remaining,
-            memory_cells=cythonfn.build_memory_cells(board, walls_remaining, done, self.board_size),
+            memory_cells=cythonfn.build_memory_cells(board, self.board_size),
             done=done,
         )
 
