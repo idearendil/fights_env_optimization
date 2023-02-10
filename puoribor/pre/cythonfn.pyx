@@ -9,15 +9,14 @@ def fast_step(
     pre_board,
     pre_walls_remaining,
     pre_memory_cells,
-    agent_id_py,
+    int agent_id,
     action,
-    board_size
+    int board_size
 ):
 
     cdef int action_type = action[0]
     cdef int x = action[1]
     cdef int y = action[2]
-    cdef int agent_id = agent_id_py
 
     board = np.copy(pre_board)
     walls_remaining = np.copy(pre_walls_remaining)
@@ -309,6 +308,53 @@ def build_memory_cells(board, walls_remaining, done, board_size):
                 visited.add(there)
 
     return memory_cells
+
+def legal_actions(state, int agent_id, int board_size):
+    """
+    Find possible actions for the agent.
+
+    :arg state:
+        Current state of the environment.
+    :arg agent_id:
+        Agent_id of the agent.
+    
+    :returns:
+        A numpy array of shape (4, 9, 9) which is one-hot encoding of possible actions.
+    """
+    cdef int dir_x, dir_y, action_type, next_pos_x, next_pos_y, coordinate_x, coordinate_y
+
+    legal_actions_np = np.zeros((4, 9, 9), dtype=np.int_)
+    now_pos = tuple(np.argwhere(state.board[agent_id] == 1)[0])
+    directions = ((0, -2), (-1, -1), (0, -1), (1, -1), (-2, 0), (-1, 0), (1, 0), (2, 0), (-1, 1), (0, 1), (1, 1), (0, 2))
+
+    for dir_x, dir_y in directions:
+        next_pos_x = now_pos[0] + dir_x
+        next_pos_y = now_pos[1] + dir_y
+        if _check_in_range(next_pos_x, next_pos_y, board_size):
+            try:
+                fast_step(state.board, state.walls_remaining, state.memory_cells, agent_id, (0, next_pos_x, next_pos_y), board_size)
+            except:
+                ...
+            else:
+                legal_actions_np[0, next_pos_x, next_pos_y] = 1
+    for action_type in (1, 2):
+        for coordinate_x in range(board_size-1):
+            for coordinate_y in range(board_size-1):
+                try:
+                    fast_step(state.board, state.walls_remaining, state.memory_cells, agent_id, (action_type, coordinate_x, coordinate_y), board_size)
+                except:
+                    ...
+                else:
+                    legal_actions_np[action_type, coordinate_x, coordinate_y] = 1
+    for coordinate_x in range(board_size-3):
+        for coordinate_y in range(board_size-3):
+            try:
+                fast_step(state.board, state.walls_remaining, state.memory_cells, agent_id, (3, coordinate_x, coordinate_y), board_size)
+            except:
+                ...
+            else:
+                legal_actions_np[3, coordinate_x, coordinate_y] = 1
+    return legal_actions_np
 
 def _check_in_range(int pos_x, int pos_y, int bottom_right = 9) -> bool:
     return (0 <= pos_x < bottom_right and 0 <= pos_y < bottom_right)

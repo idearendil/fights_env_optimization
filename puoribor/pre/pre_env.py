@@ -309,36 +309,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         :returns:
             A numpy array of shape (4, 9, 9) which is one-hot encoding of possible actions.
         """
-        legal_actions_np = np.zeros((4, 9, 9), dtype=np.int_)
-        now_pos = tuple(np.argwhere(state.board[agent_id] == 1)[0])
-        directions = ((0, -2), (-1, -1), (0, -1), (1, -1), (-2, 0), (-1, 0), (1, 0), (2, 0), (-1, 1), (0, 1), (1, 1), (0, 2))
-        for dir_x, dir_y in directions:
-            next_pos = (now_pos[0] + dir_x, now_pos[1] + dir_y)
-            if self._check_in_range(next_pos):
-                try:
-                    self.step(state, agent_id, (0, next_pos[0], next_pos[1]))
-                except:
-                    ...
-                else:
-                    legal_actions_np[0, next_pos[0], next_pos[1]] = 1
-        for action_type in (1, 2):
-            for coordinate_x in range(self.board_size-1):
-                for coordinate_y in range(self.board_size-1):
-                    try:
-                        self.step(state, agent_id, (action_type, coordinate_x, coordinate_y))
-                    except:
-                        ...
-                    else:
-                        legal_actions_np[action_type, coordinate_x, coordinate_y] = 1
-        for coordinate_x in range(self.board_size-3):
-            for coordinate_y in range(self.board_size-3):
-                try:
-                    self.step(state, agent_id, (3, coordinate_x, coordinate_y))
-                except:
-                    ...
-                else:
-                    legal_actions_np[3, coordinate_x, coordinate_y] = 1
-        return legal_actions_np
+        return cythonfn.legal_actions(state, agent_id, self.board_size)
 
     def _check_in_range(self, pos: tuple, bottom_right: int = None) -> np.bool_:
         if bottom_right is None:

@@ -356,18 +356,14 @@ def legal_actions(state, int agent_id, int board_size):
                 legal_actions_np[3, coordinate_x, coordinate_y] = 1
     return legal_actions_np
 
-def _check_in_range(int pos_x, int pos_y, int bottom_right = 9) -> bool:
+cdef _check_in_range(int pos_x, int pos_y, int bottom_right = 9):
     return (0 <= pos_x < bottom_right and 0 <= pos_y < bottom_right)
 
-def _check_path_exists(board, memory_cells, agent_id: int) -> bool:
+cdef _check_path_exists(board, memory_cells, agent_id: int):
     agent_pos = np.argwhere(board[agent_id])[0]
     return memory_cells[agent_id, agent_pos[0], agent_pos[1], 0] < 99999
 
-def _check_wall_blocked(
-    board,
-    int cx, int cy,
-    int nx, int ny,
-) -> bool:
+cdef _check_wall_blocked(board, int cx, int cy, int nx, int ny):
     if nx > cx:
         return np.any(board[3, cx : nx, cy])
     if nx < cx:
@@ -378,5 +374,5 @@ def _check_wall_blocked(
         return np.any(board[2, cx, ny : cy])
     return False
 
-def _check_wins(board) -> bool:
+cdef _check_wins(board):
     return board[0, :, -1].any() or board[1, :, 0].any()
