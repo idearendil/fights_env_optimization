@@ -548,7 +548,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             next_pos = (now_pos[0] + dir_x, now_pos[1] + dir_y)
             if self._check_in_range(next_pos):
                 try:
-                    self.step(state, agent_id, [0, next_pos[0], next_pos[1]])
+                    self.step(state, agent_id, (0, next_pos[0], next_pos[1]))
                 except:
                     ...
                 else:
@@ -557,7 +557,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             for coordinate_x in range(self.board_size-1):
                 for coordinate_y in range(self.board_size-1):
                     try:
-                        self.step(state, agent_id, [action_type, coordinate_x, coordinate_y])
+                        self.step(state, agent_id, (action_type, coordinate_x, coordinate_y))
                     except:
                         ...
                     else:
@@ -565,7 +565,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         for coordinate_x in range(self.board_size-3):
             for coordinate_y in range(self.board_size-3):
                 try:
-                    self.step(state, agent_id, [3, coordinate_x, coordinate_y])
+                    self.step(state, agent_id, (3, coordinate_x, coordinate_y))
                 except:
                     ...
                 else:
@@ -598,7 +598,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         return False
 
     def _check_wins(self, board: NDArray[np.int_]) -> bool:
-        return bool(board[0, :, -1].sum() or board[1, :, 0].sum())
+        return board[0, :, -1].any() or board[1, :, 0].any()
 
     def _build_state(self, board: NDArray[np.int_], walls_remaining: NDArray[np.int_], done: bool) -> PuoriborState:
         """
