@@ -10,7 +10,8 @@ def fast_step(
     pre_walls_remaining,
     pre_memory_cells,
     agent_id_py,
-    action
+    action,
+    board_size
 ):
 
     cdef int action_type = action[0]
@@ -26,7 +27,7 @@ def fast_step(
     cdef int [:] walls_remaining_view = walls_remaining
     cdef int [:,:,:,:] memory_cells_view = memory_cells
     
-    if not _check_in_range(x, y):
+    if not _check_in_range(x, y, board_size):
         raise ValueError(f"out of board: {(x, y)}")
     if not 0 <= agent_id <= 1:
         raise ValueError(f"invalid agent_id: {agent_id}")
@@ -65,7 +66,7 @@ def fast_step(
                 raise ValueError("cannot jump over walls")
 
             original_jump_pos = current_pos + 2 * (opponent_pos - current_pos)
-            if _check_in_range(original_jump_pos[0], original_jump_pos[1]) and not _check_wall_blocked(
+            if _check_in_range(original_jump_pos[0], original_jump_pos[1], board_size) and not _check_wall_blocked(
                 board, current_pos[0], current_pos[1], original_jump_pos[0], original_jump_pos[1]
             ):
                 raise ValueError(
@@ -76,15 +77,15 @@ def fast_step(
         elif _check_wall_blocked(board, current_pos[0], current_pos[1], new_pos[0], new_pos[1]):
             raise ValueError("cannot jump over walls")
 
-        board[agent_id][tuple(current_pos)] = 0
-        board[agent_id][tuple(new_pos)] = 1
+        board_view[agent_id, current_pos[0], current_pos[1]] = 0
+        board_view[agent_id, new_pos[0], new_pos[1]] = 1
 
     elif action_type == 1:  # Place wall horizontally
         if walls_remaining_view[agent_id] == 0:
             raise ValueError(f"no walls left for agent {agent_id}")
-        if y == 8:
+        if y == board_size-1:
             raise ValueError("cannot place wall on the edge")
-        elif x == 8:
+        elif x == board_size-1:
             raise ValueError("right section out of board")
         elif np.any(board[2, x : x + 2, y]):
             raise ValueError("wall already placed")
@@ -108,9 +109,9 @@ def fast_step(
     elif action_type == 2:  # Place wall vertically
         if walls_remaining_view[agent_id] == 0:
             raise ValueError(f"no walls left for agent {agent_id}")
-        if x == 8:
+        if x == board_size-1:
             raise ValueError("cannot place wall on the edge")
-        elif y == 8:
+        elif y == board_size-1:
             raise ValueError("right section out of board")
         elif np.any(board[3, x, y : y + 2]):
             raise ValueError("wall already placed")
@@ -134,7 +135,7 @@ def fast_step(
     elif action_type == 3:  # Rotate section
         if not _check_in_range(
             x, y,
-            bottom_right=6
+            bottom_right=board_size-3
         ):
             raise ValueError("rotation region out of board")
         elif walls_remaining_view[agent_id] < 2:
@@ -184,10 +185,10 @@ def fast_step(
         board[3] = padded_vertical[1:-1, 1:-1]
         board[4] = padded_horizontal_midpoints[1:-1, 1:-1]
         board[5] = padded_vertical_midpoints[1:-1, 1:-1]
-        board_view[2, :, 8] = 0
-        board_view[3, 8, :] = 0
-        board_view[4, :, 8] = 0
-        board_view[5, 8, :] = 0
+        board_view[2, :, board_size-1] = 0
+        board_view[3, board_size-1, :] = 0
+        board_view[4, :, board_size-1] = 0
+        board_view[5, board_size-1, :] = 0
 
         walls_remaining_view[agent_id] -= 2
 
@@ -240,7 +241,7 @@ def fast_step(
                     there = (here[0] + dx, here[1] + dy)
                     if there in visited:
                         continue
-                    if (not _check_in_range(there[0], there[1])) or _check_wall_blocked(board, here[0], here[1], there[0], there[1]):
+                    if (not _check_in_range(there[0], there[1], board_size)) or _check_wall_blocked(board, here[0], here[1], there[0], there[1]):
                         continue
                     if memory_cells_view[agent_id, there[0], there[1], 1] == (dir_id + 2) % 4:
                         q.append(there)
@@ -256,7 +257,7 @@ def fast_step(
                 dist, here = pri_q.get()
                 for dir_id, (dx, dy) in enumerate(directions):
                     there = (here[0] + dx, here[1] + dy)
-                    if (not _check_in_range(there[0], there[1])) or _check_wall_blocked(board, here[0], here[1], there[0], there[1]):
+                    if (not _check_in_range(there[0], there[1], board_size)) or _check_wall_blocked(board, here[0], here[1], there[0], there[1]):
                         continue
                     if memory_cells_view[agent_id, there[0], there[1], 0] > dist + 1:
                         memory_cells_view[agent_id, there[0], there[1], 0] = dist + 1
@@ -270,6 +271,44 @@ def fast_step(
                 raise ValueError("cannot place wall blocking all paths")
 
     return (board, walls_remaining, memory_cells, _check_wins(board))
+
+def build_memory_cells(board, walls_remaining, done, board_size):
+
+    directions = ((0, -1), (1, 0), (0, 1), (-1, 0))
+
+    memory_cells = np.zeros((2, board_size, board_size, 2), dtype=np.int_)
+    cdef int [:,:,:,:] memory_cells_view = memory_cells
+
+    for agent_id in range(2):
+        
+        q = deque()
+        visited = set()
+        if agent_id == 0:
+            for coordinate_x in range(board_size):
+                q.append((coordinate_x, board_size-1))
+                memory_cells_view[agent_id, coordinate_x, board_size-1, 0] = 0
+                memory_cells_view[agent_id, coordinate_x, board_size-1, 1] = 2
+                visited.add((coordinate_x, board_size-1))
+        else:
+            for coordinate_x in range(board_size):
+                q.append((coordinate_x, 0))
+                memory_cells_view[agent_id, coordinate_x, 0, 0] = 0
+                memory_cells_view[agent_id, coordinate_x, 0, 1] = 0
+                visited.add((coordinate_x, 0))
+        while q:
+            here = q.popleft()
+            for dir_id, (dx, dy) in enumerate(directions):
+                there = (here[0] + dx, here[1] + dy)
+                if there in visited:
+                    continue
+                if (not _check_in_range(there[0], there[1], board_size)) or _check_wall_blocked(board, here[0], here[1], there[0], there[1]):
+                    continue
+                memory_cells_view[agent_id, there[0], there[1], 0] = memory_cells_view[agent_id, here[0], here[1], 0] + 1
+                memory_cells_view[agent_id, there[0], there[1], 1] = (dir_id + 2) % 4
+                q.append(there)
+                visited.add(there)
+
+    return memory_cells
 
 def _check_in_range(int pos_x, int pos_y, int bottom_right = 9) -> bool:
     return (0 <= pos_x < bottom_right and 0 <= pos_y < bottom_right)
