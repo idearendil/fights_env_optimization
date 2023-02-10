@@ -284,7 +284,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         if pre_step_fn is not None:
             pre_step_fn(state, agent_id, action)
 
-        next_information = cythonfn.fast_step(state.board, state.walls_remaining, state.memory_cells, agent_id, action)
+        next_information = cythonfn.fast_step(state.board, state.walls_remaining, state.memory_cells, agent_id, action, self.board_size)
 
         next_state = PuoriborState(
             board=next_information[0],
@@ -376,43 +376,11 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         :returns:
             A state which board is same as the input.
         """
-        directions = ((0, -1), (1, 0), (0, 1), (-1, 0))
-
-        memory_cells = np.zeros((2, self.board_size, self.board_size, 2), dtype=np.int_)
-
-        for agent_id in range(2):
-            
-            q = Deque()
-            visited = set()
-            if agent_id == 0:
-                for coordinate_x in range(self.board_size):
-                    q.append((coordinate_x, self.board_size-1))
-                    memory_cells[agent_id, coordinate_x, self.board_size-1, 0] = 0
-                    memory_cells[agent_id, coordinate_x, self.board_size-1, 1] = 2
-                    visited.add((coordinate_x, self.board_size-1))
-            else:
-                for coordinate_x in range(self.board_size):
-                    q.append((coordinate_x, 0))
-                    memory_cells[agent_id, coordinate_x, 0, 0] = 0
-                    memory_cells[agent_id, coordinate_x, 0, 1] = 0
-                    visited.add((coordinate_x, 0))
-            while q:
-                here = q.popleft()
-                for dir_id, (dx, dy) in enumerate(directions):
-                    there = (here[0] + dx, here[1] + dy)
-                    if (not self._check_in_range(there)) or self._check_wall_blocked(board, here, there):
-                        continue
-                    if there in visited:
-                        continue
-                    memory_cells[agent_id, there[0], there[1], 0] = memory_cells[agent_id, here[0], here[1], 0] + 1
-                    memory_cells[agent_id, there[0], there[1], 1] = (dir_id + 2) % 4
-                    q.append(there)
-                    visited.add(there)
         
         new_state = PuoriborState(
             board=board,
             walls_remaining=walls_remaining,
-            memory_cells=memory_cells,
+            memory_cells=cythonfn.build_memory_cells(board, walls_remaining, done, self.board_size),
             done=done,
         )
 
