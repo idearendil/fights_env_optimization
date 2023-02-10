@@ -320,21 +320,21 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
                     # Only diagonal jumps are permitted.
                     # Agents cannot simply move in diagonal direction.
                     raise ValueError("cannot move diagonally")
-                elif self._check_wall_blocked(board, current_pos, opponent_pos):
+                elif self._check_wall_blocked(board, tuple(current_pos), tuple(opponent_pos)):
                     raise ValueError("cannot jump over walls")
 
                 original_jump_pos = current_pos + 2 * (opponent_pos - current_pos)
                 if self._check_in_range(
                     (original_jump_pos[0], original_jump_pos[1])
                 ) and not self._check_wall_blocked(
-                    board, current_pos, original_jump_pos
+                    board, tuple(current_pos), tuple(original_jump_pos)
                 ):
                     raise ValueError(
                         "cannot diagonally jump if linear jump is possible"
                     )
-                elif self._check_wall_blocked(board, opponent_pos, new_pos):
+                elif self._check_wall_blocked(board, tuple(opponent_pos), tuple(new_pos)):
                     raise ValueError("cannot jump over walls")
-            elif self._check_wall_blocked(board, current_pos, new_pos):
+            elif self._check_wall_blocked(board, tuple(current_pos), tuple(new_pos)):
                 raise ValueError("cannot jump over walls")
 
             board[agent_id][tuple(current_pos)] = 0
@@ -499,7 +499,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
                     in_pri_q.discard(here)
                     for dir_id, (dx, dy) in enumerate(directions):
                         there = (here[0] + dx, here[1] + dy)
-                        if (not self._check_in_range(there)) or self._check_wall_blocked(board, np.array(here), np.array(there)):
+                        if (not self._check_in_range(there)) or self._check_wall_blocked(board, here, there):
                             continue
                         if there in visited:
                             continue
@@ -517,7 +517,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
                     dist, here = pri_q.get()
                     for dir_id, (dx, dy) in enumerate(directions):
                         there = (here[0] + dx, here[1] + dy)
-                        if (not self._check_in_range(there)) or self._check_wall_blocked(board, np.array(here), np.array(there)):
+                        if (not self._check_in_range(there)) or self._check_wall_blocked(board, here, there):
                             continue
                         if memory_cells[agent_id][there[0]][there[1]][0] > dist + 1:
                             memory_cells[agent_id][there[0]][there[1]][0] = dist + 1
@@ -540,20 +540,20 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             post_step_fn(next_state, agent_id, action)
         return next_state
 
-    def _check_in_range(self, pos: tuple, bottom_right: int=None) -> np.bool_:
+    def _check_in_range(self, pos: tuple, bottom_right: int = None) -> np.bool_:
         if bottom_right is None:
             bottom_right = self.board_size
         return ((0 <= pos[0] < bottom_right) and (0 <= pos[1] < bottom_right))
 
     def _check_path_exists(self, board: NDArray[np.int_], memory_cells: NDArray[np.int_], agent_id: int) -> bool:
-        agent_pos = tuple(np.argwhere(board[agent_id] == 1)[0])
+        agent_pos = np.argwhere(board[agent_id] == 1)[0]
         return memory_cells[agent_id][agent_pos[0]][agent_pos[1]][0] < 99999
 
     def _check_wall_blocked(
         self,
         board: NDArray[np.int_],
-        current_pos: NDArray[np.int_],
-        new_pos: NDArray[np.int_],
+        current_pos: tuple,
+        new_pos: tuple,
     ) -> bool:
         if new_pos[0] > current_pos[0]:
             return np.any(board[3, current_pos[0] : new_pos[0], current_pos[1]])
@@ -600,7 +600,7 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
                 here = q.popleft()
                 for dir_id, (dx, dy) in enumerate(directions):
                     there = (here[0] + dx, here[1] + dy)
-                    if (not self._check_in_range(there)) or self._check_wall_blocked(board, np.array(here), np.array(there)):
+                    if (not self._check_in_range(there)) or self._check_wall_blocked(board, here, there):
                         continue
                     if there in visited:
                         continue
