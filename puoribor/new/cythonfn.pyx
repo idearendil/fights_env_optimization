@@ -1,3 +1,5 @@
+#cython: language_level=3, boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
+
 import numpy as np
 cimport numpy as np
 
@@ -135,7 +137,7 @@ def fast_step(
 
     return (board, walls_remaining, _check_wins(board_view, board_size))
 
-cdef board_rotation(
+cdef void board_rotation(
     board,
     int [:,:,:] board_view,
     int [:] walls_remaining_view,
@@ -190,17 +192,29 @@ cdef board_rotation(
 
 def legal_actions(state, int agent_id, int board_size):
     
-    cdef int dir_x, dir_y, action_type, next_pos_x, next_pos_y, cx, cy, position, nowpos_x, nowpos_y
+    cdef int dir_id, action_type, next_pos_x, next_pos_y, cx, cy, position, nowpos_x, nowpos_y
+    cdef int directions[12][2]
 
     legal_actions_np = np.zeros((4, 9, 9), dtype=np.int_)
     position = _agent_pos(state.board, agent_id, board_size)
     nowpos_x = position / 9
     nowpos_y = position % 9
-    directions = ((0, -2), (-1, -1), (0, -1), (1, -1), (-2, 0), (-1, 0), (1, 0), (2, 0), (-1, 1), (0, 1), (1, 1), (0, 2))
-
-    for dir_x, dir_y in directions:
-        next_pos_x = nowpos_x + dir_x
-        next_pos_y = nowpos_y + dir_y
+    
+    for dir_id in range(12):
+        directions[0][:] = [0, -2]
+        directions[1][:] = [-1, -1]
+        directions[2][:] = [0, -1]
+        directions[3][:] = [1, -1]
+        directions[4][:] = [-2, 0]
+        directions[5][:] = [-1, 0]
+        directions[6][:] = [1, 0]
+        directions[7][:] = [2, 0]
+        directions[8][:] = [-1, 1]
+        directions[9][:] = [0, 1]
+        directions[10][:] = [1, 1]
+        directions[11][:] = [0, 2]
+        next_pos_x = nowpos_x + directions[dir_id][0]
+        next_pos_y = nowpos_y + directions[dir_id][1]
         if _check_in_range(next_pos_x, next_pos_y, board_size):
             try:
                 fast_step(state.board, state.walls_remaining, agent_id, (0, next_pos_x, next_pos_y), board_size)
@@ -208,7 +222,7 @@ def legal_actions(state, int agent_id, int board_size):
                 ...
             else:
                 legal_actions_np[0, next_pos_x, next_pos_y] = 1
-    for action_type in (1, 2):
+    for action_type in range(1, 3):
         for cx in range(board_size-1):
             for cy in range(board_size-1):
                 try:
@@ -227,10 +241,10 @@ def legal_actions(state, int agent_id, int board_size):
                 legal_actions_np[3, cx, cy] = 1
     return legal_actions_np
 
-cdef _check_in_range(int pos_x, int pos_y, int bottom_right = 9):
+cdef int _check_in_range(int pos_x, int pos_y, int bottom_right = 9):
     return (0 <= pos_x < bottom_right and 0 <= pos_y < bottom_right)
 
-cdef _check_path_exists(int [:,:,:] board_view, int agent_id, int board_size):
+cdef int _check_path_exists(int [:,:,:] board_view, int agent_id, int board_size):
 
     cdef int position, pos_x, pos_y
     cdef int i, j
@@ -254,7 +268,7 @@ cdef _check_path_exists(int [:,:,:] board_view, int agent_id, int board_size):
     position = _agent_pos(board_view, agent_id, board_size)
     pos_x = position / 9
     pos_y = position % 9
-    if pos_y == goal:   return True
+    if pos_y == goal:   return 1
     
     queue[tail] = pos_x * board_size + pos_y
     tail += 1
@@ -275,47 +289,47 @@ cdef _check_path_exists(int [:,:,:] board_view, int agent_id, int board_size):
             if _check_wall_blocked(board_view, pos_x, pos_y, there_x, there_y):
                 continue
             if there_y == goal:
-                return True
+                return 1
             visited[there_x][there_y] = 1
             queue[tail] = there_x * board_size + there_y
             tail += 1
 
-    return False
+    return 0
 
-cdef _check_wall_blocked(int [:,:,:] board_view, int cx, int cy, int nx, int ny):
+cdef int _check_wall_blocked(int [:,:,:] board_view, int cx, int cy, int nx, int ny):
     cdef int i
     if nx > cx:
         for i in range(cx, nx):
             if board_view[3, i, cy]:
-                return True
-        return False
+                return 1
+        return 0
     if nx < cx:
         for i in range(nx, cx):
             if board_view[3, i, cy]:
-                return True
-        return False
+                return 1
+        return 0
     if ny > cy:
         for i in range(cy, ny):
             if board_view[2, cx, i]:
-                return True
-        return False
+                return 1
+        return 0
     if ny < cy:
         for i in range(ny, cy):
             if board_view[2, cx, i]:
-                return True
-        return False
-    return False
+                return 1
+        return 0
+    return 0
 
-cdef _check_wins(int [:,:,:] board_view, int board_size):
+cdef int _check_wins(int [:,:,:] board_view, int board_size):
     cdef int i
     for i in range(board_size):
         if board_view[0, i, board_size-1]:
-            return True
+            return 1
         if board_view[1, i, 0]:
-            return True
-    return False
+            return 1
+    return 0
 
-cdef _agent_pos(int [:,:,:] board_view, int agent_id, int board_size):
+cdef int _agent_pos(int [:,:,:] board_view, int agent_id, int board_size):
     cdef int i, j
     for i in range(board_size):
         for j in range(board_size):
