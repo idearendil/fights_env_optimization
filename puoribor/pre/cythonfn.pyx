@@ -226,7 +226,7 @@ def fast_step(
         
         update_memory_cells(board_view, close_ones, open_ones, memory_cells_view, board_size)
         
-        if not _check_path_exists(board, memory_cells_view, 0) or not _check_path_exists(board, memory_cells_view, 1):
+        if not _check_path_exists(board_view, memory_cells_view, 0, board_size) or not _check_path_exists(board_view, memory_cells_view, 1, board_size):
             if action_type == 3:
                 raise ValueError("cannot rotate to block all paths")
             else:
@@ -359,9 +359,18 @@ def legal_actions(state, int agent_id, int board_size):
 cdef _check_in_range(int pos_x, int pos_y, int bottom_right = 9):
     return (0 <= pos_x < bottom_right and 0 <= pos_y < bottom_right)
 
-cdef _check_path_exists(board, int [:,:,:,:] memory_cells_view, agent_id: int):
-    agent_pos = np.argwhere(board[agent_id])[0]
-    return memory_cells_view[agent_id, agent_pos[0], agent_pos[1], 0] < 99999
+cdef _check_path_exists(int [:,:,:] board_view, int [:,:,:,:] memory_cells_view, int agent_id, int board_size):
+
+    cdef int i, j, pos_x = -1, pos_y = -1
+    for i in range(board_size):
+        for j in range(board_size):
+            if board_view[agent_id, i, j]:
+                pos_x = i
+                pos_y = j
+                break
+        if pos_x > -1:  break
+
+    return memory_cells_view[agent_id, pos_x, pos_y, 0] < 99999
 
 cdef _check_wall_blocked(int [:,:,:] board_view, int cx, int cy, int nx, int ny):
     cdef int i

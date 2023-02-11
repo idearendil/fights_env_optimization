@@ -232,7 +232,7 @@ def fast_step(
             else:
                 raise ValueError("cannot place wall blocking all paths")
 
-    return (board, walls_remaining, memory_cells, _check_wins(board))
+    return (board, walls_remaining, memory_cells, _check_wins(board_view, board_size))
 
 cdef update_memory_cells(int [:,:,:] board_view, close_ones, open_ones, int [:,:,:,:] memory_cells_view, int board_size):
 
@@ -324,7 +324,7 @@ def legal_actions(state, int agent_id, int board_size):
     cdef int dir_x, dir_y, action_type, next_pos_x, next_pos_y, coordinate_x, coordinate_y
 
     legal_actions_np = np.zeros((4, 9, 9), dtype=np.int_)
-    now_pos = tuple(np.argwhere(state.board[agent_id] == 1)[0])
+    now_pos = _agent_pos(state.board, agent_id, board_size)
     directions = ((0, -2), (-1, -1), (0, -1), (1, -1), (-2, 0), (-1, 0), (1, 0), (2, 0), (-1, 1), (0, 1), (1, 1), (0, 2))
 
     for dir_x, dir_y in directions:
@@ -361,16 +361,12 @@ cdef _check_in_range(int pos_x, int pos_y, int bottom_right = 9):
 
 cdef _check_path_exists(int [:,:,:] board_view, int [:,:,:,:] memory_cells_view, int agent_id, int board_size):
 
-    cdef int i, j, pos_x = -1, pos_y = -1
+    cdef int i, j
     for i in range(board_size):
         for j in range(board_size):
             if board_view[agent_id, i, j]:
-                pos_x = i
-                pos_y = j
-                break
-        if pos_x > -1:  break
-
-    return memory_cells_view[agent_id, pos_x, pos_y, 0] < 99999
+                return memory_cells_view[agent_id, i, j, 0] < 99999
+    return False
 
 cdef _check_wall_blocked(int [:,:,:] board_view, int cx, int cy, int nx, int ny):
     cdef int i
@@ -396,5 +392,19 @@ cdef _check_wall_blocked(int [:,:,:] board_view, int cx, int cy, int nx, int ny)
         return False
     return False
 
-cdef _check_wins(board):
-    return board[0, :, -1].any() or board[1, :, 0].any()
+cdef _check_wins(int [:,:,:] board_view, int board_size):
+    cdef int i
+    for i in range(board_size):
+        if board_view[0, i, board_size-1]:
+            return True
+        if board_view[1, i, 0]:
+            return True
+    return False
+
+cdef _agent_pos(int [:,:,:] board_view, int agent_id, int board_size):
+    cdef int i, j
+    for i in range(board_size):
+        for j in range(board_size):
+            if board_view[agent_id, i, j]:
+                return (i, j)
+    return -1
