@@ -299,10 +299,6 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             bottom_right = self.board_size
         return ((0 <= pos[0] < bottom_right) and (0 <= pos[1] < bottom_right))
 
-    def _check_path_exists(self, board: NDArray[np.int_], memory_cells: NDArray[np.int_], agent_id: int) -> bool:
-        agent_pos = np.argwhere(board[agent_id] == 1)[0]
-        return memory_cells[agent_id, agent_pos[0], agent_pos[1], 0] < 99999
-
     def _check_wall_blocked(
         self,
         board: NDArray[np.int_],
