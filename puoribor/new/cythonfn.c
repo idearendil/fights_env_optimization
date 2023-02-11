@@ -6470,7 +6470,7 @@ static PyObject *__pyx_f_8cythonfn_board_rotation(PyObject *__pyx_v_board, __Pyx
  *                 if board_view[2, cx, cy]:
  *                     horizontal_walls[cx, cy] = 1             # <<<<<<<<<<<<<<
  *                 if board_view[3, cy, cx]:
- *                     vertical_walls[cx, cy] = 1
+ *                     vertical_walls[cy, cx] = 1
  */
           __pyx_t_16 = __pyx_v_cx;
           __pyx_t_15 = __pyx_v_cy;
@@ -6502,7 +6502,7 @@ static PyObject *__pyx_f_8cythonfn_board_rotation(PyObject *__pyx_v_board, __Pyx
  *                 if board_view[2, cx, cy]:
  *                     horizontal_walls[cx, cy] = 1
  *                 if board_view[3, cy, cx]:             # <<<<<<<<<<<<<<
- *                     vertical_walls[cx, cy] = 1
+ *                     vertical_walls[cy, cx] = 1
  * 
  */
         __pyx_t_15 = 3;
@@ -6531,12 +6531,12 @@ static PyObject *__pyx_f_8cythonfn_board_rotation(PyObject *__pyx_v_board, __Pyx
           /* "cythonfn.pyx":185
  *                     horizontal_walls[cx, cy] = 1
  *                 if board_view[3, cy, cx]:
- *                     vertical_walls[cx, cy] = 1             # <<<<<<<<<<<<<<
+ *                     vertical_walls[cy, cx] = 1             # <<<<<<<<<<<<<<
  * 
  *     padded_horizontal = np.pad(board[2], 1, constant_values=0)
  */
-          __pyx_t_14 = __pyx_v_cx;
-          __pyx_t_16 = __pyx_v_cy;
+          __pyx_t_14 = __pyx_v_cy;
+          __pyx_t_16 = __pyx_v_cx;
           __pyx_t_17 = -1;
           if (__pyx_t_14 < 0) {
             __pyx_t_14 += __pyx_v_vertical_walls.shape[0];
@@ -6556,7 +6556,7 @@ static PyObject *__pyx_f_8cythonfn_board_rotation(PyObject *__pyx_v_board, __Pyx
  *                 if board_view[2, cx, cy]:
  *                     horizontal_walls[cx, cy] = 1
  *                 if board_view[3, cy, cx]:             # <<<<<<<<<<<<<<
- *                     vertical_walls[cx, cy] = 1
+ *                     vertical_walls[cy, cx] = 1
  * 
  */
         }
@@ -6573,7 +6573,7 @@ static PyObject *__pyx_f_8cythonfn_board_rotation(PyObject *__pyx_v_board, __Pyx
   }
 
   /* "cythonfn.pyx":187
- *                     vertical_walls[cx, cy] = 1
+ *                     vertical_walls[cy, cx] = 1
  * 
  *     padded_horizontal = np.pad(board[2], 1, constant_values=0)             # <<<<<<<<<<<<<<
  *     padded_vertical = np.pad(board[3], 1, constant_values=0)

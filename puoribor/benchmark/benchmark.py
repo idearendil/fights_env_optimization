@@ -81,9 +81,10 @@ def run_faster():
 
 if __name__ == "__main__":
     
-    run_original()
     run_faster()
+    run_original()
     
-    run_original()
     run_faster()
+    run_original()
+    
     

@@ -2992,9 +2992,9 @@ static PyObject *__pyx_pf_8cythonfn_fast_step(CYTHON_UNUSED PyObject *__pyx_self
         if (__pyx_t_12) {
 /* … */
         }
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">185</span>:                     vertical_walls[cx, cy] = 1</pre>
-<pre class='cython code score-2 '>          __pyx_t_14 = __pyx_v_cx;
-          __pyx_t_16 = __pyx_v_cy;
+</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">185</span>:                     vertical_walls[cy, cx] = 1</pre>
+<pre class='cython code score-2 '>          __pyx_t_14 = __pyx_v_cy;
+          __pyx_t_16 = __pyx_v_cx;
           __pyx_t_17 = -1;
           if (__pyx_t_14 &lt; 0) {
             __pyx_t_14 += __pyx_v_vertical_walls.shape[0];

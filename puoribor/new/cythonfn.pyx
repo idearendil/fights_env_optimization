@@ -31,7 +31,7 @@ def fast_step(
         raise ValueError(f"out of board: {(x, y)}")
     if not 0 <= agent_id <= 1:
         raise ValueError(f"invalid agent_id: {agent_id}")
-
+    
     close_ones = [set(), set()]
     open_ones = [set(), set()]
 
@@ -182,7 +182,7 @@ cdef board_rotation(
                 if board_view[2, cx, cy]:
                     horizontal_walls[cx, cy] = 1
                 if board_view[3, cy, cx]:
-                    vertical_walls[cx, cy] = 1
+                    vertical_walls[cy, cx] = 1
 
     padded_horizontal = np.pad(board[2], 1, constant_values=0)
     padded_vertical = np.pad(board[3], 1, constant_values=0)
