@@ -23,25 +23,18 @@ class TestPuoriborState(unittest.TestCase):
         self.assertListEqual(
             serialized["walls_remaining"], self.state.walls_remaining.tolist()
         )
-        self.assertListEqual(
-            serialized["memory_cells"], self.state.memory_cells.tolist()
-        )
         self.assertEqual(serialized["done"], self.state.done)
 
     def test_from_dict(self):
         serialized = {
             "board": self.initial_state.board.tolist(),
             "walls_remaining": self.initial_state.walls_remaining.tolist(),
-            "memory_cells": self.initial_state.memory_cells.tolist(),
             "done": self.initial_state.done,
         }
         state = PuoriborState.from_dict(serialized)
         np.testing.assert_array_equal(state.board, self.initial_state.board)
         np.testing.assert_array_equal(
             state.walls_remaining, self.initial_state.walls_remaining
-        )
-        np.testing.assert_array_equal(
-            state.memory_cells, self.initial_state.memory_cells
         )
         self.assertEqual(state.done, self.initial_state.done)
 

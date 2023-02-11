@@ -75,20 +75,6 @@ class PuoriborState(BaseState):
     `agent1_remaining_walls` ].
     """
 
-    memory_cells: NDArray[np.int_]
-    """
-    Array of shape ''(2, 9, 9, 2)''.
-    First index is agent_id, second and third index is x and y of the cell.
-    It should memorize two information per cell.
-    One is the shortest distance from the destination, and the other is the pointing direction of the cell.
-    
-    Pointing Direction
-        - 0 : 12 o'clock(up)
-        - 1 : 3 o'clock(right)
-        - 2 : 6 o'clock(down)
-        - 3 : 9 o'clock(left)
-    """
-
     done: bool = False
     """
     Boolean value indicating whether the game is done.
@@ -212,7 +198,6 @@ class PuoriborState(BaseState):
         return {
             "board": self.board.tolist(),
             "walls_remaining": self.walls_remaining.tolist(),
-            "memory_cells": self.memory_cells.tolist(),
             "done": self.done,
         }
 
@@ -228,7 +213,6 @@ class PuoriborState(BaseState):
         return PuoriborState(
             board=np.array(serialized["board"]),
             walls_remaining=np.array(serialized["walls_remaining"]),
-            memory_cells=np.array(serialized["memory_cells"]),
             done=serialized["done"],
         )
 
@@ -284,13 +268,12 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
         if pre_step_fn is not None:
             pre_step_fn(state, agent_id, action)
 
-        next_information = cythonfn.fast_step(state.board, state.walls_remaining, state.memory_cells, agent_id, action, self.board_size)
+        next_information = cythonfn.fast_step(state.board, state.walls_remaining, agent_id, action, self.board_size)
 
         next_state = PuoriborState(
             board=next_information[0],
             walls_remaining=next_information[1],
-            memory_cells=next_information[2],
-            done=next_information[3],
+            done=next_information[2],
         )
 
         if post_step_fn is not None:
@@ -339,24 +322,6 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
     def _check_wins(self, board: NDArray[np.int_]) -> bool:
         return board[0, :, -1].any() or board[1, :, 0].any()
 
-    def _build_state(self, board: NDArray[np.int_], walls_remaining: NDArray[np.int_], done: bool) -> PuoriborState:
-        """
-        Build a state(including memory_cells) from the current board information(board, walls_remaining and done).
-        :arg state:
-            Current state of the environment.
-        :returns:
-            A state which board is same as the input.
-        """
-        
-        new_state = PuoriborState(
-            board=board,
-            walls_remaining=walls_remaining,
-            memory_cells=cythonfn.build_memory_cells(board, self.board_size),
-            done=done,
-        )
-
-        return new_state
-
     def initialize_state(self) -> PuoriborState:
         """
         Initialize a :obj:`PuoriborState` object with correct environment parameters.
@@ -383,4 +348,10 @@ class PuoriborEnv(BaseEnv[PuoriborState, PuoriborAction]):
             ]
         )
 
-        return self._build_state(starting_board, np.array((self.max_walls, self.max_walls)), False)
+        new_state = PuoriborState(
+            board=starting_board,
+            walls_remaining=np.array((self.max_walls, self.max_walls)),
+            done=False,
+        )
+
+        return new_state

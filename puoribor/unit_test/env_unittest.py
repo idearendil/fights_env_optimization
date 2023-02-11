@@ -28,15 +28,8 @@ class TestPuoriborEnv(unittest.TestCase):
                 np.zeros((9, 9), dtype=np.int_),
             ]
         )
-        memory_cells = np.zeros((2, 9, 9, 2), dtype=np.int_)
-        for x in range(9):
-            for y in range(9):
-                memory_cells[0, x, y, 0] = 8 - y
-                memory_cells[1, x, y, 0] = y
-                memory_cells[0, x, y, 1] = 2
-                memory_cells[1, x, y, 1] = 0
         initial_state_correct = PuoriborState(
-            board=board, walls_remaining=np.array([10, 10]), memory_cells=memory_cells
+            board=board, walls_remaining=np.array([10, 10])
         )
 
         np.testing.assert_equal(initial_state_correct.board, self.initial_state.board)
@@ -44,10 +37,6 @@ class TestPuoriborEnv(unittest.TestCase):
         np.testing.assert_equal(
             initial_state_correct.walls_remaining,
             self.initial_state.walls_remaining,
-        )
-        np.testing.assert_equal(
-            initial_state_correct.memory_cells,
-            self.initial_state.memory_cells,
         )
 
     def test_action(self):
