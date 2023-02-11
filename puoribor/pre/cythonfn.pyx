@@ -7,7 +7,6 @@ from collections import deque
 def fast_step(
     pre_board,
     pre_walls_remaining,
-    pre_memory_cells,
     int agent_id,
     action,
     int board_size
@@ -19,11 +18,9 @@ def fast_step(
 
     board = np.copy(pre_board)
     walls_remaining = np.copy(pre_walls_remaining)
-    memory_cells = np.copy(pre_memory_cells)
 
     cdef int [:,:,:] board_view = board
     cdef int [:] walls_remaining_view = walls_remaining
-    cdef int [:,:,:,:] memory_cells_view = memory_cells
 
     cdef int curpos_x, curpos_y, newpos_x, newpos_y, opppos_x, opppos_y, delpos_x, delpos_y, taxicab_dist, original_jump_pos_x, original_jump_pos_y
     
@@ -31,7 +28,7 @@ def fast_step(
         raise ValueError(f"out of board: {(x, y)}")
     if not 0 <= agent_id <= 1:
         raise ValueError(f"invalid agent_id: {agent_id}")
-
+    
     close_ones = [set(), set()]
     open_ones = [set(), set()]
 
@@ -100,16 +97,6 @@ def fast_step(
         walls_remaining_view[agent_id] -= 1
         board_view[4, x, y] = 1
 
-        if memory_cells_view[0, x, y, 1] == 2:   close_ones[0].add((x, y))
-        elif memory_cells_view[0, x, y+1, 1] == 0:   close_ones[0].add((x, y+1))
-        if memory_cells_view[1, x, y, 1] == 2:   close_ones[1].add((x, y))
-        elif memory_cells_view[1, x, y+1, 1] == 0:   close_ones[1].add((x, y+1))
-
-        if memory_cells_view[0, x+1, y, 1] == 2:   close_ones[0].add((x+1, y))
-        elif memory_cells_view[0, x+1, y+1, 1] == 0:   close_ones[0].add((x+1, y+1))
-        if memory_cells_view[1, x+1, y, 1] == 2:   close_ones[1].add((x+1, y))
-        elif memory_cells_view[1, x+1, y+1, 1] == 0:   close_ones[1].add((x+1, y+1))
-
     elif action_type == 2:  # Place wall vertically
         if walls_remaining_view[agent_id] == 0:
             raise ValueError(f"no walls left for agent {agent_id}")
@@ -126,63 +113,37 @@ def fast_step(
         walls_remaining_view[agent_id] -= 1
         board_view[5, x, y] = 1
 
-        if memory_cells_view[0, x, y, 1] == 1:   close_ones[0].add((x, y))
-        elif memory_cells_view[0, x+1, y, 1] == 3:   close_ones[0].add((x+1, y))
-        if memory_cells_view[1, x, y, 1] == 1:   close_ones[1].add((x, y))
-        elif memory_cells_view[1, x+1, y, 1] == 3:   close_ones[1].add((x+1, y))
-
-        if memory_cells_view[0, x, y+1, 1] == 1:   close_ones[0].add((x, y+1))
-        elif memory_cells_view[0, x+1, y+1, 1] == 3:   close_ones[0].add((x+1, y+1))
-        if memory_cells_view[1, x, y+1, 1] == 1:   close_ones[1].add((x, y+1))
-        elif memory_cells_view[1, x+1, y+1, 1] == 3:   close_ones[1].add((x+1, y+1))
-
     elif action_type == 3:  # Rotate section
         if not _check_in_range(x, y, bottom_right=board_size-3):
             raise ValueError("rotation region out of board")
         elif walls_remaining_view[agent_id] < 2:
             raise ValueError(f"less than two walls left for agent {agent_id}")
 
-        board_rotation(board, board_view, walls_remaining_view, memory_cells_view, close_ones, open_ones, agent_id, board_size, x, y)
+        board_rotation(board, board_view, walls_remaining_view, agent_id, board_size, x, y)
 
     else:
         raise ValueError(f"invalid action_type: {action_type}")
 
     if action_type > 0:
         
-        update_memory_cells(board_view, close_ones, open_ones, memory_cells_view, board_size)
-        
-        if not _check_path_exists(board_view, memory_cells_view, 0, board_size) or not _check_path_exists(board_view, memory_cells_view, 1, board_size):
+        if not _check_path_exists(board_view, 0, board_size) or not _check_path_exists(board_view, 1, board_size):
             if action_type == 3:
                 raise ValueError("cannot rotate to block all paths")
             else:
                 raise ValueError("cannot place wall blocking all paths")
 
-    return (board, walls_remaining, memory_cells, _check_wins(board_view, board_size))
+    return (board, walls_remaining, _check_wins(board_view, board_size))
 
 cdef board_rotation(
     board,
     int [:,:,:] board_view,
     int [:] walls_remaining_view,
-    int [:,:,:,:] memory_cells_view,
-    close_ones,
-    open_ones,
     int agent_id,
     int board_size,
     int x,
     int y):
 
     cdef int cx, cy, px, py
-
-    cdef int [:,:] horizontal_walls = np.zeros((9, 9), dtype=np.int_)
-    cdef int [:,:] vertical_walls = np.zeros((9, 9), dtype=np.int_)
-
-    for cx in range(x, x+4, 1):
-        for cy in range(y-1, y+4, 1):
-            if cy >= 0 and cy <= 7:
-                if board_view[2, cx, cy]:
-                    horizontal_walls[cx, cy] = 1
-                if board_view[3, cy, cx]:
-                    vertical_walls[cx, cy] = 1
 
     padded_horizontal = np.pad(board[2], 1, constant_values=0)
     padded_vertical = np.pad(board[3], 1, constant_values=0)
@@ -224,119 +185,7 @@ cdef board_rotation(
 
     walls_remaining_view[agent_id] -= 2
 
-    for cx in range(x, x+4, 1):
-        for cy in range(y-1, y+4, 1):
-            if cy >= 0 and cy <= 7:
-                if board_view[2, cx, cy]:
-                    if horizontal_walls[cx, cy] == 0:
-                        if memory_cells_view[0, cx, cy, 1] == 2:   close_ones[0].add((cx, cy))
-                        elif memory_cells_view[0, cx, cy+1, 1] == 0:   close_ones[0].add((cx, cy+1))
-                        if memory_cells_view[1, cx, cy, 1] == 2:   close_ones[1].add((cx, cy))
-                        elif memory_cells_view[1, cx, cy+1, 1] == 0:   close_ones[1].add((cx, cy+1))
-                else:
-                    if horizontal_walls[cx, cy]:
-                        if memory_cells_view[0, cx, cy, 0] > memory_cells_view[0, cx, cy+1, 0] + 1:   open_ones[0].add((cx, cy+1))
-                        elif memory_cells_view[0, cx, cy+1, 0] > memory_cells_view[0, cx, cy, 0] + 1: open_ones[0].add((cx, cy))
-                        if memory_cells_view[1, cx, cy, 0] > memory_cells_view[1, cx, cy+1, 0] + 1:   open_ones[1].add((cx, cy+1))
-                        elif memory_cells_view[1, cx, cy+1, 0] > memory_cells_view[1, cx, cy, 0] + 1: open_ones[1].add((cx, cy))
-                if board_view[3, cy, cx]:
-                    if vertical_walls[cx, cy] == 0:
-                        if memory_cells_view[0, cy, cx, 1] == 1:   close_ones[0].add((cy, cx))
-                        elif memory_cells_view[0, cy+1, cx, 1] == 3:   close_ones[0].add((cy+1, cx))
-                        if memory_cells_view[1, cy, cx, 1] == 1:   close_ones[1].add((cy, cx))
-                        elif memory_cells_view[1, cy+1, cx, 1] == 3:   close_ones[1].add((cy+1, cx))
-                else:
-                    if vertical_walls[cx, cy]:
-                        if memory_cells_view[0, cy, cx, 0] > memory_cells_view[0, cy+1, cx, 0] + 1:   open_ones[0].add((cy+1, cx))
-                        elif memory_cells_view[0, cy+1, cx, 0] > memory_cells_view[0, cy, cx, 0] + 1: open_ones[0].add((cy, cx))
-                        if memory_cells_view[1, cy, cx, 0] > memory_cells_view[1, cy+1, cx, 0] + 1:   open_ones[1].add((cy+1, cx))
-                        elif memory_cells_view[1, cy+1, cx, 0] > memory_cells_view[1, cy, cx, 0] + 1: open_ones[1].add((cy, cx))
     return
-
-cdef update_memory_cells(int [:,:,:] board_view, close_ones, open_ones, int [:,:,:,:] memory_cells_view, int board_size):
-
-    cdef int dir_id, dx, dy, dist, agent_id
-
-    directions = ((0, -1), (1, 0), (0, 1), (-1, 0))
-
-    for agent_id in range(2):
-
-        visited = close_ones[agent_id]
-        q = deque(close_ones[agent_id])
-        in_pri_q = open_ones[agent_id]
-        pri_q = PriorityQueue()
-        while q:
-            here = q.popleft()
-            memory_cells_view[agent_id, here[0], here[1], 0] = 99999
-            memory_cells_view[agent_id, here[0], here[1], 1] = -1
-            in_pri_q.discard(here)
-            for dir_id, (dx, dy) in enumerate(directions):
-                there = (here[0] + dx, here[1] + dy)
-                if there in visited:
-                    continue
-                if (not _check_in_range(there[0], there[1], board_size)) or _check_wall_blocked(board_view, here[0], here[1], there[0], there[1]):
-                    continue
-                if memory_cells_view[agent_id, there[0], there[1], 1] == (dir_id + 2) % 4:
-                    q.append(there)
-                    visited.add(there)
-                else:
-                    if memory_cells_view[agent_id, there[0], there[1], 0] < 99999:
-                        in_pri_q.add(there)
-        
-        for element in in_pri_q:
-            pri_q.put((memory_cells_view[agent_id, element[0], element[1], 0], element))
-
-        while not pri_q.empty():
-            dist, here = pri_q.get()
-            for dir_id, (dx, dy) in enumerate(directions):
-                there = (here[0] + dx, here[1] + dy)
-                if (not _check_in_range(there[0], there[1], board_size)) or _check_wall_blocked(board_view, here[0], here[1], there[0], there[1]):
-                    continue
-                if memory_cells_view[agent_id, there[0], there[1], 0] > dist + 1:
-                    memory_cells_view[agent_id, there[0], there[1], 0] = dist + 1
-                    memory_cells_view[agent_id, there[0], there[1], 1] = (dir_id + 2) % 4
-                    pri_q.put((memory_cells_view[agent_id, there[0], there[1], 0], there))
-    
-    return
-
-def build_memory_cells(int [:,:,:] board_view, int board_size):
-
-    directions = ((0, -1), (1, 0), (0, 1), (-1, 0))
-
-    memory_cells = np.zeros((2, board_size, board_size, 2), dtype=np.int_)
-    cdef int [:,:,:,:] memory_cells_view = memory_cells
-    cdef int cx, dir_id, dx, dy
-
-    for agent_id in range(2):
-        
-        q = deque()
-        visited = set()
-        if agent_id == 0:
-            for cx in range(board_size):
-                q.append((cx, board_size-1))
-                memory_cells_view[agent_id, cx, board_size-1, 0] = 0
-                memory_cells_view[agent_id, cx, board_size-1, 1] = 2
-                visited.add((cx, board_size-1))
-        else:
-            for cx in range(board_size):
-                q.append((cx, 0))
-                memory_cells_view[agent_id, cx, 0, 0] = 0
-                memory_cells_view[agent_id, cx, 0, 1] = 0
-                visited.add((cx, 0))
-        while q:
-            here = q.popleft()
-            for dir_id, (dx, dy) in enumerate(directions):
-                there = (here[0] + dx, here[1] + dy)
-                if there in visited:
-                    continue
-                if (not _check_in_range(there[0], there[1], board_size)) or _check_wall_blocked(board_view, here[0], here[1], there[0], there[1]):
-                    continue
-                memory_cells_view[agent_id, there[0], there[1], 0] = memory_cells_view[agent_id, here[0], here[1], 0] + 1
-                memory_cells_view[agent_id, there[0], there[1], 1] = (dir_id + 2) % 4
-                q.append(there)
-                visited.add(there)
-
-    return memory_cells
 
 def legal_actions(state, int agent_id, int board_size):
     
@@ -351,7 +200,7 @@ def legal_actions(state, int agent_id, int board_size):
         next_pos_y = now_pos[1] + dir_y
         if _check_in_range(next_pos_x, next_pos_y, board_size):
             try:
-                fast_step(state.board, state.walls_remaining, state.memory_cells, agent_id, (0, next_pos_x, next_pos_y), board_size)
+                fast_step(state.board, state.walls_remaining, agent_id, (0, next_pos_x, next_pos_y), board_size)
             except:
                 ...
             else:
@@ -360,7 +209,7 @@ def legal_actions(state, int agent_id, int board_size):
         for cx in range(board_size-1):
             for cy in range(board_size-1):
                 try:
-                    fast_step(state.board, state.walls_remaining, state.memory_cells, agent_id, (action_type, cx, cy), board_size)
+                    fast_step(state.board, state.walls_remaining, agent_id, (action_type, cx, cy), board_size)
                 except:
                     ...
                 else:
@@ -368,7 +217,7 @@ def legal_actions(state, int agent_id, int board_size):
     for cx in range(board_size-3):
         for cy in range(board_size-3):
             try:
-                fast_step(state.board, state.walls_remaining, state.memory_cells, agent_id, (3, cx, cy), board_size)
+                fast_step(state.board, state.walls_remaining, agent_id, (3, cx, cy), board_size)
             except:
                 ...
             else:
@@ -378,13 +227,60 @@ def legal_actions(state, int agent_id, int board_size):
 cdef _check_in_range(int pos_x, int pos_y, int bottom_right = 9):
     return (0 <= pos_x < bottom_right and 0 <= pos_y < bottom_right)
 
-cdef _check_path_exists(int [:,:,:] board_view, int [:,:,:,:] memory_cells_view, int agent_id, int board_size):
+cdef _check_path_exists(int [:,:,:] board_view, int agent_id, int board_size):
 
+    cdef int pos_x = -1, pos_y = -1
     cdef int i, j
+    cdef int cnt = 0, tail = 0
+    cdef there_x, there_y
+    cdef int goal = (1-agent_id) * 8
+    cdef int queue[81]
+    cdef int [:,:] visited = np.zeros((board_size, board_size), dtype=np.int_)
+    cdef int directions[4][2]
+    if agent_id:
+        directions[0][:] = [0, -1]
+        directions[1][:] = [1, 0]
+        directions[2][:] = [-1, 0]
+        directions[3][:] = [0, 1]
+    else:
+        directions[0][:] = [0, 1]
+        directions[1][:] = [1, 0]
+        directions[2][:] = [-1, 0]
+        directions[3][:] = [0, -1]
+
     for i in range(board_size):
         for j in range(board_size):
             if board_view[agent_id, i, j]:
-                return memory_cells_view[agent_id, i, j, 0] < 99999
+                pos_x = i
+                pos_y = j
+                if pos_y == goal:   return True
+                break
+        if pos_x >= 0:   break
+    
+    queue[tail] = pos_x * board_size + pos_y
+    tail += 1
+    visited[pos_x, pos_y] = 1
+
+    for i in range(board_size * board_size):
+        if cnt == tail: break
+        pos_x = queue[cnt] / board_size
+        pos_y = queue[cnt] % board_size
+        cnt += 1
+        for j in range(4):
+            there_x = pos_x + directions[j][0]
+            there_y = pos_y + directions[j][1]
+            if not _check_in_range(there_x, there_y, board_size):
+                continue
+            if visited[there_x][there_y]:
+                continue
+            if _check_wall_blocked(board_view, pos_x, pos_y, there_x, there_y):
+                continue
+            if there_y == goal:
+                return True
+            visited[there_x][there_y] = 1
+            queue[tail] = there_x * board_size + there_y
+            tail += 1
+
     return False
 
 cdef _check_wall_blocked(int [:,:,:] board_view, int cx, int cy, int nx, int ny):

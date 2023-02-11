@@ -1,8 +1,7 @@
 import numpy as np
 cimport numpy as np
 
-from queue import PriorityQueue
-from collections import deque
+from cython.parallel import prange
 
 def fast_step(
     pre_board,
@@ -28,9 +27,6 @@ def fast_step(
         raise ValueError(f"out of board: {(x, y)}")
     if not 0 <= agent_id <= 1:
         raise ValueError(f"invalid agent_id: {agent_id}")
-    
-    close_ones = [set(), set()]
-    open_ones = [set(), set()]
 
     if action_type == 0:  # Move piece
         curpos_x, curpos_y = _agent_pos(board_view, agent_id, board_size)
@@ -143,7 +139,7 @@ cdef board_rotation(
     int x,
     int y):
 
-    cdef int cx, cy, px, py
+    cdef int px, py
 
     padded_horizontal = np.pad(board[2], 1, constant_values=0)
     padded_vertical = np.pad(board[3], 1, constant_values=0)
@@ -232,7 +228,7 @@ cdef _check_path_exists(int [:,:,:] board_view, int agent_id, int board_size):
     cdef int pos_x = -1, pos_y = -1
     cdef int i, j
     cdef int cnt = 0, tail = 0
-    cdef there_x, there_y
+    cdef int there_x, there_y
     cdef int goal = (1-agent_id) * 8
     cdef int queue[81]
     cdef int [:,:] visited = np.zeros((board_size, board_size), dtype=np.int_)

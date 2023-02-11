@@ -39,7 +39,7 @@ def run_original():
     assert pre_env.PuoriborEnv.env_id == RandomAgent.env_id
     start = time.time()
 
-    for game in range(20):
+    for game in range(50):
 
         state = pre_env.PuoriborEnv().initialize_state()
         agents = [RandomAgent(0, game), RandomAgent(1, game)]
@@ -61,7 +61,7 @@ def run_faster():
     assert new_env.PuoriborEnv.env_id == RandomAgent.env_id
     start = time.time()
 
-    for game in range(20):
+    for game in range(50):
 
         state = new_env.PuoriborEnv().initialize_state()
         agents = [FasterAgent(0, game), FasterAgent(1, game)]

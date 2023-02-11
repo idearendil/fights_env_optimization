@@ -52,7 +52,6 @@ class TestAgent(BaseAgent):
         if not original_actions == faster_actions:
             print(original_actions)
             print(faster_actions)
-            print(original_state.board)
             raise ValueError(f"original actions and faster actions are different!!")
         return self._rng.choice(original_actions)
 
