@@ -25,7 +25,6 @@ def fast_step(
     cdef int [:] walls_remaining_view = walls_remaining
     cdef int [:,:,:,:] memory_cells_view = memory_cells
 
-    cdef int coordinate_x, coordinate_y, px, py, cx, cy
     cdef int curpos_x, curpos_y, newpos_x, newpos_y, opppos_x, opppos_y, delpos_x, delpos_y, taxicab_dist, original_jump_pos_x, original_jump_pos_y
     
     if not _check_in_range(x, y, board_size):
@@ -92,7 +91,7 @@ def fast_step(
             raise ValueError("cannot place wall on the edge")
         elif x == board_size-1:
             raise ValueError("right section out of board")
-        elif np.any(board[2, x : x + 2, y]):
+        elif board_view[2, x, y] or board_view[2, x+1, y]:
             raise ValueError("wall already placed")
         elif board_view[5, x, y]:
             raise ValueError("cannot create intersecting walls")
@@ -118,7 +117,7 @@ def fast_step(
             raise ValueError("cannot place wall on the edge")
         elif y == board_size-1:
             raise ValueError("right section out of board")
-        elif np.any(board[3, x, y : y + 2]):
+        elif board_view[3, x, y] or board_view[3, x, y+1]:
             raise ValueError("wall already placed")
         elif board_view[4, x, y]:
             raise ValueError("cannot create intersecting walls")
@@ -143,84 +142,8 @@ def fast_step(
         elif walls_remaining_view[agent_id] < 2:
             raise ValueError(f"less than two walls left for agent {agent_id}")
 
-        horizontal_walls = set()
-        vertical_walls = set()
+        board_rotation(board, board_view, walls_remaining_view, memory_cells_view, close_ones, open_ones, agent_id, board_size, x, y)
 
-        for coordinate_x in range(x, x+4, 1):
-            for coordinate_y in range(y-1, y+4, 1):
-                if coordinate_y >= 0 and coordinate_y <= 7:
-                    if board_view[2, coordinate_x, coordinate_y]:
-                        horizontal_walls.add((coordinate_x, coordinate_y))
-                    if board_view[3, coordinate_y, coordinate_x]:
-                        vertical_walls.add((coordinate_y, coordinate_x))
-
-        padded_horizontal = np.pad(board[2], 1, constant_values=0)
-        padded_vertical = np.pad(board[3], 1, constant_values=0)
-        padded_horizontal_midpoints = np.pad(board[4], 1, constant_values=0)
-        padded_vertical_midpoints = np.pad(board[5], 1, constant_values=0)
-        px, py = x + 1, y + 1
-        horizontal_region = np.copy(padded_horizontal[px : px + 4, py - 1 : py + 4])
-        vertical_region = np.copy(padded_vertical[px - 1 : px + 4, py : py + 4])
-        padded_horizontal_midpoints[px - 1, py - 1 : py + 4] = 0
-        padded_horizontal_midpoints[px + 3, py - 1 : py + 4] = 0
-        padded_vertical_midpoints[px - 1 : px + 4, py - 1] = 0
-        padded_vertical_midpoints[px - 1 : px + 4, py + 3] = 0
-        horizontal_region_midpoints = np.copy(
-            padded_horizontal_midpoints[px : px + 4, py - 1 : py + 4]
-        )
-        vertical_region_midpoints = np.copy(
-            padded_vertical_midpoints[px - 1 : px + 4, py : py + 4]
-        )
-        horizontal_region_new = np.rot90(vertical_region)
-        vertical_region_new = np.rot90(horizontal_region)
-        horizontal_region_midpoints_new = np.rot90(vertical_region_midpoints)
-        vertical_region_midpoints_new = np.rot90(horizontal_region_midpoints)
-        padded_horizontal[px : px + 4, py - 1 : py + 4] = horizontal_region_new
-        padded_vertical[px - 1 : px + 4, py : py + 4] = vertical_region_new
-        padded_horizontal_midpoints[
-            px - 1 : px + 3, py - 1 : py + 4
-        ] = horizontal_region_midpoints_new
-        padded_vertical_midpoints[
-            px - 1 : px + 4, py : py + 4
-        ] = vertical_region_midpoints_new
-        board[2] = padded_horizontal[1:-1, 1:-1]
-        board[3] = padded_vertical[1:-1, 1:-1]
-        board[4] = padded_horizontal_midpoints[1:-1, 1:-1]
-        board[5] = padded_vertical_midpoints[1:-1, 1:-1]
-        board_view[2, :, board_size-1] = 0
-        board_view[3, board_size-1, :] = 0
-        board_view[4, :, board_size-1] = 0
-        board_view[5, board_size-1, :] = 0
-
-        walls_remaining_view[agent_id] -= 2
-
-        for cx in range(x, x+4, 1):
-            for cy in range(y-1, y+4, 1):
-                if cy >= 0 and cy <= 7:
-                    if board_view[2, cx, cy]:
-                        if (cx, cy) not in horizontal_walls:
-                            if memory_cells_view[0, cx, cy, 1] == 2:   close_ones[0].add((cx, cy))
-                            elif memory_cells_view[0, cx, cy+1, 1] == 0:   close_ones[0].add((cx, cy+1))
-                            if memory_cells_view[1, cx, cy, 1] == 2:   close_ones[1].add((cx, cy))
-                            elif memory_cells_view[1, cx, cy+1, 1] == 0:   close_ones[1].add((cx, cy+1))
-                    else:
-                        if (cx, cy) in horizontal_walls:
-                            if memory_cells_view[0, cx, cy, 0] > memory_cells_view[0, cx, cy+1, 0] + 1:   open_ones[0].add((cx, cy+1))
-                            elif memory_cells_view[0, cx, cy+1, 0] > memory_cells_view[0, cx, cy, 0] + 1: open_ones[0].add((cx, cy))
-                            if memory_cells_view[1, cx, cy, 0] > memory_cells_view[1, cx, cy+1, 0] + 1:   open_ones[1].add((cx, cy+1))
-                            elif memory_cells_view[1, cx, cy+1, 0] > memory_cells_view[1, cx, cy, 0] + 1: open_ones[1].add((cx, cy))
-                    if board_view[3, cy, cx]:
-                        if (cy, cx) not in vertical_walls:
-                            if memory_cells_view[0, cy, cx, 1] == 1:   close_ones[0].add((cy, cx))
-                            elif memory_cells_view[0, cy+1, cx, 1] == 3:   close_ones[0].add((cy+1, cx))
-                            if memory_cells_view[1, cy, cx, 1] == 1:   close_ones[1].add((cy, cx))
-                            elif memory_cells_view[1, cy+1, cx, 1] == 3:   close_ones[1].add((cy+1, cx))
-                    else:
-                        if (cy, cx) in vertical_walls:
-                            if memory_cells_view[0, cy, cx, 0] > memory_cells_view[0, cy+1, cx, 0] + 1:   open_ones[0].add((cy+1, cx))
-                            elif memory_cells_view[0, cy+1, cx, 0] > memory_cells_view[0, cy, cx, 0] + 1: open_ones[0].add((cy, cx))
-                            if memory_cells_view[1, cy, cx, 0] > memory_cells_view[1, cy+1, cx, 0] + 1:   open_ones[1].add((cy+1, cx))
-                            elif memory_cells_view[1, cy+1, cx, 0] > memory_cells_view[1, cy, cx, 0] + 1: open_ones[1].add((cy, cx))
     else:
         raise ValueError(f"invalid action_type: {action_type}")
 
@@ -235,6 +158,100 @@ def fast_step(
                 raise ValueError("cannot place wall blocking all paths")
 
     return (board, walls_remaining, memory_cells, _check_wins(board_view, board_size))
+
+cdef board_rotation(
+    board,
+    int [:,:,:] board_view,
+    int [:] walls_remaining_view,
+    int [:,:,:,:] memory_cells_view,
+    close_ones,
+    open_ones,
+    int agent_id,
+    int board_size,
+    int x,
+    int y):
+
+    cdef int cx, cy, px, py
+
+    cdef int [:,:] horizontal_walls = np.zeros((9, 9), dtype=np.int_)
+    cdef int [:,:] vertical_walls = np.zeros((9, 9), dtype=np.int_)
+
+    for cx in range(x, x+4, 1):
+        for cy in range(y-1, y+4, 1):
+            if cy >= 0 and cy <= 7:
+                if board_view[2, cx, cy]:
+                    horizontal_walls[cx, cy] = 1
+                if board_view[3, cy, cx]:
+                    vertical_walls[cx, cy] = 1
+
+    padded_horizontal = np.pad(board[2], 1, constant_values=0)
+    padded_vertical = np.pad(board[3], 1, constant_values=0)
+    padded_horizontal_midpoints = np.pad(board[4], 1, constant_values=0)
+    padded_vertical_midpoints = np.pad(board[5], 1, constant_values=0)
+    px, py = x + 1, y + 1
+    horizontal_region = np.copy(padded_horizontal[px : px + 4, py - 1 : py + 4])
+    vertical_region = np.copy(padded_vertical[px - 1 : px + 4, py : py + 4])
+    padded_horizontal_midpoints[px - 1, py - 1 : py + 4] = 0
+    padded_horizontal_midpoints[px + 3, py - 1 : py + 4] = 0
+    padded_vertical_midpoints[px - 1 : px + 4, py - 1] = 0
+    padded_vertical_midpoints[px - 1 : px + 4, py + 3] = 0
+    horizontal_region_midpoints = np.copy(
+        padded_horizontal_midpoints[px : px + 4, py - 1 : py + 4]
+    )
+    vertical_region_midpoints = np.copy(
+        padded_vertical_midpoints[px - 1 : px + 4, py : py + 4]
+    )
+    horizontal_region_new = np.rot90(vertical_region)
+    vertical_region_new = np.rot90(horizontal_region)
+    horizontal_region_midpoints_new = np.rot90(vertical_region_midpoints)
+    vertical_region_midpoints_new = np.rot90(horizontal_region_midpoints)
+    padded_horizontal[px : px + 4, py - 1 : py + 4] = horizontal_region_new
+    padded_vertical[px - 1 : px + 4, py : py + 4] = vertical_region_new
+    padded_horizontal_midpoints[
+        px - 1 : px + 3, py - 1 : py + 4
+    ] = horizontal_region_midpoints_new
+    padded_vertical_midpoints[
+        px - 1 : px + 4, py : py + 4
+    ] = vertical_region_midpoints_new
+    board[2] = padded_horizontal[1:-1, 1:-1]
+    board[3] = padded_vertical[1:-1, 1:-1]
+    board[4] = padded_horizontal_midpoints[1:-1, 1:-1]
+    board[5] = padded_vertical_midpoints[1:-1, 1:-1]
+    board_view[2, :, board_size-1] = 0
+    board_view[3, board_size-1, :] = 0
+    board_view[4, :, board_size-1] = 0
+    board_view[5, board_size-1, :] = 0
+
+    walls_remaining_view[agent_id] -= 2
+
+    for cx in range(x, x+4, 1):
+        for cy in range(y-1, y+4, 1):
+            if cy >= 0 and cy <= 7:
+                if board_view[2, cx, cy]:
+                    if horizontal_walls[cx, cy] == 0:
+                        if memory_cells_view[0, cx, cy, 1] == 2:   close_ones[0].add((cx, cy))
+                        elif memory_cells_view[0, cx, cy+1, 1] == 0:   close_ones[0].add((cx, cy+1))
+                        if memory_cells_view[1, cx, cy, 1] == 2:   close_ones[1].add((cx, cy))
+                        elif memory_cells_view[1, cx, cy+1, 1] == 0:   close_ones[1].add((cx, cy+1))
+                else:
+                    if horizontal_walls[cx, cy]:
+                        if memory_cells_view[0, cx, cy, 0] > memory_cells_view[0, cx, cy+1, 0] + 1:   open_ones[0].add((cx, cy+1))
+                        elif memory_cells_view[0, cx, cy+1, 0] > memory_cells_view[0, cx, cy, 0] + 1: open_ones[0].add((cx, cy))
+                        if memory_cells_view[1, cx, cy, 0] > memory_cells_view[1, cx, cy+1, 0] + 1:   open_ones[1].add((cx, cy+1))
+                        elif memory_cells_view[1, cx, cy+1, 0] > memory_cells_view[1, cx, cy, 0] + 1: open_ones[1].add((cx, cy))
+                if board_view[3, cy, cx]:
+                    if vertical_walls[cx, cy] == 0:
+                        if memory_cells_view[0, cy, cx, 1] == 1:   close_ones[0].add((cy, cx))
+                        elif memory_cells_view[0, cy+1, cx, 1] == 3:   close_ones[0].add((cy+1, cx))
+                        if memory_cells_view[1, cy, cx, 1] == 1:   close_ones[1].add((cy, cx))
+                        elif memory_cells_view[1, cy+1, cx, 1] == 3:   close_ones[1].add((cy+1, cx))
+                else:
+                    if vertical_walls[cx, cy]:
+                        if memory_cells_view[0, cy, cx, 0] > memory_cells_view[0, cy+1, cx, 0] + 1:   open_ones[0].add((cy+1, cx))
+                        elif memory_cells_view[0, cy+1, cx, 0] > memory_cells_view[0, cy, cx, 0] + 1: open_ones[0].add((cy, cx))
+                        if memory_cells_view[1, cy, cx, 0] > memory_cells_view[1, cy+1, cx, 0] + 1:   open_ones[1].add((cy+1, cx))
+                        elif memory_cells_view[1, cy+1, cx, 0] > memory_cells_view[1, cy, cx, 0] + 1: open_ones[1].add((cy, cx))
+    return
 
 cdef update_memory_cells(int [:,:,:] board_view, close_ones, open_ones, int [:,:,:,:] memory_cells_view, int board_size):
 
@@ -288,24 +305,24 @@ def build_memory_cells(int [:,:,:] board_view, int board_size):
 
     memory_cells = np.zeros((2, board_size, board_size, 2), dtype=np.int_)
     cdef int [:,:,:,:] memory_cells_view = memory_cells
-    cdef int coordinate_x, dir_id, dx, dy
+    cdef int cx, dir_id, dx, dy
 
     for agent_id in range(2):
         
         q = deque()
         visited = set()
         if agent_id == 0:
-            for coordinate_x in range(board_size):
-                q.append((coordinate_x, board_size-1))
-                memory_cells_view[agent_id, coordinate_x, board_size-1, 0] = 0
-                memory_cells_view[agent_id, coordinate_x, board_size-1, 1] = 2
-                visited.add((coordinate_x, board_size-1))
+            for cx in range(board_size):
+                q.append((cx, board_size-1))
+                memory_cells_view[agent_id, cx, board_size-1, 0] = 0
+                memory_cells_view[agent_id, cx, board_size-1, 1] = 2
+                visited.add((cx, board_size-1))
         else:
-            for coordinate_x in range(board_size):
-                q.append((coordinate_x, 0))
-                memory_cells_view[agent_id, coordinate_x, 0, 0] = 0
-                memory_cells_view[agent_id, coordinate_x, 0, 1] = 0
-                visited.add((coordinate_x, 0))
+            for cx in range(board_size):
+                q.append((cx, 0))
+                memory_cells_view[agent_id, cx, 0, 0] = 0
+                memory_cells_view[agent_id, cx, 0, 1] = 0
+                visited.add((cx, 0))
         while q:
             here = q.popleft()
             for dir_id, (dx, dy) in enumerate(directions):
@@ -323,7 +340,7 @@ def build_memory_cells(int [:,:,:] board_view, int board_size):
 
 def legal_actions(state, int agent_id, int board_size):
     
-    cdef int dir_x, dir_y, action_type, next_pos_x, next_pos_y, coordinate_x, coordinate_y
+    cdef int dir_x, dir_y, action_type, next_pos_x, next_pos_y, cx, cy
 
     legal_actions_np = np.zeros((4, 9, 9), dtype=np.int_)
     now_pos = _agent_pos(state.board, agent_id, board_size)
@@ -340,22 +357,22 @@ def legal_actions(state, int agent_id, int board_size):
             else:
                 legal_actions_np[0, next_pos_x, next_pos_y] = 1
     for action_type in (1, 2):
-        for coordinate_x in range(board_size-1):
-            for coordinate_y in range(board_size-1):
+        for cx in range(board_size-1):
+            for cy in range(board_size-1):
                 try:
-                    fast_step(state.board, state.walls_remaining, state.memory_cells, agent_id, (action_type, coordinate_x, coordinate_y), board_size)
+                    fast_step(state.board, state.walls_remaining, state.memory_cells, agent_id, (action_type, cx, cy), board_size)
                 except:
                     ...
                 else:
-                    legal_actions_np[action_type, coordinate_x, coordinate_y] = 1
-    for coordinate_x in range(board_size-3):
-        for coordinate_y in range(board_size-3):
+                    legal_actions_np[action_type, cx, cy] = 1
+    for cx in range(board_size-3):
+        for cy in range(board_size-3):
             try:
-                fast_step(state.board, state.walls_remaining, state.memory_cells, agent_id, (3, coordinate_x, coordinate_y), board_size)
+                fast_step(state.board, state.walls_remaining, state.memory_cells, agent_id, (3, cx, cy), board_size)
             except:
                 ...
             else:
-                legal_actions_np[3, coordinate_x, coordinate_y] = 1
+                legal_actions_np[3, cx, cy] = 1
     return legal_actions_np
 
 cdef _check_in_range(int pos_x, int pos_y, int bottom_right = 9):

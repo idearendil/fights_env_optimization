@@ -26,6 +26,7 @@ def fast_step(
     cdef int [:,:,:,:] memory_cells_view = memory_cells
 
     cdef int coordinate_x, coordinate_y, px, py, cx, cy
+    cdef int curpos_x, curpos_y, newpos_x, newpos_y, opppos_x, opppos_y, delpos_x, delpos_y, taxicab_dist, original_jump_pos_x, original_jump_pos_y
     
     if not _check_in_range(x, y, board_size):
         raise ValueError(f"out of board: {(x, y)}")
@@ -36,49 +37,53 @@ def fast_step(
     open_ones = [set(), set()]
 
     if action_type == 0:  # Move piece
-        current_pos = np.argwhere(pre_board[agent_id])[0]
-        new_pos = np.array([x, y])
-        opponent_pos = np.argwhere(pre_board[1 - agent_id])[0]
-        if np.all(new_pos == opponent_pos):
+        curpos_x, curpos_y = _agent_pos(board_view, agent_id, board_size)
+        opppos_x, opppos_y = _agent_pos(board_view, 1-agent_id, board_size)
+        newpos_x = x
+        newpos_y = y
+
+        if newpos_x == opppos_x and newpos_y == opppos_y:
             raise ValueError("cannot move to opponent's position")
 
-        delta = new_pos - current_pos
-        taxicab_dist = np.abs(delta).sum()
+        delpos_x = newpos_x - curpos_x
+        delpos_y = newpos_y - curpos_y
+        taxicab_dist = abs(delpos_x) + abs(delpos_y)
         if taxicab_dist == 0:
             raise ValueError("cannot move zero blocks")
         elif taxicab_dist > 2:
             raise ValueError("cannot move more than two blocks")
         elif (
             taxicab_dist == 2
-            and np.any(delta == 0)
-            and not np.all(current_pos + delta // 2 == opponent_pos)
+            and (delpos_x == 0 or delpos_y == 0)
+            and not (curpos_x + delpos_x / 2 == opppos_x and curpos_y + delpos_y / 2 == opppos_y)
         ):
             raise ValueError("cannot jump over nothing")
 
-        if np.all(delta):  # If moving diagonally
-            if np.any(current_pos + delta * [0, 1] != opponent_pos) and np.any(
-                current_pos + delta * [1, 0] != opponent_pos
+        if delpos_x and delpos_y:  # If moving diagonally
+            if (curpos_x + delpos_x != opppos_x or curpos_y != opppos_y) and (
+                curpos_x != opppos_x or curpos_y + delpos_y != opppos_y
             ):
                 # Only diagonal jumps are permitted.
                 # Agents cannot simply move in diagonal direction.
                 raise ValueError("cannot move diagonally")
-            elif _check_wall_blocked(board_view, current_pos[0], current_pos[1], opponent_pos[0], opponent_pos[1]):
+            elif _check_wall_blocked(board_view, curpos_x, curpos_y, opppos_x, opppos_y):
                 raise ValueError("cannot jump over walls")
 
-            original_jump_pos = current_pos + 2 * (opponent_pos - current_pos)
-            if _check_in_range(original_jump_pos[0], original_jump_pos[1], board_size) and not _check_wall_blocked(
-                board_view, current_pos[0], current_pos[1], original_jump_pos[0], original_jump_pos[1]
+            original_jump_pos_x = curpos_x + 2 * (opppos_x - curpos_x)
+            original_jump_pos_y = curpos_y + 2 * (opppos_y - curpos_y)
+            if _check_in_range(original_jump_pos_x, original_jump_pos_y, board_size) and not _check_wall_blocked(
+                board_view, curpos_x, curpos_y, original_jump_pos_x, original_jump_pos_y
             ):
                 raise ValueError(
                     "cannot diagonally jump if linear jump is possible"
                 )
-            elif _check_wall_blocked(board_view, opponent_pos[0], opponent_pos[1], new_pos[0], new_pos[1]):
+            elif _check_wall_blocked(board_view, opppos_x, opppos_y, newpos_x, newpos_y):
                 raise ValueError("cannot jump over walls")
-        elif _check_wall_blocked(board_view, current_pos[0], current_pos[1], new_pos[0], new_pos[1]):
+        elif _check_wall_blocked(board_view, curpos_x, curpos_y, newpos_x, newpos_y):
             raise ValueError("cannot jump over walls")
 
-        board_view[agent_id, current_pos[0], current_pos[1]] = 0
-        board_view[agent_id, new_pos[0], new_pos[1]] = 1
+        board_view[agent_id, curpos_x, curpos_y] = 0
+        board_view[agent_id, newpos_x, newpos_y] = 1
 
     elif action_type == 1:  # Place wall horizontally
         if walls_remaining_view[agent_id] == 0:
@@ -133,10 +138,7 @@ def fast_step(
         elif memory_cells_view[1, x+1, y+1, 1] == 3:   close_ones[1].add((x+1, y+1))
 
     elif action_type == 3:  # Rotate section
-        if not _check_in_range(
-            x, y,
-            bottom_right=board_size-3
-        ):
+        if not _check_in_range(x, y, bottom_right=board_size-3):
             raise ValueError("rotation region out of board")
         elif walls_remaining_view[agent_id] < 2:
             raise ValueError(f"less than two walls left for agent {agent_id}")
