@@ -1,5 +1,4 @@
-from setuptools import setup
-from distutils.extension import Extension
+from setuptools import Extension, setup
 import numpy as np
 
 ext_modules = [Extension("cythonfn", ["cythonfn.pyx"], extra_compile_args=['-fopenmp'], extra_link_args=['-fopenmp'])]
