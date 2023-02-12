@@ -23,7 +23,7 @@ def fast_step(
     cdef int [:,:,:] board_view = board
     cdef int [:] walls_remaining_view = walls_remaining
 
-    cdef int position, curpos_x, curpos_y, newpos_x, newpos_y, opppos_x, opppos_y, delpos_x, delpos_y
+    cdef int curpos_x, curpos_y, newpos_x, newpos_y, opppos_x, opppos_y, delpos_x, delpos_y
     cdef int taxicab_dist, original_jump_pos_x, original_jump_pos_y
     
     if not _check_in_range(x, y, board_size):
@@ -32,12 +32,8 @@ def fast_step(
         raise ValueError(f"invalid agent_id: {agent_id}")
 
     if action_type == 0:  # Move piece
-        position = _agent_pos(board_view, agent_id, board_size)
-        curpos_x = position / 9
-        curpos_y = position % 9
-        position = _agent_pos(board_view, 1-agent_id, board_size)
-        opppos_x = position / 9
-        opppos_y = position % 9
+        (curpos_x, curpos_y) = _agent_pos(board_view, agent_id, board_size)
+        (opppos_x, opppos_y) = _agent_pos(board_view, 1-agent_id, board_size)
         newpos_x = x
         newpos_y = y
 
@@ -190,38 +186,83 @@ cdef void board_rotation(
 
     return
 
+cdef int _is_moving_legal(int [:,:,:] board_view, int x, int y, int agent_id, int board_size):
+
+    cdef int curpos_x, curpos_y, newpos_x, newpos_y, opppos_x, opppos_y, delpos_x, delpos_y
+    cdef int taxicab_dist, original_jump_pos_x, original_jump_pos_y
+    
+    if not _check_in_range(x, y, board_size):
+        return 0
+
+    (curpos_x, curpos_y) = _agent_pos(board_view, agent_id, board_size)
+    (opppos_x, opppos_y) = _agent_pos(board_view, 1-agent_id, board_size)
+    newpos_x = x
+    newpos_y = y
+
+    if newpos_x == opppos_x and newpos_y == opppos_y:
+        return 0
+
+    delpos_x = newpos_x - curpos_x
+    delpos_y = newpos_y - curpos_y
+    taxicab_dist = abs(delpos_x) + abs(delpos_y)
+    if (
+        taxicab_dist == 2
+        and (delpos_x == 0 or delpos_y == 0)
+        and not (curpos_x + delpos_x / 2 == opppos_x and curpos_y + delpos_y / 2 == opppos_y)
+    ):
+        return 0
+
+    if delpos_x and delpos_y:  # If moving diagonally
+        if (curpos_x + delpos_x != opppos_x or curpos_y != opppos_y) and (
+            curpos_x != opppos_x or curpos_y + delpos_y != opppos_y
+        ):
+            # Only diagonal jumps are permitted.
+            # Agents cannot simply move in diagonal direction.
+            return 0
+        elif _check_wall_blocked(board_view, curpos_x, curpos_y, opppos_x, opppos_y):
+            return 0
+
+        original_jump_pos_x = curpos_x + 2 * (opppos_x - curpos_x)
+        original_jump_pos_y = curpos_y + 2 * (opppos_y - curpos_y)
+        if _check_in_range(original_jump_pos_x, original_jump_pos_y, board_size) and not _check_wall_blocked(
+            board_view, curpos_x, curpos_y, original_jump_pos_x, original_jump_pos_y
+        ):
+            return 0
+        elif _check_wall_blocked(board_view, opppos_x, opppos_y, newpos_x, newpos_y):
+            return 0
+    elif _check_wall_blocked(board_view, curpos_x, curpos_y, newpos_x, newpos_y):
+        return 0
+
+    return 1
+
 def legal_actions(state, int agent_id, int board_size):
     
-    cdef int dir_id, action_type, next_pos_x, next_pos_y, cx, cy, position, nowpos_x, nowpos_y
+    cdef int dir_id, action_type, next_pos_x, next_pos_y, cx, cy, nowpos_x, nowpos_y
     cdef int directions[12][2]
+    cdef int [:,:,:] board_view = state.board
+
+    directions[0][:] = [0, -2]
+    directions[1][:] = [-1, -1]
+    directions[2][:] = [0, -1]
+    directions[3][:] = [1, -1]
+    directions[4][:] = [-2, 0]
+    directions[5][:] = [-1, 0]
+    directions[6][:] = [1, 0]
+    directions[7][:] = [2, 0]
+    directions[8][:] = [-1, 1]
+    directions[9][:] = [0, 1]
+    directions[10][:] = [1, 1]
+    directions[11][:] = [0, 2]
 
     legal_actions_np = np.zeros((4, 9, 9), dtype=np.int_)
-    position = _agent_pos(state.board, agent_id, board_size)
-    nowpos_x = position / 9
-    nowpos_y = position % 9
+    cdef int [:,:,:] legal_actions_np_view = legal_actions_np
+    (nowpos_x, nowpos_y) = _agent_pos(board_view, agent_id, board_size)
     
     for dir_id in range(12):
-        directions[0][:] = [0, -2]
-        directions[1][:] = [-1, -1]
-        directions[2][:] = [0, -1]
-        directions[3][:] = [1, -1]
-        directions[4][:] = [-2, 0]
-        directions[5][:] = [-1, 0]
-        directions[6][:] = [1, 0]
-        directions[7][:] = [2, 0]
-        directions[8][:] = [-1, 1]
-        directions[9][:] = [0, 1]
-        directions[10][:] = [1, 1]
-        directions[11][:] = [0, 2]
         next_pos_x = nowpos_x + directions[dir_id][0]
         next_pos_y = nowpos_y + directions[dir_id][1]
-        if _check_in_range(next_pos_x, next_pos_y, board_size):
-            try:
-                fast_step(state.board, state.walls_remaining, agent_id, (0, next_pos_x, next_pos_y), board_size)
-            except:
-                ...
-            else:
-                legal_actions_np[0, next_pos_x, next_pos_y] = 1
+        if _is_moving_legal(board_view, next_pos_x, next_pos_y, agent_id, board_size):
+            legal_actions_np_view[0, next_pos_x, next_pos_y] = 1
     for action_type in range(1, 3):
         for cx in range(board_size-1):
             for cy in range(board_size-1):
@@ -230,7 +271,7 @@ def legal_actions(state, int agent_id, int board_size):
                 except:
                     ...
                 else:
-                    legal_actions_np[action_type, cx, cy] = 1
+                    legal_actions_np_view[action_type, cx, cy] = 1
     for cx in range(board_size-3):
         for cy in range(board_size-3):
             try:
@@ -238,7 +279,7 @@ def legal_actions(state, int agent_id, int board_size):
             except:
                 ...
             else:
-                legal_actions_np[3, cx, cy] = 1
+                legal_actions_np_view[3, cx, cy] = 1
     return legal_actions_np
 
 cdef int _check_in_range(int pos_x, int pos_y, int bottom_right = 9):
@@ -246,14 +287,20 @@ cdef int _check_in_range(int pos_x, int pos_y, int bottom_right = 9):
 
 cdef int _check_path_exists(int [:,:,:] board_view, int agent_id, int board_size):
 
-    cdef int position, pos_x, pos_y
+    cdef int pos_x, pos_y
     cdef int i, j
     cdef int cnt = 0, tail = 0
     cdef int there_x, there_y
     cdef int goal = (1-agent_id) * 8
-    cdef int queue[81]
-    cdef int [:,:] visited = np.zeros((board_size, board_size), dtype=np.int_)
+    cdef int queue_x[81]
+    cdef int queue_y[81]
+    cdef int visited[81][81]
     cdef int directions[4][2]
+
+    for i in range(9):
+        for j in range(9):
+            visited[i][j] = 0
+    
     if agent_id:
         directions[0][:] = [0, -1]
         directions[1][:] = [1, 0]
@@ -265,19 +312,18 @@ cdef int _check_path_exists(int [:,:,:] board_view, int agent_id, int board_size
         directions[2][:] = [-1, 0]
         directions[3][:] = [0, -1]
 
-    position = _agent_pos(board_view, agent_id, board_size)
-    pos_x = position / 9
-    pos_y = position % 9
+    (pos_x, pos_y) = _agent_pos(board_view, agent_id, board_size)
     if pos_y == goal:   return 1
     
-    queue[tail] = pos_x * board_size + pos_y
+    queue_x[tail] = pos_x
+    queue_y[tail] = pos_y
     tail += 1
-    visited[pos_x, pos_y] = 1
+    visited[pos_x][pos_y] = 1
 
     for i in range(board_size * board_size):
         if cnt == tail: break
-        pos_x = queue[cnt] / board_size
-        pos_y = queue[cnt] % board_size
+        pos_x = queue_x[cnt]
+        pos_y = queue_y[cnt]
         cnt += 1
         for j in range(4):
             there_x = pos_x + directions[j][0]
@@ -291,7 +337,8 @@ cdef int _check_path_exists(int [:,:,:] board_view, int agent_id, int board_size
             if there_y == goal:
                 return 1
             visited[there_x][there_y] = 1
-            queue[tail] = there_x * board_size + there_y
+            queue_x[tail] = there_x
+            queue_y[tail] = there_y
             tail += 1
 
     return 0
@@ -329,10 +376,10 @@ cdef int _check_wins(int [:,:,:] board_view, int board_size):
             return 1
     return 0
 
-cdef int _agent_pos(int [:,:,:] board_view, int agent_id, int board_size):
+cdef (int, int) _agent_pos(int [:,:,:] board_view, int agent_id, int board_size):
     cdef int i, j
     for i in range(board_size):
         for j in range(board_size):
             if board_view[agent_id, i, j]:
-                return i * 9 + j
-    return -1
+                return (i, j)
+    return (-1, -1)
