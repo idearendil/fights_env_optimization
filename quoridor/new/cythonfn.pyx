@@ -3,8 +3,6 @@
 import numpy as np
 cimport numpy as np
 
-from cython.parallel import prange, parallel
-
 def fast_step(
     pre_board,
     pre_walls_remaining,
@@ -185,7 +183,7 @@ cdef int _is_moving_legal(int [:,:,:] board_view, int x, int y, int agent_id, in
 
     return 1
 
-def legal_actions(state, int agent_id, int board_size):
+def fast_legal_actions(state, int agent_id, int board_size):
     
     cdef int dir_id, action_type, next_pos_x, next_pos_y, cx, cy, nowpos_x, nowpos_y
     cdef int directions[12][2]

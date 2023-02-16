@@ -1363,31 +1363,17 @@ typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
  */
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
 struct __pyx_opt_args_8cythonfn__check_in_range;
-struct __pyx_ctuple_int__and_int;
-typedef struct __pyx_ctuple_int__and_int __pyx_ctuple_int__and_int;
 
-/* "cythonfn.pyx":225
- *     return legal_actions_np
+/* "cythonfn.pyx":155
+ *     return 0
  * 
- * cdef int _check_in_range(int pos_x, int pos_y, int bottom_right = 9):             # <<<<<<<<<<<<<<
- *     return (0 <= pos_x < bottom_right and 0 <= pos_y < bottom_right)
+ * cdef int _check_in_range(int pos_r, int pos_c, int bottom_right = 8):             # <<<<<<<<<<<<<<
+ *     return (0 <= pos_r < bottom_right and 0 <= pos_c < bottom_right)
  * 
  */
 struct __pyx_opt_args_8cythonfn__check_in_range {
   int __pyx_n;
   int bottom_right;
-};
-
-/* "cythonfn.pyx":319
- *     return 0
- * 
- * cdef (int, int) _agent_pos(int [:,:,:] board_view, int agent_id, int board_size):             # <<<<<<<<<<<<<<
- *     cdef int i, j
- *     for i in range(board_size):
- */
-struct __pyx_ctuple_int__and_int {
-  int f0;
-  int f1;
 };
 
 /* "View.MemoryView":106
@@ -1601,28 +1587,6 @@ static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
     PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
     const char* function_name);
 
-/* GetItemInt.proto */
-#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
-    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
-               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
-#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
-    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
-                                                              int wraparound, int boundscheck);
-#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
-    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
-    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
-    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
-                                                              int wraparound, int boundscheck);
-static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
-                                                     int is_list, int wraparound, int boundscheck);
-
 /* PyDictVersioning.proto */
 #if CYTHON_USE_DICT_VERSIONS && CYTHON_USE_TYPE_SLOTS
 #define __PYX_DICT_VERSION_INIT  ((PY_UINT64_T) -1)
@@ -1833,6 +1797,14 @@ static void __Pyx_WriteUnraisable(const char *name, int clineno,
                                   int lineno, const char *filename,
                                   int full_traceback, int nogil);
 
+/* PyIntBinop.proto */
+#if !CYTHON_COMPILING_IN_PYPY
+static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check);
+#else
+#define __Pyx_PyInt_AddObjC(op1, op2, intval, inplace, zerodivision_check)\
+    (inplace ? PyNumber_InPlaceAdd(op1, op2) : PyNumber_Add(op1, op2))
+#endif
+
 /* GetTopmostException.proto */
 #if CYTHON_USE_EXC_INFO_STACK
 static _PyErr_StackItem * __Pyx_PyErr_GetTopmostException(PyThreadState *tstate);
@@ -1892,6 +1864,28 @@ static CYTHON_UNUSED int __pyx_array_getbuffer(PyObject *__pyx_v_self, Py_buffer
 static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *); /*proto*/
 /* GetAttr.proto */
 static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *, PyObject *);
+
+/* GetItemInt.proto */
+#define __Pyx_GetItemInt(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Fast(o, (Py_ssize_t)i, is_list, wraparound, boundscheck) :\
+    (is_list ? (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL) :\
+               __Pyx_GetItemInt_Generic(o, to_py_func(i))))
+#define __Pyx_GetItemInt_List(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_List_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "list index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+#define __Pyx_GetItemInt_Tuple(o, i, type, is_signed, to_py_func, is_list, wraparound, boundscheck)\
+    (__Pyx_fits_Py_ssize_t(i, type, is_signed) ?\
+    __Pyx_GetItemInt_Tuple_Fast(o, (Py_ssize_t)i, wraparound, boundscheck) :\
+    (PyErr_SetString(PyExc_IndexError, "tuple index out of range"), (PyObject*)NULL))
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              int wraparound, int boundscheck);
+static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j);
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i,
+                                                     int is_list, int wraparound, int boundscheck);
 
 /* ObjectGetItem.proto */
 #if CYTHON_USE_TYPE_SLOTS
@@ -1975,14 +1969,6 @@ static CYTHON_INLINE int __Pyx_ListComp_Append(PyObject* list, PyObject* x) {
 }
 #else
 #define __Pyx_ListComp_Append(L,x) PyList_Append(L,x)
-#endif
-
-/* PyIntBinop.proto */
-#if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, int inplace, int zerodivision_check);
-#else
-#define __Pyx_PyInt_AddObjC(op1, op2, intval, inplace, zerodivision_check)\
-    (inplace ? PyNumber_InPlaceAdd(op1, op2) : PyNumber_Add(op1, op2))
 #endif
 
 /* ListExtend.proto */
@@ -2150,9 +2136,6 @@ static int __Pyx_ValidateAndInit_memviewslice(
 /* ObjectToMemviewSlice.proto */
 static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_dsdsds_int(PyObject *, int writable_flag);
 
-/* ObjectToMemviewSlice.proto */
-static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_int(PyObject *, int writable_flag);
-
 /* RealImag.proto */
 #if CYTHON_CCOMPLEX
   #ifdef __cplusplus
@@ -2262,13 +2245,13 @@ __pyx_memoryview_copy_new_contig(const __Pyx_memviewslice *from_mvs,
 static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *);
 
 /* CIntToPy.proto */
-static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
-
-/* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *);
+
+/* CIntToPy.proto */
+static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
 /* CIntFromPy.proto */
 static CYTHON_INLINE char __Pyx_PyInt_As_char(PyObject *);
@@ -2340,12 +2323,9 @@ static PyObject *contiguous = 0;
 static PyObject *indirect_contiguous = 0;
 static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
-static int __pyx_f_8cythonfn__is_moving_legal(__Pyx_memviewslice, int, int, int, int); /*proto*/
+static int __pyx_f_8cythonfn_is_flippable(__Pyx_memviewslice, int, int, int, int); /*proto*/
 static int __pyx_f_8cythonfn__check_in_range(int, int, struct __pyx_opt_args_8cythonfn__check_in_range *__pyx_optional_args); /*proto*/
-static int __pyx_f_8cythonfn__check_path_exists(__Pyx_memviewslice, int, int); /*proto*/
-static int __pyx_f_8cythonfn__check_wall_blocked(__Pyx_memviewslice, int, int, int, int); /*proto*/
 static int __pyx_f_8cythonfn__check_wins(__Pyx_memviewslice, int); /*proto*/
-static __pyx_ctuple_int__and_int __pyx_f_8cythonfn__agent_pos(__Pyx_memviewslice, int, int); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char *, char *); /*proto*/
 static void *__pyx_align_pointer(void *, size_t); /*proto*/
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo *); /*proto*/
@@ -2396,18 +2376,18 @@ static PyObject *__pyx_builtin_id;
 static PyObject *__pyx_builtin_IndexError;
 static const char __pyx_k_O[] = "O";
 static const char __pyx_k_c[] = "c";
-static const char __pyx_k_x[] = "x";
-static const char __pyx_k_y[] = "y";
-static const char __pyx_k_cx[] = "cx";
-static const char __pyx_k_cy[] = "cy";
+static const char __pyx_k_i[] = "i";
+static const char __pyx_k_j[] = "j";
+static const char __pyx_k_k[] = "k";
 static const char __pyx_k_id[] = "id";
 static const char __pyx_k_np[] = "np";
-static const char __pyx_k_int[] = "int_";
 static const char __pyx_k_new[] = "__new__";
 static const char __pyx_k_obj[] = "obj";
 static const char __pyx_k_base[] = "base";
 static const char __pyx_k_copy[] = "copy";
 static const char __pyx_k_dict[] = "__dict__";
+static const char __pyx_k_done[] = "done";
+static const char __pyx_k_flag[] = "flag";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_mode[] = "mode";
 static const char __pyx_k_name[] = "name";
@@ -2420,43 +2400,33 @@ static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_ASCII[] = "ASCII";
 static const char __pyx_k_board[] = "board";
 static const char __pyx_k_class[] = "__class__";
-static const char __pyx_k_dtype[] = "dtype";
 static const char __pyx_k_error[] = "error";
 static const char __pyx_k_flags[] = "flags";
+static const char __pyx_k_now_c[] = "now_c";
+static const char __pyx_k_now_r[] = "now_r";
 static const char __pyx_k_numpy[] = "numpy";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_shape[] = "shape";
 static const char __pyx_k_start[] = "start";
-static const char __pyx_k_state[] = "state";
-static const char __pyx_k_zeros[] = "zeros";
-static const char __pyx_k_action[] = "action";
-static const char __pyx_k_dir_id[] = "dir_id";
 static const char __pyx_k_encode[] = "encode";
 static const char __pyx_k_format[] = "format";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_name_2[] = "__name__";
 static const char __pyx_k_pickle[] = "pickle";
 static const char __pyx_k_reduce[] = "__reduce__";
+static const char __pyx_k_reward[] = "reward";
 static const char __pyx_k_struct[] = "struct";
 static const char __pyx_k_unpack[] = "unpack";
 static const char __pyx_k_update[] = "update";
 static const char __pyx_k_fortran[] = "fortran";
 static const char __pyx_k_memview[] = "memview";
 static const char __pyx_k_Ellipsis[] = "Ellipsis";
+static const char __pyx_k_action_c[] = "action_c";
+static const char __pyx_k_action_r[] = "action_r";
 static const char __pyx_k_agent_id[] = "agent_id";
-static const char __pyx_k_curpos_x[] = "curpos_x";
-static const char __pyx_k_curpos_y[] = "curpos_y";
 static const char __pyx_k_cythonfn[] = "cythonfn";
-static const char __pyx_k_delpos_x[] = "delpos_x";
-static const char __pyx_k_delpos_y[] = "delpos_y";
 static const char __pyx_k_getstate[] = "__getstate__";
 static const char __pyx_k_itemsize[] = "itemsize";
-static const char __pyx_k_newpos_x[] = "newpos_x";
-static const char __pyx_k_newpos_y[] = "newpos_y";
-static const char __pyx_k_nowpos_x[] = "nowpos_x";
-static const char __pyx_k_nowpos_y[] = "nowpos_y";
-static const char __pyx_k_opppos_x[] = "opppos_x";
-static const char __pyx_k_opppos_y[] = "opppos_y";
 static const char __pyx_k_pyx_type[] = "__pyx_type";
 static const char __pyx_k_setstate[] = "__setstate__";
 static const char __pyx_k_TypeError[] = "TypeError";
@@ -2470,20 +2440,18 @@ static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_board_size[] = "board_size";
 static const char __pyx_k_board_view[] = "board_view";
 static const char __pyx_k_directions[] = "directions";
-static const char __pyx_k_next_pos_x[] = "next_pos_x";
-static const char __pyx_k_next_pos_y[] = "next_pos_y";
 static const char __pyx_k_pyx_result[] = "__pyx_result";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
-static const char __pyx_k_zero_index[] = "zero_index";
 static const char __pyx_k_ImportError[] = "ImportError";
 static const char __pyx_k_MemoryError[] = "MemoryError";
 static const char __pyx_k_PickleError[] = "PickleError";
-static const char __pyx_k_action_type[] = "action_type";
+static const char __pyx_k_has_action0[] = "has_action0";
+static const char __pyx_k_has_action1[] = "has_action1";
 static const char __pyx_k_cythonfn_pyx[] = "cythonfn.pyx";
 static const char __pyx_k_out_of_board[] = "out of board: ";
 static const char __pyx_k_pyx_checksum[] = "__pyx_checksum";
 static const char __pyx_k_stringsource[] = "stringsource";
-static const char __pyx_k_taxicab_dist[] = "taxicab_dist";
+static const char __pyx_k_legal_actions[] = "legal_actions";
 static const char __pyx_k_pyx_getbuffer[] = "__pyx_getbuffer";
 static const char __pyx_k_reduce_cython[] = "__reduce_cython__";
 static const char __pyx_k_View_MemoryView[] = "View.MemoryView";
@@ -2491,35 +2459,23 @@ static const char __pyx_k_allocate_buffer[] = "allocate_buffer";
 static const char __pyx_k_dtype_is_object[] = "dtype_is_object";
 static const char __pyx_k_pyx_PickleError[] = "__pyx_PickleError";
 static const char __pyx_k_setstate_cython[] = "__setstate_cython__";
-static const char __pyx_k_walls_remaining[] = "walls_remaining";
 static const char __pyx_k_invalid_agent_id[] = "invalid agent_id: ";
-static const char __pyx_k_legal_actions_np[] = "legal_actions_np";
+static const char __pyx_k_flipped_something[] = "flipped_something";
+static const char __pyx_k_pre_legal_actions[] = "pre_legal_actions";
 static const char __pyx_k_pyx_unpickle_Enum[] = "__pyx_unpickle_Enum";
 static const char __pyx_k_cline_in_traceback[] = "cline_in_traceback";
-static const char __pyx_k_fast_legal_actions[] = "fast_legal_actions";
+static const char __pyx_k_legal_actions_view[] = "legal_actions_view";
 static const char __pyx_k_strided_and_direct[] = "<strided and direct>";
-static const char __pyx_k_invalid_action_type[] = "invalid action_type: ";
-static const char __pyx_k_original_jump_pos_x[] = "original_jump_pos_x";
-static const char __pyx_k_original_jump_pos_y[] = "original_jump_pos_y";
-static const char __pyx_k_pre_walls_remaining[] = "pre_walls_remaining";
-static const char __pyx_k_wall_already_placed[] = "wall already placed";
 static const char __pyx_k_strided_and_indirect[] = "<strided and indirect>";
-static const char __pyx_k_walls_remaining_view[] = "walls_remaining_view";
 static const char __pyx_k_contiguous_and_direct[] = "<contiguous and direct>";
-static const char __pyx_k_legal_actions_np_view[] = "legal_actions_np_view";
 static const char __pyx_k_MemoryView_of_r_object[] = "<MemoryView of %r object>";
-static const char __pyx_k_cannot_jump_over_walls[] = "cannot jump over walls";
-static const char __pyx_k_cannot_move_diagonally[] = "cannot move diagonally";
+static const char __pyx_k_pre_legal_actions_view[] = "pre_legal_actions_view";
 static const char __pyx_k_MemoryView_of_r_at_0x_x[] = "<MemoryView of %r at 0x%x>";
-static const char __pyx_k_cannot_move_zero_blocks[] = "cannot move zero blocks";
 static const char __pyx_k_contiguous_and_indirect[] = "<contiguous and indirect>";
-static const char __pyx_k_no_walls_left_for_agent[] = "no walls left for agent ";
 static const char __pyx_k_Cannot_index_with_type_s[] = "Cannot index with type '%s'";
-static const char __pyx_k_cannot_jump_over_nothing[] = "cannot jump over nothing";
 static const char __pyx_k_Invalid_shape_in_axis_d_d[] = "Invalid shape in axis %d: %d.";
-static const char __pyx_k_right_section_out_of_board[] = "right section out of board";
+static const char __pyx_k_There_is_no_stone_to_flip[] = "There is no stone to flip";
 static const char __pyx_k_itemsize_0_for_cython_array[] = "itemsize <= 0 for cython.array";
-static const char __pyx_k_cannot_place_wall_on_the_edge[] = "cannot place wall on the edge";
 static const char __pyx_k_unable_to_allocate_array_data[] = "unable to allocate array data.";
 static const char __pyx_k_strided_and_direct_or_indirect[] = "<strided and direct or indirect>";
 static const char __pyx_k_numpy_core_multiarray_failed_to[] = "numpy.core.multiarray failed to import";
@@ -2533,11 +2489,9 @@ static const char __pyx_k_Indirect_dimensions_not_supporte[] = "Indirect dimensi
 static const char __pyx_k_Invalid_mode_expected_c_or_fortr[] = "Invalid mode, expected 'c' or 'fortran', got %s";
 static const char __pyx_k_Out_of_bounds_on_buffer_access_a[] = "Out of bounds on buffer access (axis %d)";
 static const char __pyx_k_Unable_to_convert_item_to_object[] = "Unable to convert item to object";
-static const char __pyx_k_cannot_create_intersecting_walls[] = "cannot create intersecting walls";
-static const char __pyx_k_cannot_diagonally_jump_if_linear[] = "cannot diagonally jump if linear jump is possible";
-static const char __pyx_k_cannot_move_more_than_two_blocks[] = "cannot move more than two blocks";
-static const char __pyx_k_cannot_move_to_opponent_s_positi[] = "cannot move to opponent's position";
-static const char __pyx_k_cannot_place_wall_blocking_all_p[] = "cannot place wall blocking all paths";
+static const char __pyx_k_cannot_put_a_stone_on_another_st[] = "cannot put a stone on another stone";
+static const char __pyx_k_cannot_put_a_stone_on_opponent_s[] = "cannot put a stone on opponent's stone";
+static const char __pyx_k_cannot_skip_if_there_is_possible[] = "cannot skip if there is possible action";
 static const char __pyx_k_got_differing_extents_in_dimensi[] = "got differing extents in dimension %d (got %d and %d)";
 static const char __pyx_k_no_default___reduce___due_to_non[] = "no default __reduce__ due to non-trivial __cinit__";
 static const char __pyx_k_numpy_core_umath_failed_to_impor[] = "numpy.core.umath failed to import";
@@ -2562,12 +2516,13 @@ static PyObject *__pyx_kp_s_MemoryView_of_r_object;
 static PyObject *__pyx_n_b_O;
 static PyObject *__pyx_kp_s_Out_of_bounds_on_buffer_access_a;
 static PyObject *__pyx_n_s_PickleError;
+static PyObject *__pyx_kp_u_There_is_no_stone_to_flip;
 static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_kp_s_Unable_to_convert_item_to_object;
 static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_n_s_View_MemoryView;
-static PyObject *__pyx_n_s_action;
-static PyObject *__pyx_n_s_action_type;
+static PyObject *__pyx_n_s_action_c;
+static PyObject *__pyx_n_s_action_r;
 static PyObject *__pyx_n_s_agent_id;
 static PyObject *__pyx_n_s_allocate_buffer;
 static PyObject *__pyx_n_s_base;
@@ -2576,54 +2531,44 @@ static PyObject *__pyx_n_s_board_size;
 static PyObject *__pyx_n_s_board_view;
 static PyObject *__pyx_n_s_c;
 static PyObject *__pyx_n_u_c;
-static PyObject *__pyx_kp_u_cannot_create_intersecting_walls;
-static PyObject *__pyx_kp_u_cannot_diagonally_jump_if_linear;
-static PyObject *__pyx_kp_u_cannot_jump_over_nothing;
-static PyObject *__pyx_kp_u_cannot_jump_over_walls;
-static PyObject *__pyx_kp_u_cannot_move_diagonally;
-static PyObject *__pyx_kp_u_cannot_move_more_than_two_blocks;
-static PyObject *__pyx_kp_u_cannot_move_to_opponent_s_positi;
-static PyObject *__pyx_kp_u_cannot_move_zero_blocks;
-static PyObject *__pyx_kp_u_cannot_place_wall_blocking_all_p;
-static PyObject *__pyx_kp_u_cannot_place_wall_on_the_edge;
+static PyObject *__pyx_kp_u_cannot_put_a_stone_on_another_st;
+static PyObject *__pyx_kp_u_cannot_put_a_stone_on_opponent_s;
+static PyObject *__pyx_kp_u_cannot_skip_if_there_is_possible;
 static PyObject *__pyx_n_s_class;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_kp_s_contiguous_and_direct;
 static PyObject *__pyx_kp_s_contiguous_and_indirect;
 static PyObject *__pyx_n_s_copy;
-static PyObject *__pyx_n_s_curpos_x;
-static PyObject *__pyx_n_s_curpos_y;
-static PyObject *__pyx_n_s_cx;
-static PyObject *__pyx_n_s_cy;
 static PyObject *__pyx_n_s_cythonfn;
 static PyObject *__pyx_kp_s_cythonfn_pyx;
-static PyObject *__pyx_n_s_delpos_x;
-static PyObject *__pyx_n_s_delpos_y;
 static PyObject *__pyx_n_s_dict;
-static PyObject *__pyx_n_s_dir_id;
 static PyObject *__pyx_n_s_directions;
-static PyObject *__pyx_n_s_dtype;
+static PyObject *__pyx_n_s_done;
 static PyObject *__pyx_n_s_dtype_is_object;
 static PyObject *__pyx_n_s_encode;
 static PyObject *__pyx_n_s_enumerate;
 static PyObject *__pyx_n_s_error;
-static PyObject *__pyx_n_s_fast_legal_actions;
 static PyObject *__pyx_n_s_fast_step;
+static PyObject *__pyx_n_s_flag;
 static PyObject *__pyx_n_s_flags;
+static PyObject *__pyx_n_s_flipped_something;
 static PyObject *__pyx_n_s_format;
 static PyObject *__pyx_n_s_fortran;
 static PyObject *__pyx_n_u_fortran;
 static PyObject *__pyx_n_s_getstate;
 static PyObject *__pyx_kp_s_got_differing_extents_in_dimensi;
+static PyObject *__pyx_n_s_has_action0;
+static PyObject *__pyx_n_s_has_action1;
+static PyObject *__pyx_n_s_i;
 static PyObject *__pyx_n_s_id;
 static PyObject *__pyx_n_s_import;
-static PyObject *__pyx_n_s_int;
-static PyObject *__pyx_kp_u_invalid_action_type;
 static PyObject *__pyx_kp_u_invalid_agent_id;
 static PyObject *__pyx_n_s_itemsize;
 static PyObject *__pyx_kp_s_itemsize_0_for_cython_array;
-static PyObject *__pyx_n_s_legal_actions_np;
-static PyObject *__pyx_n_s_legal_actions_np_view;
+static PyObject *__pyx_n_s_j;
+static PyObject *__pyx_n_s_k;
+static PyObject *__pyx_n_s_legal_actions;
+static PyObject *__pyx_n_s_legal_actions_view;
 static PyObject *__pyx_n_s_main;
 static PyObject *__pyx_n_s_memview;
 static PyObject *__pyx_n_s_mode;
@@ -2631,28 +2576,20 @@ static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_name_2;
 static PyObject *__pyx_n_s_ndim;
 static PyObject *__pyx_n_s_new;
-static PyObject *__pyx_n_s_newpos_x;
-static PyObject *__pyx_n_s_newpos_y;
-static PyObject *__pyx_n_s_next_pos_x;
-static PyObject *__pyx_n_s_next_pos_y;
 static PyObject *__pyx_kp_s_no_default___reduce___due_to_non;
-static PyObject *__pyx_kp_u_no_walls_left_for_agent;
-static PyObject *__pyx_n_s_nowpos_x;
-static PyObject *__pyx_n_s_nowpos_y;
+static PyObject *__pyx_n_s_now_c;
+static PyObject *__pyx_n_s_now_r;
 static PyObject *__pyx_n_s_np;
 static PyObject *__pyx_n_s_numpy;
 static PyObject *__pyx_kp_u_numpy_core_multiarray_failed_to;
 static PyObject *__pyx_kp_u_numpy_core_umath_failed_to_impor;
 static PyObject *__pyx_n_s_obj;
-static PyObject *__pyx_n_s_opppos_x;
-static PyObject *__pyx_n_s_opppos_y;
-static PyObject *__pyx_n_s_original_jump_pos_x;
-static PyObject *__pyx_n_s_original_jump_pos_y;
 static PyObject *__pyx_kp_u_out_of_board;
 static PyObject *__pyx_n_s_pack;
 static PyObject *__pyx_n_s_pickle;
 static PyObject *__pyx_n_s_pre_board;
-static PyObject *__pyx_n_s_pre_walls_remaining;
+static PyObject *__pyx_n_s_pre_legal_actions;
+static PyObject *__pyx_n_s_pre_legal_actions_view;
 static PyObject *__pyx_n_s_pyx_PickleError;
 static PyObject *__pyx_n_s_pyx_checksum;
 static PyObject *__pyx_n_s_pyx_getbuffer;
@@ -2665,13 +2602,12 @@ static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_reduce;
 static PyObject *__pyx_n_s_reduce_cython;
 static PyObject *__pyx_n_s_reduce_ex;
-static PyObject *__pyx_kp_u_right_section_out_of_board;
+static PyObject *__pyx_n_s_reward;
 static PyObject *__pyx_n_s_setstate;
 static PyObject *__pyx_n_s_setstate_cython;
 static PyObject *__pyx_n_s_shape;
 static PyObject *__pyx_n_s_size;
 static PyObject *__pyx_n_s_start;
-static PyObject *__pyx_n_s_state;
 static PyObject *__pyx_n_s_step;
 static PyObject *__pyx_n_s_stop;
 static PyObject *__pyx_kp_s_strided_and_direct;
@@ -2679,21 +2615,12 @@ static PyObject *__pyx_kp_s_strided_and_direct_or_indirect;
 static PyObject *__pyx_kp_s_strided_and_indirect;
 static PyObject *__pyx_kp_s_stringsource;
 static PyObject *__pyx_n_s_struct;
-static PyObject *__pyx_n_s_taxicab_dist;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_kp_s_unable_to_allocate_array_data;
 static PyObject *__pyx_kp_s_unable_to_allocate_shape_and_str;
 static PyObject *__pyx_n_s_unpack;
 static PyObject *__pyx_n_s_update;
-static PyObject *__pyx_kp_u_wall_already_placed;
-static PyObject *__pyx_n_s_walls_remaining;
-static PyObject *__pyx_n_s_walls_remaining_view;
-static PyObject *__pyx_n_s_x;
-static PyObject *__pyx_n_s_y;
-static PyObject *__pyx_n_s_zero_index;
-static PyObject *__pyx_n_s_zeros;
-static PyObject *__pyx_pf_8cythonfn_fast_step(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_pre_board, PyObject *__pyx_v_pre_walls_remaining, int __pyx_v_agent_id, PyObject *__pyx_v_action, int __pyx_v_board_size); /* proto */
-static PyObject *__pyx_pf_8cythonfn_2fast_legal_actions(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_state, int __pyx_v_agent_id, int __pyx_v_board_size); /* proto */
+static PyObject *__pyx_pf_8cythonfn_fast_step(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_pre_board, PyObject *__pyx_v_pre_legal_actions, int __pyx_v_agent_id, int __pyx_v_action_r, int __pyx_v_action_c, int __pyx_v_board_size); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(struct __pyx_array_obj *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_array___pyx_pf_15View_dot_MemoryView_5array_4__dealloc__(struct __pyx_array_obj *__pyx_v_self); /* proto */
@@ -2742,8 +2669,6 @@ static PyObject *__pyx_tp_new_memoryview(PyTypeObject *t, PyObject *a, PyObject 
 static PyObject *__pyx_tp_new__memoryviewslice(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
-static PyObject *__pyx_int_3;
-static PyObject *__pyx_int_9;
 static PyObject *__pyx_int_112105877;
 static PyObject *__pyx_int_136983863;
 static PyObject *__pyx_int_184977713;
@@ -2757,7 +2682,7 @@ static PyObject *__pyx_tuple__6;
 static PyObject *__pyx_tuple__7;
 static PyObject *__pyx_tuple__8;
 static PyObject *__pyx_tuple__9;
-static PyObject *__pyx_slice__31;
+static PyObject *__pyx_slice__21;
 static PyObject *__pyx_tuple__10;
 static PyObject *__pyx_tuple__11;
 static PyObject *__pyx_tuple__12;
@@ -2769,31 +2694,19 @@ static PyObject *__pyx_tuple__17;
 static PyObject *__pyx_tuple__18;
 static PyObject *__pyx_tuple__19;
 static PyObject *__pyx_tuple__20;
-static PyObject *__pyx_tuple__21;
 static PyObject *__pyx_tuple__22;
 static PyObject *__pyx_tuple__23;
 static PyObject *__pyx_tuple__24;
 static PyObject *__pyx_tuple__25;
 static PyObject *__pyx_tuple__26;
-static PyObject *__pyx_tuple__27;
 static PyObject *__pyx_tuple__28;
 static PyObject *__pyx_tuple__29;
 static PyObject *__pyx_tuple__30;
+static PyObject *__pyx_tuple__31;
 static PyObject *__pyx_tuple__32;
 static PyObject *__pyx_tuple__33;
-static PyObject *__pyx_tuple__34;
-static PyObject *__pyx_tuple__35;
-static PyObject *__pyx_tuple__36;
-static PyObject *__pyx_tuple__38;
-static PyObject *__pyx_tuple__40;
-static PyObject *__pyx_tuple__41;
-static PyObject *__pyx_tuple__42;
-static PyObject *__pyx_tuple__43;
-static PyObject *__pyx_tuple__44;
-static PyObject *__pyx_tuple__45;
-static PyObject *__pyx_codeobj__37;
-static PyObject *__pyx_codeobj__39;
-static PyObject *__pyx_codeobj__46;
+static PyObject *__pyx_codeobj__27;
+static PyObject *__pyx_codeobj__34;
 /* Late includes */
 
 /* "cythonfn.pyx":6
@@ -2801,7 +2714,7 @@ static PyObject *__pyx_codeobj__46;
  * 
  * def fast_step(             # <<<<<<<<<<<<<<
  *     pre_board,
- *     pre_walls_remaining,
+ *     pre_legal_actions,
  */
 
 /* Python wrapper */
@@ -2809,9 +2722,10 @@ static PyObject *__pyx_pw_8cythonfn_1fast_step(PyObject *__pyx_self, PyObject *_
 static PyMethodDef __pyx_mdef_8cythonfn_1fast_step = {"fast_step", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_8cythonfn_1fast_step, METH_VARARGS|METH_KEYWORDS, 0};
 static PyObject *__pyx_pw_8cythonfn_1fast_step(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_pre_board = 0;
-  PyObject *__pyx_v_pre_walls_remaining = 0;
+  PyObject *__pyx_v_pre_legal_actions = 0;
   int __pyx_v_agent_id;
-  PyObject *__pyx_v_action = 0;
+  int __pyx_v_action_r;
+  int __pyx_v_action_c;
   int __pyx_v_board_size;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -2820,12 +2734,14 @@ static PyObject *__pyx_pw_8cythonfn_1fast_step(PyObject *__pyx_self, PyObject *_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("fast_step (wrapper)", 0);
   {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_pre_board,&__pyx_n_s_pre_walls_remaining,&__pyx_n_s_agent_id,&__pyx_n_s_action,&__pyx_n_s_board_size,0};
-    PyObject* values[5] = {0,0,0,0,0};
+    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_pre_board,&__pyx_n_s_pre_legal_actions,&__pyx_n_s_agent_id,&__pyx_n_s_action_r,&__pyx_n_s_action_c,&__pyx_n_s_board_size,0};
+    PyObject* values[6] = {0,0,0,0,0,0};
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
       switch (pos_args) {
+        case  6: values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
+        CYTHON_FALLTHROUGH;
         case  5: values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
         CYTHON_FALLTHROUGH;
         case  4: values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
@@ -2846,33 +2762,39 @@ static PyObject *__pyx_pw_8cythonfn_1fast_step(PyObject *__pyx_self, PyObject *_
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pre_walls_remaining)) != 0)) kw_args--;
+        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_pre_legal_actions)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fast_step", 1, 5, 5, 1); __PYX_ERR(0, 6, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fast_step", 1, 6, 6, 1); __PYX_ERR(0, 6, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
         if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_agent_id)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fast_step", 1, 5, 5, 2); __PYX_ERR(0, 6, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fast_step", 1, 6, 6, 2); __PYX_ERR(0, 6, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  3:
-        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_action)) != 0)) kw_args--;
+        if (likely((values[3] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_action_r)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fast_step", 1, 5, 5, 3); __PYX_ERR(0, 6, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fast_step", 1, 6, 6, 3); __PYX_ERR(0, 6, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  4:
-        if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_board_size)) != 0)) kw_args--;
+        if (likely((values[4] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_action_c)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("fast_step", 1, 5, 5, 4); __PYX_ERR(0, 6, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("fast_step", 1, 6, 6, 4); __PYX_ERR(0, 6, __pyx_L3_error)
+        }
+        CYTHON_FALLTHROUGH;
+        case  5:
+        if (likely((values[5] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_board_size)) != 0)) kw_args--;
+        else {
+          __Pyx_RaiseArgtupleInvalid("fast_step", 1, 6, 6, 5); __PYX_ERR(0, 6, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "fast_step") < 0)) __PYX_ERR(0, 6, __pyx_L3_error)
       }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 5) {
+    } else if (PyTuple_GET_SIZE(__pyx_args) != 6) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
@@ -2880,1648 +2802,1264 @@ static PyObject *__pyx_pw_8cythonfn_1fast_step(PyObject *__pyx_self, PyObject *_
       values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
       values[3] = PyTuple_GET_ITEM(__pyx_args, 3);
       values[4] = PyTuple_GET_ITEM(__pyx_args, 4);
+      values[5] = PyTuple_GET_ITEM(__pyx_args, 5);
     }
     __pyx_v_pre_board = values[0];
-    __pyx_v_pre_walls_remaining = values[1];
+    __pyx_v_pre_legal_actions = values[1];
     __pyx_v_agent_id = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_agent_id == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 9, __pyx_L3_error)
-    __pyx_v_action = values[3];
-    __pyx_v_board_size = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_board_size == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 11, __pyx_L3_error)
+    __pyx_v_action_r = __Pyx_PyInt_As_int(values[3]); if (unlikely((__pyx_v_action_r == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 10, __pyx_L3_error)
+    __pyx_v_action_c = __Pyx_PyInt_As_int(values[4]); if (unlikely((__pyx_v_action_c == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 11, __pyx_L3_error)
+    __pyx_v_board_size = __Pyx_PyInt_As_int(values[5]); if (unlikely((__pyx_v_board_size == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 12, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("fast_step", 1, 5, 5, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 6, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("fast_step", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 6, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("cythonfn.fast_step", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_8cythonfn_fast_step(__pyx_self, __pyx_v_pre_board, __pyx_v_pre_walls_remaining, __pyx_v_agent_id, __pyx_v_action, __pyx_v_board_size);
+  __pyx_r = __pyx_pf_8cythonfn_fast_step(__pyx_self, __pyx_v_pre_board, __pyx_v_pre_legal_actions, __pyx_v_agent_id, __pyx_v_action_r, __pyx_v_action_c, __pyx_v_board_size);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_8cythonfn_fast_step(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_pre_board, PyObject *__pyx_v_pre_walls_remaining, int __pyx_v_agent_id, PyObject *__pyx_v_action, int __pyx_v_board_size) {
-  int __pyx_v_action_type;
-  int __pyx_v_x;
-  int __pyx_v_y;
+static PyObject *__pyx_pf_8cythonfn_fast_step(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_pre_board, PyObject *__pyx_v_pre_legal_actions, int __pyx_v_agent_id, int __pyx_v_action_r, int __pyx_v_action_c, int __pyx_v_board_size) {
   PyObject *__pyx_v_board = NULL;
-  PyObject *__pyx_v_walls_remaining = NULL;
   __Pyx_memviewslice __pyx_v_board_view = { 0, 0, { 0 }, { 0 }, { 0 } };
-  __Pyx_memviewslice __pyx_v_walls_remaining_view = { 0, 0, { 0 }, { 0 }, { 0 } };
-  int __pyx_v_curpos_x;
-  int __pyx_v_curpos_y;
-  int __pyx_v_newpos_x;
-  int __pyx_v_newpos_y;
-  int __pyx_v_opppos_x;
-  int __pyx_v_opppos_y;
-  int __pyx_v_delpos_x;
-  int __pyx_v_delpos_y;
-  int __pyx_v_taxicab_dist;
-  int __pyx_v_original_jump_pos_x;
-  int __pyx_v_original_jump_pos_y;
-  int __pyx_v_cx;
-  int __pyx_v_cy;
-  int __pyx_v_zero_index;
+  PyObject *__pyx_v_legal_actions = NULL;
+  CYTHON_UNUSED __Pyx_memviewslice __pyx_v_pre_legal_actions_view = { 0, 0, { 0 }, { 0 }, { 0 } };
+  __Pyx_memviewslice __pyx_v_legal_actions_view = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_v_reward[2];
+  int __pyx_v_done;
+  int __pyx_v_i;
+  int __pyx_v_j;
+  CYTHON_UNUSED int __pyx_v_k;
+  int __pyx_v_directions[8][2];
+  int __pyx_v_flag;
+  int __pyx_v_flipped_something;
+  int __pyx_v_now_r;
+  int __pyx_v_now_c;
+  int __pyx_v_has_action0;
+  int __pyx_v_has_action1;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  int __pyx_t_2;
+  PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  __Pyx_memviewslice __pyx_t_5 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  __Pyx_memviewslice __pyx_t_6 = { 0, 0, { 0 }, { 0 }, { 0 } };
-  struct __pyx_opt_args_8cythonfn__check_in_range __pyx_t_7;
+  __Pyx_memviewslice __pyx_t_4 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_t_5;
+  struct __pyx_opt_args_8cythonfn__check_in_range __pyx_t_6;
+  int __pyx_t_7;
   int __pyx_t_8;
-  int __pyx_t_9;
-  __pyx_ctuple_int__and_int __pyx_t_10;
-  int __pyx_t_11;
-  int __pyx_t_12;
-  Py_ssize_t __pyx_t_13;
-  Py_ssize_t __pyx_t_14;
-  Py_ssize_t __pyx_t_15;
+  Py_ssize_t __pyx_t_9;
+  Py_ssize_t __pyx_t_10;
+  Py_ssize_t __pyx_t_11;
+  PyObject *__pyx_t_12 = NULL;
+  int __pyx_t_13[2];
+  int __pyx_t_14[2];
+  int __pyx_t_15[2];
+  int __pyx_t_16[2];
+  int __pyx_t_17[2];
+  int __pyx_t_18[2];
+  int __pyx_t_19[2];
+  int __pyx_t_20[2];
+  int __pyx_t_21;
+  int __pyx_t_22;
+  int __pyx_t_23;
+  int __pyx_t_24;
+  int __pyx_t_25;
+  int __pyx_t_26;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("fast_step", 0);
 
-  /* "cythonfn.pyx":14
+  /* "cythonfn.pyx":15
  * ):
  * 
- *     cdef int action_type = action[0]             # <<<<<<<<<<<<<<
- *     cdef int x = action[1]
- *     cdef int y = action[2]
- */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_action, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 14, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_action_type = __pyx_t_2;
-
-  /* "cythonfn.pyx":15
- * 
- *     cdef int action_type = action[0]
- *     cdef int x = action[1]             # <<<<<<<<<<<<<<
- *     cdef int y = action[2]
- * 
- */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_action, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 15, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_x = __pyx_t_2;
-
-  /* "cythonfn.pyx":16
- *     cdef int action_type = action[0]
- *     cdef int x = action[1]
- *     cdef int y = action[2]             # <<<<<<<<<<<<<<
- * 
- *     board = np.copy(pre_board)
- */
-  __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_action, 2, long, 1, __Pyx_PyInt_From_long, 0, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 16, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_y = __pyx_t_2;
-
-  /* "cythonfn.pyx":18
- *     cdef int y = action[2]
- * 
  *     board = np.copy(pre_board)             # <<<<<<<<<<<<<<
- *     walls_remaining = np.copy(pre_walls_remaining)
- * 
- */
-  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 18, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_copy); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 18, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_3 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_4))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_4);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_4);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_4, function);
-    }
-  }
-  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_4, __pyx_t_3, __pyx_v_pre_board) : __Pyx_PyObject_CallOneArg(__pyx_t_4, __pyx_v_pre_board);
-  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_v_board = __pyx_t_1;
-  __pyx_t_1 = 0;
-
-  /* "cythonfn.pyx":19
- * 
- *     board = np.copy(pre_board)
- *     walls_remaining = np.copy(pre_walls_remaining)             # <<<<<<<<<<<<<<
- * 
  *     cdef int [:,:,:] board_view = board
+ *     legal_actions = np.copy(pre_legal_actions)
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 19, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
-  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_copy); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 15, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_copy); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-  __pyx_t_4 = NULL;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_2 = NULL;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_3))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_3);
-    if (likely(__pyx_t_4)) {
+    __pyx_t_2 = PyMethod_GET_SELF(__pyx_t_3);
+    if (likely(__pyx_t_2)) {
       PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_3);
-      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(__pyx_t_2);
       __Pyx_INCREF(function);
       __Pyx_DECREF_SET(__pyx_t_3, function);
     }
   }
-  __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_4, __pyx_v_pre_walls_remaining) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_pre_walls_remaining);
-  __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_t_1 = (__pyx_t_2) ? __Pyx_PyObject_Call2Args(__pyx_t_3, __pyx_t_2, __pyx_v_pre_board) : __Pyx_PyObject_CallOneArg(__pyx_t_3, __pyx_v_pre_board);
+  __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_v_walls_remaining = __pyx_t_1;
+  __pyx_v_board = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "cythonfn.pyx":21
- *     walls_remaining = np.copy(pre_walls_remaining)
+  /* "cythonfn.pyx":16
  * 
+ *     board = np.copy(pre_board)
  *     cdef int [:,:,:] board_view = board             # <<<<<<<<<<<<<<
- *     cdef int [:] walls_remaining_view = walls_remaining
- * 
+ *     legal_actions = np.copy(pre_legal_actions)
+ *     cdef int [:,:,:] pre_legal_actions_view = pre_legal_actions
  */
-  __pyx_t_5 = __Pyx_PyObject_to_MemoryviewSlice_dsdsds_int(__pyx_v_board, PyBUF_WRITABLE); if (unlikely(!__pyx_t_5.memview)) __PYX_ERR(0, 21, __pyx_L1_error)
-  __pyx_v_board_view = __pyx_t_5;
-  __pyx_t_5.memview = NULL;
-  __pyx_t_5.data = NULL;
+  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_dsdsds_int(__pyx_v_board, PyBUF_WRITABLE); if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __pyx_v_board_view = __pyx_t_4;
+  __pyx_t_4.memview = NULL;
+  __pyx_t_4.data = NULL;
 
-  /* "cythonfn.pyx":22
- * 
+  /* "cythonfn.pyx":17
+ *     board = np.copy(pre_board)
  *     cdef int [:,:,:] board_view = board
- *     cdef int [:] walls_remaining_view = walls_remaining             # <<<<<<<<<<<<<<
- * 
- *     cdef int curpos_x, curpos_y, newpos_x, newpos_y, opppos_x, opppos_y, delpos_x, delpos_y
+ *     legal_actions = np.copy(pre_legal_actions)             # <<<<<<<<<<<<<<
+ *     cdef int [:,:,:] pre_legal_actions_view = pre_legal_actions
+ *     cdef int [:,:,:] legal_actions_view = legal_actions
  */
-  __pyx_t_6 = __Pyx_PyObject_to_MemoryviewSlice_ds_int(__pyx_v_walls_remaining, PyBUF_WRITABLE); if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 22, __pyx_L1_error)
-  __pyx_v_walls_remaining_view = __pyx_t_6;
-  __pyx_t_6.memview = NULL;
-  __pyx_t_6.data = NULL;
+  __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_copy); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_3, __pyx_v_pre_legal_actions) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_v_pre_legal_actions);
+  __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_v_legal_actions = __pyx_t_1;
+  __pyx_t_1 = 0;
 
-  /* "cythonfn.pyx":28
- *     cdef int cx, cy, zero_index
+  /* "cythonfn.pyx":18
+ *     cdef int [:,:,:] board_view = board
+ *     legal_actions = np.copy(pre_legal_actions)
+ *     cdef int [:,:,:] pre_legal_actions_view = pre_legal_actions             # <<<<<<<<<<<<<<
+ *     cdef int [:,:,:] legal_actions_view = legal_actions
  * 
- *     if not _check_in_range(x, y, board_size):             # <<<<<<<<<<<<<<
- *         raise ValueError(f"out of board: {(x, y)}")
+ */
+  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_dsdsds_int(__pyx_v_pre_legal_actions, PyBUF_WRITABLE); if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(0, 18, __pyx_L1_error)
+  __pyx_v_pre_legal_actions_view = __pyx_t_4;
+  __pyx_t_4.memview = NULL;
+  __pyx_t_4.data = NULL;
+
+  /* "cythonfn.pyx":19
+ *     legal_actions = np.copy(pre_legal_actions)
+ *     cdef int [:,:,:] pre_legal_actions_view = pre_legal_actions
+ *     cdef int [:,:,:] legal_actions_view = legal_actions             # <<<<<<<<<<<<<<
+ * 
+ *     cdef int reward[2]
+ */
+  __pyx_t_4 = __Pyx_PyObject_to_MemoryviewSlice_dsdsds_int(__pyx_v_legal_actions, PyBUF_WRITABLE); if (unlikely(!__pyx_t_4.memview)) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_v_legal_actions_view = __pyx_t_4;
+  __pyx_t_4.memview = NULL;
+  __pyx_t_4.data = NULL;
+
+  /* "cythonfn.pyx":30
+ *     cdef int has_action0, has_action1
+ * 
+ *     reward[0] = 0             # <<<<<<<<<<<<<<
+ *     reward[1] = 0
+ *     done = False
+ */
+  (__pyx_v_reward[0]) = 0;
+
+  /* "cythonfn.pyx":31
+ * 
+ *     reward[0] = 0
+ *     reward[1] = 0             # <<<<<<<<<<<<<<
+ *     done = False
+ * 
+ */
+  (__pyx_v_reward[1]) = 0;
+
+  /* "cythonfn.pyx":32
+ *     reward[0] = 0
+ *     reward[1] = 0
+ *     done = False             # <<<<<<<<<<<<<<
+ * 
+ *     if not _check_in_range(action_r, action_c, board_size):
+ */
+  __pyx_v_done = 0;
+
+  /* "cythonfn.pyx":34
+ *     done = False
+ * 
+ *     if not _check_in_range(action_r, action_c, board_size):             # <<<<<<<<<<<<<<
+ *         raise ValueError(f"out of board: {(action_r, action_c)}")
  *     if not 0 <= agent_id <= 1:
  */
-  __pyx_t_7.__pyx_n = 1;
-  __pyx_t_7.bottom_right = __pyx_v_board_size;
-  __pyx_t_2 = __pyx_f_8cythonfn__check_in_range(__pyx_v_x, __pyx_v_y, &__pyx_t_7); 
-  __pyx_t_8 = ((!(__pyx_t_2 != 0)) != 0);
-  if (unlikely(__pyx_t_8)) {
+  __pyx_t_6.__pyx_n = 1;
+  __pyx_t_6.bottom_right = __pyx_v_board_size;
+  __pyx_t_5 = __pyx_f_8cythonfn__check_in_range(__pyx_v_action_r, __pyx_v_action_c, &__pyx_t_6); 
+  __pyx_t_7 = ((!(__pyx_t_5 != 0)) != 0);
+  if (unlikely(__pyx_t_7)) {
 
-    /* "cythonfn.pyx":29
+    /* "cythonfn.pyx":35
  * 
- *     if not _check_in_range(x, y, board_size):
- *         raise ValueError(f"out of board: {(x, y)}")             # <<<<<<<<<<<<<<
+ *     if not _check_in_range(action_r, action_c, board_size):
+ *         raise ValueError(f"out of board: {(action_r, action_c)}")             # <<<<<<<<<<<<<<
  *     if not 0 <= agent_id <= 1:
  *         raise ValueError(f"invalid agent_id: {agent_id}")
  */
-    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_x); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_action_r); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_y); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_action_c); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 35, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = PyTuple_New(2); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 29, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
     __Pyx_GIVEREF(__pyx_t_1);
-    PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_1);
-    __Pyx_GIVEREF(__pyx_t_3);
-    PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_t_3);
+    PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_1);
+    __Pyx_GIVEREF(__pyx_t_2);
+    PyTuple_SET_ITEM(__pyx_t_3, 1, __pyx_t_2);
     __pyx_t_1 = 0;
-    __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_t_4, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_kp_u_out_of_board, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 29, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
+    __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyObject_FormatSimple(__pyx_t_3, __pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 29, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_kp_u_out_of_board, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 35, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 29, __pyx_L1_error)
+    __Pyx_Raise(__pyx_t_2, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __PYX_ERR(0, 35, __pyx_L1_error)
 
-    /* "cythonfn.pyx":28
- *     cdef int cx, cy, zero_index
+    /* "cythonfn.pyx":34
+ *     done = False
  * 
- *     if not _check_in_range(x, y, board_size):             # <<<<<<<<<<<<<<
- *         raise ValueError(f"out of board: {(x, y)}")
+ *     if not _check_in_range(action_r, action_c, board_size):             # <<<<<<<<<<<<<<
+ *         raise ValueError(f"out of board: {(action_r, action_c)}")
  *     if not 0 <= agent_id <= 1:
  */
   }
 
-  /* "cythonfn.pyx":30
- *     if not _check_in_range(x, y, board_size):
- *         raise ValueError(f"out of board: {(x, y)}")
+  /* "cythonfn.pyx":36
+ *     if not _check_in_range(action_r, action_c, board_size):
+ *         raise ValueError(f"out of board: {(action_r, action_c)}")
  *     if not 0 <= agent_id <= 1:             # <<<<<<<<<<<<<<
  *         raise ValueError(f"invalid agent_id: {agent_id}")
  * 
  */
-  __pyx_t_8 = (0 <= __pyx_v_agent_id);
-  if (__pyx_t_8) {
-    __pyx_t_8 = (__pyx_v_agent_id <= 1);
+  __pyx_t_7 = (0 <= __pyx_v_agent_id);
+  if (__pyx_t_7) {
+    __pyx_t_7 = (__pyx_v_agent_id <= 1);
   }
-  __pyx_t_9 = ((!(__pyx_t_8 != 0)) != 0);
-  if (unlikely(__pyx_t_9)) {
+  __pyx_t_8 = ((!(__pyx_t_7 != 0)) != 0);
+  if (unlikely(__pyx_t_8)) {
 
-    /* "cythonfn.pyx":31
- *         raise ValueError(f"out of board: {(x, y)}")
+    /* "cythonfn.pyx":37
+ *         raise ValueError(f"out of board: {(action_r, action_c)}")
  *     if not 0 <= agent_id <= 1:
  *         raise ValueError(f"invalid agent_id: {agent_id}")             # <<<<<<<<<<<<<<
  * 
- *     if action_type == 0:  # Move piece
+ *     if action_r == 3 and action_c == 3:
  */
-    __pyx_t_3 = __Pyx_PyUnicode_From_int(__pyx_v_agent_id, 0, ' ', 'd'); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 31, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyUnicode_From_int(__pyx_v_agent_id, 0, ' ', 'd'); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_kp_u_invalid_agent_id, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 37, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_kp_u_invalid_agent_id, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 31, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 31, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 31, __pyx_L1_error)
+    __Pyx_Raise(__pyx_t_2, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+    __PYX_ERR(0, 37, __pyx_L1_error)
 
-    /* "cythonfn.pyx":30
- *     if not _check_in_range(x, y, board_size):
- *         raise ValueError(f"out of board: {(x, y)}")
+    /* "cythonfn.pyx":36
+ *     if not _check_in_range(action_r, action_c, board_size):
+ *         raise ValueError(f"out of board: {(action_r, action_c)}")
  *     if not 0 <= agent_id <= 1:             # <<<<<<<<<<<<<<
  *         raise ValueError(f"invalid agent_id: {agent_id}")
  * 
  */
   }
 
-  /* "cythonfn.pyx":33
+  /* "cythonfn.pyx":39
  *         raise ValueError(f"invalid agent_id: {agent_id}")
  * 
- *     if action_type == 0:  # Move piece             # <<<<<<<<<<<<<<
- *         (curpos_x, curpos_y) = _agent_pos(board_view, agent_id, board_size)
- *         (opppos_x, opppos_y) = _agent_pos(board_view, 1-agent_id, board_size)
+ *     if action_r == 3 and action_c == 3:             # <<<<<<<<<<<<<<
+ *         if legal_actions_view[agent_id, 3, 3]:
+ *             return (board, legal_actions, reward[0], reward[1], done)
  */
-  switch (__pyx_v_action_type) {
-    case 0:
+  __pyx_t_7 = ((__pyx_v_action_r == 3) != 0);
+  if (__pyx_t_7) {
+  } else {
+    __pyx_t_8 = __pyx_t_7;
+    goto __pyx_L6_bool_binop_done;
+  }
+  __pyx_t_7 = ((__pyx_v_action_c == 3) != 0);
+  __pyx_t_8 = __pyx_t_7;
+  __pyx_L6_bool_binop_done:;
+  if (__pyx_t_8) {
 
-    /* "cythonfn.pyx":34
+    /* "cythonfn.pyx":40
  * 
- *     if action_type == 0:  # Move piece
- *         (curpos_x, curpos_y) = _agent_pos(board_view, agent_id, board_size)             # <<<<<<<<<<<<<<
- *         (opppos_x, opppos_y) = _agent_pos(board_view, 1-agent_id, board_size)
- *         newpos_x = x
+ *     if action_r == 3 and action_c == 3:
+ *         if legal_actions_view[agent_id, 3, 3]:             # <<<<<<<<<<<<<<
+ *             return (board, legal_actions, reward[0], reward[1], done)
+ *         else:
  */
-    __pyx_t_10 = __pyx_f_8cythonfn__agent_pos(__pyx_v_board_view, __pyx_v_agent_id, __pyx_v_board_size);
-    __pyx_t_2 = __pyx_t_10.f0;
-    __pyx_t_11 = __pyx_t_10.f1;
-    __pyx_v_curpos_x = __pyx_t_2;
-    __pyx_v_curpos_y = __pyx_t_11;
+    __pyx_t_9 = __pyx_v_agent_id;
+    __pyx_t_10 = 3;
+    __pyx_t_11 = 3;
+    __pyx_t_8 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_legal_actions_view.data + __pyx_t_9 * __pyx_v_legal_actions_view.strides[0]) ) + __pyx_t_10 * __pyx_v_legal_actions_view.strides[1]) ) + __pyx_t_11 * __pyx_v_legal_actions_view.strides[2]) ))) != 0);
+    if (likely(__pyx_t_8)) {
 
-    /* "cythonfn.pyx":35
- *     if action_type == 0:  # Move piece
- *         (curpos_x, curpos_y) = _agent_pos(board_view, agent_id, board_size)
- *         (opppos_x, opppos_y) = _agent_pos(board_view, 1-agent_id, board_size)             # <<<<<<<<<<<<<<
- *         newpos_x = x
- *         newpos_y = y
+      /* "cythonfn.pyx":41
+ *     if action_r == 3 and action_c == 3:
+ *         if legal_actions_view[agent_id, 3, 3]:
+ *             return (board, legal_actions, reward[0], reward[1], done)             # <<<<<<<<<<<<<<
+ *         else:
+ *             raise ValueError("cannot skip if there is possible action")
  */
-    __pyx_t_10 = __pyx_f_8cythonfn__agent_pos(__pyx_v_board_view, (1 - __pyx_v_agent_id), __pyx_v_board_size);
-    __pyx_t_11 = __pyx_t_10.f0;
-    __pyx_t_2 = __pyx_t_10.f1;
-    __pyx_v_opppos_x = __pyx_t_11;
-    __pyx_v_opppos_y = __pyx_t_2;
-
-    /* "cythonfn.pyx":36
- *         (curpos_x, curpos_y) = _agent_pos(board_view, agent_id, board_size)
- *         (opppos_x, opppos_y) = _agent_pos(board_view, 1-agent_id, board_size)
- *         newpos_x = x             # <<<<<<<<<<<<<<
- *         newpos_y = y
- * 
- */
-    __pyx_v_newpos_x = __pyx_v_x;
-
-    /* "cythonfn.pyx":37
- *         (opppos_x, opppos_y) = _agent_pos(board_view, 1-agent_id, board_size)
- *         newpos_x = x
- *         newpos_y = y             # <<<<<<<<<<<<<<
- * 
- *         if newpos_x == opppos_x and newpos_y == opppos_y:
- */
-    __pyx_v_newpos_y = __pyx_v_y;
-
-    /* "cythonfn.pyx":39
- *         newpos_y = y
- * 
- *         if newpos_x == opppos_x and newpos_y == opppos_y:             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot move to opponent's position")
- * 
- */
-    __pyx_t_8 = ((__pyx_v_newpos_x == __pyx_v_opppos_x) != 0);
-    if (__pyx_t_8) {
-    } else {
-      __pyx_t_9 = __pyx_t_8;
-      goto __pyx_L6_bool_binop_done;
-    }
-    __pyx_t_8 = ((__pyx_v_newpos_y == __pyx_v_opppos_y) != 0);
-    __pyx_t_9 = __pyx_t_8;
-    __pyx_L6_bool_binop_done:;
-    if (unlikely(__pyx_t_9)) {
+      __Pyx_XDECREF(__pyx_r);
+      __pyx_t_2 = __Pyx_PyInt_From_int((__pyx_v_reward[0])); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 41, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_2);
+      __pyx_t_3 = __Pyx_PyInt_From_int((__pyx_v_reward[1])); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 41, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_3);
+      __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_done); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __pyx_t_12 = PyTuple_New(5); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 41, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_12);
+      __Pyx_INCREF(__pyx_v_board);
+      __Pyx_GIVEREF(__pyx_v_board);
+      PyTuple_SET_ITEM(__pyx_t_12, 0, __pyx_v_board);
+      __Pyx_INCREF(__pyx_v_legal_actions);
+      __Pyx_GIVEREF(__pyx_v_legal_actions);
+      PyTuple_SET_ITEM(__pyx_t_12, 1, __pyx_v_legal_actions);
+      __Pyx_GIVEREF(__pyx_t_2);
+      PyTuple_SET_ITEM(__pyx_t_12, 2, __pyx_t_2);
+      __Pyx_GIVEREF(__pyx_t_3);
+      PyTuple_SET_ITEM(__pyx_t_12, 3, __pyx_t_3);
+      __Pyx_GIVEREF(__pyx_t_1);
+      PyTuple_SET_ITEM(__pyx_t_12, 4, __pyx_t_1);
+      __pyx_t_2 = 0;
+      __pyx_t_3 = 0;
+      __pyx_t_1 = 0;
+      __pyx_r = __pyx_t_12;
+      __pyx_t_12 = 0;
+      goto __pyx_L0;
 
       /* "cythonfn.pyx":40
  * 
- *         if newpos_x == opppos_x and newpos_y == opppos_y:
- *             raise ValueError("cannot move to opponent's position")             # <<<<<<<<<<<<<<
- * 
- *         delpos_x = newpos_x - curpos_x
- */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 40, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 40, __pyx_L1_error)
-
-      /* "cythonfn.pyx":39
- *         newpos_y = y
- * 
- *         if newpos_x == opppos_x and newpos_y == opppos_y:             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot move to opponent's position")
- * 
+ *     if action_r == 3 and action_c == 3:
+ *         if legal_actions_view[agent_id, 3, 3]:             # <<<<<<<<<<<<<<
+ *             return (board, legal_actions, reward[0], reward[1], done)
+ *         else:
  */
     }
-
-    /* "cythonfn.pyx":42
- *             raise ValueError("cannot move to opponent's position")
- * 
- *         delpos_x = newpos_x - curpos_x             # <<<<<<<<<<<<<<
- *         delpos_y = newpos_y - curpos_y
- *         taxicab_dist = abs(delpos_x) + abs(delpos_y)
- */
-    __pyx_v_delpos_x = (__pyx_v_newpos_x - __pyx_v_curpos_x);
 
     /* "cythonfn.pyx":43
+ *             return (board, legal_actions, reward[0], reward[1], done)
+ *         else:
+ *             raise ValueError("cannot skip if there is possible action")             # <<<<<<<<<<<<<<
  * 
- *         delpos_x = newpos_x - curpos_x
- *         delpos_y = newpos_y - curpos_y             # <<<<<<<<<<<<<<
- *         taxicab_dist = abs(delpos_x) + abs(delpos_y)
- *         if taxicab_dist == 0:
+ *     if board_view[1-agent_id, action_r, action_c]:
  */
-    __pyx_v_delpos_y = (__pyx_v_newpos_y - __pyx_v_curpos_y);
-
-    /* "cythonfn.pyx":44
- *         delpos_x = newpos_x - curpos_x
- *         delpos_y = newpos_y - curpos_y
- *         taxicab_dist = abs(delpos_x) + abs(delpos_y)             # <<<<<<<<<<<<<<
- *         if taxicab_dist == 0:
- *             raise ValueError("cannot move zero blocks")
- */
-    __pyx_t_2 = abs(__pyx_v_delpos_x); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 44, __pyx_L1_error)
-    __pyx_t_11 = abs(__pyx_v_delpos_y); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 44, __pyx_L1_error)
-    __pyx_v_taxicab_dist = (__pyx_t_2 + __pyx_t_11);
-
-    /* "cythonfn.pyx":45
- *         delpos_y = newpos_y - curpos_y
- *         taxicab_dist = abs(delpos_x) + abs(delpos_y)
- *         if taxicab_dist == 0:             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot move zero blocks")
- *         elif taxicab_dist > 2:
- */
-    __pyx_t_9 = ((__pyx_v_taxicab_dist == 0) != 0);
-    if (unlikely(__pyx_t_9)) {
-
-      /* "cythonfn.pyx":46
- *         taxicab_dist = abs(delpos_x) + abs(delpos_y)
- *         if taxicab_dist == 0:
- *             raise ValueError("cannot move zero blocks")             # <<<<<<<<<<<<<<
- *         elif taxicab_dist > 2:
- *             raise ValueError("cannot move more than two blocks")
- */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 46, __pyx_L1_error)
-
-      /* "cythonfn.pyx":45
- *         delpos_y = newpos_y - curpos_y
- *         taxicab_dist = abs(delpos_x) + abs(delpos_y)
- *         if taxicab_dist == 0:             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot move zero blocks")
- *         elif taxicab_dist > 2:
- */
+    /*else*/ {
+      __pyx_t_12 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 43, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_12);
+      __Pyx_Raise(__pyx_t_12, 0, 0, 0);
+      __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+      __PYX_ERR(0, 43, __pyx_L1_error)
     }
 
-    /* "cythonfn.pyx":47
- *         if taxicab_dist == 0:
- *             raise ValueError("cannot move zero blocks")
- *         elif taxicab_dist > 2:             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot move more than two blocks")
- *         elif (
- */
-    __pyx_t_9 = ((__pyx_v_taxicab_dist > 2) != 0);
-    if (unlikely(__pyx_t_9)) {
-
-      /* "cythonfn.pyx":48
- *             raise ValueError("cannot move zero blocks")
- *         elif taxicab_dist > 2:
- *             raise ValueError("cannot move more than two blocks")             # <<<<<<<<<<<<<<
- *         elif (
- *             taxicab_dist == 2
- */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 48, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 48, __pyx_L1_error)
-
-      /* "cythonfn.pyx":47
- *         if taxicab_dist == 0:
- *             raise ValueError("cannot move zero blocks")
- *         elif taxicab_dist > 2:             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot move more than two blocks")
- *         elif (
- */
-    }
-
-    /* "cythonfn.pyx":50
- *             raise ValueError("cannot move more than two blocks")
- *         elif (
- *             taxicab_dist == 2             # <<<<<<<<<<<<<<
- *             and (delpos_x == 0 or delpos_y == 0)
- *             and not (curpos_x + delpos_x / 2 == opppos_x and curpos_y + delpos_y / 2 == opppos_y)
- */
-    __pyx_t_8 = ((__pyx_v_taxicab_dist == 2) != 0);
-    if (__pyx_t_8) {
-    } else {
-      __pyx_t_9 = __pyx_t_8;
-      goto __pyx_L9_bool_binop_done;
-    }
-
-    /* "cythonfn.pyx":51
- *         elif (
- *             taxicab_dist == 2
- *             and (delpos_x == 0 or delpos_y == 0)             # <<<<<<<<<<<<<<
- *             and not (curpos_x + delpos_x / 2 == opppos_x and curpos_y + delpos_y / 2 == opppos_y)
- *         ):
- */
-    __pyx_t_8 = ((__pyx_v_delpos_x == 0) != 0);
-    if (!__pyx_t_8) {
-    } else {
-      goto __pyx_L11_next_and;
-    }
-    __pyx_t_8 = ((__pyx_v_delpos_y == 0) != 0);
-    if (__pyx_t_8) {
-    } else {
-      __pyx_t_9 = __pyx_t_8;
-      goto __pyx_L9_bool_binop_done;
-    }
-    __pyx_L11_next_and:;
-
-    /* "cythonfn.pyx":52
- *             taxicab_dist == 2
- *             and (delpos_x == 0 or delpos_y == 0)
- *             and not (curpos_x + delpos_x / 2 == opppos_x and curpos_y + delpos_y / 2 == opppos_y)             # <<<<<<<<<<<<<<
- *         ):
- *             raise ValueError("cannot jump over nothing")
- */
-    __pyx_t_12 = (((__pyx_v_curpos_x + (((long)__pyx_v_delpos_x) / 2)) == __pyx_v_opppos_x) != 0);
-    if (__pyx_t_12) {
-    } else {
-      __pyx_t_8 = __pyx_t_12;
-      goto __pyx_L13_bool_binop_done;
-    }
-    __pyx_t_12 = (((__pyx_v_curpos_y + (((long)__pyx_v_delpos_y) / 2)) == __pyx_v_opppos_y) != 0);
-    __pyx_t_8 = __pyx_t_12;
-    __pyx_L13_bool_binop_done:;
-    __pyx_t_12 = ((!__pyx_t_8) != 0);
-    __pyx_t_9 = __pyx_t_12;
-    __pyx_L9_bool_binop_done:;
-
-    /* "cythonfn.pyx":49
- *         elif taxicab_dist > 2:
- *             raise ValueError("cannot move more than two blocks")
- *         elif (             # <<<<<<<<<<<<<<
- *             taxicab_dist == 2
- *             and (delpos_x == 0 or delpos_y == 0)
- */
-    if (unlikely(__pyx_t_9)) {
-
-      /* "cythonfn.pyx":54
- *             and not (curpos_x + delpos_x / 2 == opppos_x and curpos_y + delpos_y / 2 == opppos_y)
- *         ):
- *             raise ValueError("cannot jump over nothing")             # <<<<<<<<<<<<<<
- * 
- *         if delpos_x and delpos_y:  # If moving diagonally
- */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 54, __pyx_L1_error)
-
-      /* "cythonfn.pyx":49
- *         elif taxicab_dist > 2:
- *             raise ValueError("cannot move more than two blocks")
- *         elif (             # <<<<<<<<<<<<<<
- *             taxicab_dist == 2
- *             and (delpos_x == 0 or delpos_y == 0)
- */
-    }
-
-    /* "cythonfn.pyx":56
- *             raise ValueError("cannot jump over nothing")
- * 
- *         if delpos_x and delpos_y:  # If moving diagonally             # <<<<<<<<<<<<<<
- *             if (curpos_x + delpos_x != opppos_x or curpos_y != opppos_y) and (
- *                 curpos_x != opppos_x or curpos_y + delpos_y != opppos_y
- */
-    __pyx_t_12 = (__pyx_v_delpos_x != 0);
-    if (__pyx_t_12) {
-    } else {
-      __pyx_t_9 = __pyx_t_12;
-      goto __pyx_L16_bool_binop_done;
-    }
-    __pyx_t_12 = (__pyx_v_delpos_y != 0);
-    __pyx_t_9 = __pyx_t_12;
-    __pyx_L16_bool_binop_done:;
-    if (__pyx_t_9) {
-
-      /* "cythonfn.pyx":57
- * 
- *         if delpos_x and delpos_y:  # If moving diagonally
- *             if (curpos_x + delpos_x != opppos_x or curpos_y != opppos_y) and (             # <<<<<<<<<<<<<<
- *                 curpos_x != opppos_x or curpos_y + delpos_y != opppos_y
- *             ):
- */
-      __pyx_t_12 = (((__pyx_v_curpos_x + __pyx_v_delpos_x) != __pyx_v_opppos_x) != 0);
-      if (!__pyx_t_12) {
-      } else {
-        goto __pyx_L20_next_and;
-      }
-      __pyx_t_12 = ((__pyx_v_curpos_y != __pyx_v_opppos_y) != 0);
-      if (__pyx_t_12) {
-      } else {
-        __pyx_t_9 = __pyx_t_12;
-        goto __pyx_L19_bool_binop_done;
-      }
-      __pyx_L20_next_and:;
-
-      /* "cythonfn.pyx":58
- *         if delpos_x and delpos_y:  # If moving diagonally
- *             if (curpos_x + delpos_x != opppos_x or curpos_y != opppos_y) and (
- *                 curpos_x != opppos_x or curpos_y + delpos_y != opppos_y             # <<<<<<<<<<<<<<
- *             ):
- *                 # Only diagonal jumps are permitted.
- */
-      __pyx_t_12 = ((__pyx_v_curpos_x != __pyx_v_opppos_x) != 0);
-      if (!__pyx_t_12) {
-      } else {
-        __pyx_t_9 = __pyx_t_12;
-        goto __pyx_L19_bool_binop_done;
-      }
-      __pyx_t_12 = (((__pyx_v_curpos_y + __pyx_v_delpos_y) != __pyx_v_opppos_y) != 0);
-      __pyx_t_9 = __pyx_t_12;
-      __pyx_L19_bool_binop_done:;
-
-      /* "cythonfn.pyx":57
- * 
- *         if delpos_x and delpos_y:  # If moving diagonally
- *             if (curpos_x + delpos_x != opppos_x or curpos_y != opppos_y) and (             # <<<<<<<<<<<<<<
- *                 curpos_x != opppos_x or curpos_y + delpos_y != opppos_y
- *             ):
- */
-      if (unlikely(__pyx_t_9)) {
-
-        /* "cythonfn.pyx":62
- *                 # Only diagonal jumps are permitted.
- *                 # Agents cannot simply move in diagonal direction.
- *                 raise ValueError("cannot move diagonally")             # <<<<<<<<<<<<<<
- *             elif _check_wall_blocked(board_view, curpos_x, curpos_y, opppos_x, opppos_y):
- *                 raise ValueError("cannot jump over walls")
- */
-        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __PYX_ERR(0, 62, __pyx_L1_error)
-
-        /* "cythonfn.pyx":57
- * 
- *         if delpos_x and delpos_y:  # If moving diagonally
- *             if (curpos_x + delpos_x != opppos_x or curpos_y != opppos_y) and (             # <<<<<<<<<<<<<<
- *                 curpos_x != opppos_x or curpos_y + delpos_y != opppos_y
- *             ):
- */
-      }
-
-      /* "cythonfn.pyx":63
- *                 # Agents cannot simply move in diagonal direction.
- *                 raise ValueError("cannot move diagonally")
- *             elif _check_wall_blocked(board_view, curpos_x, curpos_y, opppos_x, opppos_y):             # <<<<<<<<<<<<<<
- *                 raise ValueError("cannot jump over walls")
- * 
- */
-      __pyx_t_9 = (__pyx_f_8cythonfn__check_wall_blocked(__pyx_v_board_view, __pyx_v_curpos_x, __pyx_v_curpos_y, __pyx_v_opppos_x, __pyx_v_opppos_y) != 0);
-      if (unlikely(__pyx_t_9)) {
-
-        /* "cythonfn.pyx":64
- *                 raise ValueError("cannot move diagonally")
- *             elif _check_wall_blocked(board_view, curpos_x, curpos_y, opppos_x, opppos_y):
- *                 raise ValueError("cannot jump over walls")             # <<<<<<<<<<<<<<
- * 
- *             original_jump_pos_x = curpos_x + 2 * (opppos_x - curpos_x)
- */
-        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __PYX_ERR(0, 64, __pyx_L1_error)
-
-        /* "cythonfn.pyx":63
- *                 # Agents cannot simply move in diagonal direction.
- *                 raise ValueError("cannot move diagonally")
- *             elif _check_wall_blocked(board_view, curpos_x, curpos_y, opppos_x, opppos_y):             # <<<<<<<<<<<<<<
- *                 raise ValueError("cannot jump over walls")
- * 
- */
-      }
-
-      /* "cythonfn.pyx":66
- *                 raise ValueError("cannot jump over walls")
- * 
- *             original_jump_pos_x = curpos_x + 2 * (opppos_x - curpos_x)             # <<<<<<<<<<<<<<
- *             original_jump_pos_y = curpos_y + 2 * (opppos_y - curpos_y)
- *             if _check_in_range(original_jump_pos_x, original_jump_pos_y, board_size) and not _check_wall_blocked(
- */
-      __pyx_v_original_jump_pos_x = (__pyx_v_curpos_x + (2 * (__pyx_v_opppos_x - __pyx_v_curpos_x)));
-
-      /* "cythonfn.pyx":67
- * 
- *             original_jump_pos_x = curpos_x + 2 * (opppos_x - curpos_x)
- *             original_jump_pos_y = curpos_y + 2 * (opppos_y - curpos_y)             # <<<<<<<<<<<<<<
- *             if _check_in_range(original_jump_pos_x, original_jump_pos_y, board_size) and not _check_wall_blocked(
- *                 board_view, curpos_x, curpos_y, original_jump_pos_x, original_jump_pos_y
- */
-      __pyx_v_original_jump_pos_y = (__pyx_v_curpos_y + (2 * (__pyx_v_opppos_y - __pyx_v_curpos_y)));
-
-      /* "cythonfn.pyx":68
- *             original_jump_pos_x = curpos_x + 2 * (opppos_x - curpos_x)
- *             original_jump_pos_y = curpos_y + 2 * (opppos_y - curpos_y)
- *             if _check_in_range(original_jump_pos_x, original_jump_pos_y, board_size) and not _check_wall_blocked(             # <<<<<<<<<<<<<<
- *                 board_view, curpos_x, curpos_y, original_jump_pos_x, original_jump_pos_y
- *             ):
- */
-      __pyx_t_7.__pyx_n = 1;
-      __pyx_t_7.bottom_right = __pyx_v_board_size;
-      __pyx_t_11 = __pyx_f_8cythonfn__check_in_range(__pyx_v_original_jump_pos_x, __pyx_v_original_jump_pos_y, &__pyx_t_7); 
-      __pyx_t_12 = (__pyx_t_11 != 0);
-      if (__pyx_t_12) {
-      } else {
-        __pyx_t_9 = __pyx_t_12;
-        goto __pyx_L24_bool_binop_done;
-      }
-
-      /* "cythonfn.pyx":69
- *             original_jump_pos_y = curpos_y + 2 * (opppos_y - curpos_y)
- *             if _check_in_range(original_jump_pos_x, original_jump_pos_y, board_size) and not _check_wall_blocked(
- *                 board_view, curpos_x, curpos_y, original_jump_pos_x, original_jump_pos_y             # <<<<<<<<<<<<<<
- *             ):
- *                 raise ValueError(
- */
-      __pyx_t_12 = ((!(__pyx_f_8cythonfn__check_wall_blocked(__pyx_v_board_view, __pyx_v_curpos_x, __pyx_v_curpos_y, __pyx_v_original_jump_pos_x, __pyx_v_original_jump_pos_y) != 0)) != 0);
-      __pyx_t_9 = __pyx_t_12;
-      __pyx_L24_bool_binop_done:;
-
-      /* "cythonfn.pyx":68
- *             original_jump_pos_x = curpos_x + 2 * (opppos_x - curpos_x)
- *             original_jump_pos_y = curpos_y + 2 * (opppos_y - curpos_y)
- *             if _check_in_range(original_jump_pos_x, original_jump_pos_y, board_size) and not _check_wall_blocked(             # <<<<<<<<<<<<<<
- *                 board_view, curpos_x, curpos_y, original_jump_pos_x, original_jump_pos_y
- *             ):
- */
-      if (unlikely(__pyx_t_9)) {
-
-        /* "cythonfn.pyx":71
- *                 board_view, curpos_x, curpos_y, original_jump_pos_x, original_jump_pos_y
- *             ):
- *                 raise ValueError(             # <<<<<<<<<<<<<<
- *                     "cannot diagonally jump if linear jump is possible"
- *                 )
- */
-        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __PYX_ERR(0, 71, __pyx_L1_error)
-
-        /* "cythonfn.pyx":68
- *             original_jump_pos_x = curpos_x + 2 * (opppos_x - curpos_x)
- *             original_jump_pos_y = curpos_y + 2 * (opppos_y - curpos_y)
- *             if _check_in_range(original_jump_pos_x, original_jump_pos_y, board_size) and not _check_wall_blocked(             # <<<<<<<<<<<<<<
- *                 board_view, curpos_x, curpos_y, original_jump_pos_x, original_jump_pos_y
- *             ):
- */
-      }
-
-      /* "cythonfn.pyx":74
- *                     "cannot diagonally jump if linear jump is possible"
- *                 )
- *             elif _check_wall_blocked(board_view, opppos_x, opppos_y, newpos_x, newpos_y):             # <<<<<<<<<<<<<<
- *                 raise ValueError("cannot jump over walls")
- *         elif _check_wall_blocked(board_view, curpos_x, curpos_y, newpos_x, newpos_y):
- */
-      __pyx_t_9 = (__pyx_f_8cythonfn__check_wall_blocked(__pyx_v_board_view, __pyx_v_opppos_x, __pyx_v_opppos_y, __pyx_v_newpos_x, __pyx_v_newpos_y) != 0);
-      if (unlikely(__pyx_t_9)) {
-
-        /* "cythonfn.pyx":75
- *                 )
- *             elif _check_wall_blocked(board_view, opppos_x, opppos_y, newpos_x, newpos_y):
- *                 raise ValueError("cannot jump over walls")             # <<<<<<<<<<<<<<
- *         elif _check_wall_blocked(board_view, curpos_x, curpos_y, newpos_x, newpos_y):
- *             raise ValueError("cannot jump over walls")
- */
-        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 75, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __PYX_ERR(0, 75, __pyx_L1_error)
-
-        /* "cythonfn.pyx":74
- *                     "cannot diagonally jump if linear jump is possible"
- *                 )
- *             elif _check_wall_blocked(board_view, opppos_x, opppos_y, newpos_x, newpos_y):             # <<<<<<<<<<<<<<
- *                 raise ValueError("cannot jump over walls")
- *         elif _check_wall_blocked(board_view, curpos_x, curpos_y, newpos_x, newpos_y):
- */
-      }
-
-      /* "cythonfn.pyx":56
- *             raise ValueError("cannot jump over nothing")
- * 
- *         if delpos_x and delpos_y:  # If moving diagonally             # <<<<<<<<<<<<<<
- *             if (curpos_x + delpos_x != opppos_x or curpos_y != opppos_y) and (
- *                 curpos_x != opppos_x or curpos_y + delpos_y != opppos_y
- */
-      goto __pyx_L15;
-    }
-
-    /* "cythonfn.pyx":76
- *             elif _check_wall_blocked(board_view, opppos_x, opppos_y, newpos_x, newpos_y):
- *                 raise ValueError("cannot jump over walls")
- *         elif _check_wall_blocked(board_view, curpos_x, curpos_y, newpos_x, newpos_y):             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot jump over walls")
- * 
- */
-    __pyx_t_9 = (__pyx_f_8cythonfn__check_wall_blocked(__pyx_v_board_view, __pyx_v_curpos_x, __pyx_v_curpos_y, __pyx_v_newpos_x, __pyx_v_newpos_y) != 0);
-    if (unlikely(__pyx_t_9)) {
-
-      /* "cythonfn.pyx":77
- *                 raise ValueError("cannot jump over walls")
- *         elif _check_wall_blocked(board_view, curpos_x, curpos_y, newpos_x, newpos_y):
- *             raise ValueError("cannot jump over walls")             # <<<<<<<<<<<<<<
- * 
- *         board_view[agent_id, curpos_x, curpos_y] = 0
- */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 77, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 77, __pyx_L1_error)
-
-      /* "cythonfn.pyx":76
- *             elif _check_wall_blocked(board_view, opppos_x, opppos_y, newpos_x, newpos_y):
- *                 raise ValueError("cannot jump over walls")
- *         elif _check_wall_blocked(board_view, curpos_x, curpos_y, newpos_x, newpos_y):             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot jump over walls")
- * 
- */
-    }
-    __pyx_L15:;
-
-    /* "cythonfn.pyx":79
- *             raise ValueError("cannot jump over walls")
- * 
- *         board_view[agent_id, curpos_x, curpos_y] = 0             # <<<<<<<<<<<<<<
- *         board_view[agent_id, newpos_x, newpos_y] = 1
- * 
- */
-    __pyx_t_13 = __pyx_v_agent_id;
-    __pyx_t_14 = __pyx_v_curpos_x;
-    __pyx_t_15 = __pyx_v_curpos_y;
-    *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_13 * __pyx_v_board_view.strides[0]) ) + __pyx_t_14 * __pyx_v_board_view.strides[1]) ) + __pyx_t_15 * __pyx_v_board_view.strides[2]) )) = 0;
-
-    /* "cythonfn.pyx":80
- * 
- *         board_view[agent_id, curpos_x, curpos_y] = 0
- *         board_view[agent_id, newpos_x, newpos_y] = 1             # <<<<<<<<<<<<<<
- * 
- *     elif action_type == 1:  # Place wall horizontally
- */
-    __pyx_t_15 = __pyx_v_agent_id;
-    __pyx_t_14 = __pyx_v_newpos_x;
-    __pyx_t_13 = __pyx_v_newpos_y;
-    *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_15 * __pyx_v_board_view.strides[0]) ) + __pyx_t_14 * __pyx_v_board_view.strides[1]) ) + __pyx_t_13 * __pyx_v_board_view.strides[2]) )) = 1;
-
-    /* "cythonfn.pyx":33
+    /* "cythonfn.pyx":39
  *         raise ValueError(f"invalid agent_id: {agent_id}")
  * 
- *     if action_type == 0:  # Move piece             # <<<<<<<<<<<<<<
- *         (curpos_x, curpos_y) = _agent_pos(board_view, agent_id, board_size)
- *         (opppos_x, opppos_y) = _agent_pos(board_view, 1-agent_id, board_size)
+ *     if action_r == 3 and action_c == 3:             # <<<<<<<<<<<<<<
+ *         if legal_actions_view[agent_id, 3, 3]:
+ *             return (board, legal_actions, reward[0], reward[1], done)
  */
-    break;
-    case 1:
+  }
 
-    /* "cythonfn.pyx":83
+  /* "cythonfn.pyx":45
+ *             raise ValueError("cannot skip if there is possible action")
  * 
- *     elif action_type == 1:  # Place wall horizontally
- *         if walls_remaining_view[agent_id] == 0:             # <<<<<<<<<<<<<<
- *             raise ValueError(f"no walls left for agent {agent_id}")
- *         if y == board_size-1:
+ *     if board_view[1-agent_id, action_r, action_c]:             # <<<<<<<<<<<<<<
+ *         raise ValueError("cannot put a stone on opponent's stone")
+ *     if board_view[agent_id, action_r, action_c]:
  */
-    __pyx_t_13 = __pyx_v_agent_id;
-    __pyx_t_9 = (((*((int *) ( /* dim=0 */ (__pyx_v_walls_remaining_view.data + __pyx_t_13 * __pyx_v_walls_remaining_view.strides[0]) ))) == 0) != 0);
-    if (unlikely(__pyx_t_9)) {
+  __pyx_t_11 = (1 - __pyx_v_agent_id);
+  __pyx_t_10 = __pyx_v_action_r;
+  __pyx_t_9 = __pyx_v_action_c;
+  __pyx_t_8 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_11 * __pyx_v_board_view.strides[0]) ) + __pyx_t_10 * __pyx_v_board_view.strides[1]) ) + __pyx_t_9 * __pyx_v_board_view.strides[2]) ))) != 0);
+  if (unlikely(__pyx_t_8)) {
 
-      /* "cythonfn.pyx":84
- *     elif action_type == 1:  # Place wall horizontally
- *         if walls_remaining_view[agent_id] == 0:
- *             raise ValueError(f"no walls left for agent {agent_id}")             # <<<<<<<<<<<<<<
- *         if y == board_size-1:
- *             raise ValueError("cannot place wall on the edge")
- */
-      __pyx_t_3 = __Pyx_PyUnicode_From_int(__pyx_v_agent_id, 0, ' ', 'd'); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 84, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_kp_u_no_walls_left_for_agent, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 84, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 84, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 84, __pyx_L1_error)
-
-      /* "cythonfn.pyx":83
+    /* "cythonfn.pyx":46
  * 
- *     elif action_type == 1:  # Place wall horizontally
- *         if walls_remaining_view[agent_id] == 0:             # <<<<<<<<<<<<<<
- *             raise ValueError(f"no walls left for agent {agent_id}")
- *         if y == board_size-1:
+ *     if board_view[1-agent_id, action_r, action_c]:
+ *         raise ValueError("cannot put a stone on opponent's stone")             # <<<<<<<<<<<<<<
+ *     if board_view[agent_id, action_r, action_c]:
+ *         raise ValueError("cannot put a stone on another stone")
  */
-    }
+    __pyx_t_12 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 46, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_12);
+    __Pyx_Raise(__pyx_t_12, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+    __PYX_ERR(0, 46, __pyx_L1_error)
 
-    /* "cythonfn.pyx":85
- *         if walls_remaining_view[agent_id] == 0:
- *             raise ValueError(f"no walls left for agent {agent_id}")
- *         if y == board_size-1:             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot place wall on the edge")
- *         if x == board_size-1:
+    /* "cythonfn.pyx":45
+ *             raise ValueError("cannot skip if there is possible action")
+ * 
+ *     if board_view[1-agent_id, action_r, action_c]:             # <<<<<<<<<<<<<<
+ *         raise ValueError("cannot put a stone on opponent's stone")
+ *     if board_view[agent_id, action_r, action_c]:
  */
-    __pyx_t_9 = ((__pyx_v_y == (__pyx_v_board_size - 1)) != 0);
-    if (unlikely(__pyx_t_9)) {
+  }
 
-      /* "cythonfn.pyx":86
- *             raise ValueError(f"no walls left for agent {agent_id}")
- *         if y == board_size-1:
- *             raise ValueError("cannot place wall on the edge")             # <<<<<<<<<<<<<<
- *         if x == board_size-1:
- *             raise ValueError("right section out of board")
+  /* "cythonfn.pyx":47
+ *     if board_view[1-agent_id, action_r, action_c]:
+ *         raise ValueError("cannot put a stone on opponent's stone")
+ *     if board_view[agent_id, action_r, action_c]:             # <<<<<<<<<<<<<<
+ *         raise ValueError("cannot put a stone on another stone")
+ * 
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 86, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 86, __pyx_L1_error)
+  __pyx_t_9 = __pyx_v_agent_id;
+  __pyx_t_10 = __pyx_v_action_r;
+  __pyx_t_11 = __pyx_v_action_c;
+  __pyx_t_8 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_9 * __pyx_v_board_view.strides[0]) ) + __pyx_t_10 * __pyx_v_board_view.strides[1]) ) + __pyx_t_11 * __pyx_v_board_view.strides[2]) ))) != 0);
+  if (unlikely(__pyx_t_8)) {
 
-      /* "cythonfn.pyx":85
- *         if walls_remaining_view[agent_id] == 0:
- *             raise ValueError(f"no walls left for agent {agent_id}")
- *         if y == board_size-1:             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot place wall on the edge")
- *         if x == board_size-1:
+    /* "cythonfn.pyx":48
+ *         raise ValueError("cannot put a stone on opponent's stone")
+ *     if board_view[agent_id, action_r, action_c]:
+ *         raise ValueError("cannot put a stone on another stone")             # <<<<<<<<<<<<<<
+ * 
+ *     directions[0][:] = [1, 1]
  */
-    }
+    __pyx_t_12 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 48, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_12);
+    __Pyx_Raise(__pyx_t_12, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+    __PYX_ERR(0, 48, __pyx_L1_error)
 
-    /* "cythonfn.pyx":87
- *         if y == board_size-1:
- *             raise ValueError("cannot place wall on the edge")
- *         if x == board_size-1:             # <<<<<<<<<<<<<<
- *             raise ValueError("right section out of board")
- *         if board_view[2, x, y] or board_view[2, x+1, y]:
+    /* "cythonfn.pyx":47
+ *     if board_view[1-agent_id, action_r, action_c]:
+ *         raise ValueError("cannot put a stone on opponent's stone")
+ *     if board_view[agent_id, action_r, action_c]:             # <<<<<<<<<<<<<<
+ *         raise ValueError("cannot put a stone on another stone")
+ * 
  */
-    __pyx_t_9 = ((__pyx_v_x == (__pyx_v_board_size - 1)) != 0);
-    if (unlikely(__pyx_t_9)) {
+  }
 
-      /* "cythonfn.pyx":88
- *             raise ValueError("cannot place wall on the edge")
- *         if x == board_size-1:
- *             raise ValueError("right section out of board")             # <<<<<<<<<<<<<<
- *         if board_view[2, x, y] or board_view[2, x+1, y]:
- *             raise ValueError("wall already placed")
+  /* "cythonfn.pyx":50
+ *         raise ValueError("cannot put a stone on another stone")
+ * 
+ *     directions[0][:] = [1, 1]             # <<<<<<<<<<<<<<
+ *     directions[1][:] = [1, 0]
+ *     directions[2][:] = [1, -1]
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 88, __pyx_L1_error)
+  __pyx_t_13[0] = 1;
+  __pyx_t_13[1] = 1;
+  memcpy(&((__pyx_v_directions[0])[0]), __pyx_t_13, sizeof((__pyx_v_directions[0])[0]) * (2));
+
+  /* "cythonfn.pyx":51
+ * 
+ *     directions[0][:] = [1, 1]
+ *     directions[1][:] = [1, 0]             # <<<<<<<<<<<<<<
+ *     directions[2][:] = [1, -1]
+ *     directions[3][:] = [0, -1]
+ */
+  __pyx_t_14[0] = 1;
+  __pyx_t_14[1] = 0;
+  memcpy(&((__pyx_v_directions[1])[0]), __pyx_t_14, sizeof((__pyx_v_directions[1])[0]) * (2));
+
+  /* "cythonfn.pyx":52
+ *     directions[0][:] = [1, 1]
+ *     directions[1][:] = [1, 0]
+ *     directions[2][:] = [1, -1]             # <<<<<<<<<<<<<<
+ *     directions[3][:] = [0, -1]
+ *     directions[4][:] = [-1, -1]
+ */
+  __pyx_t_15[0] = 1;
+  __pyx_t_15[1] = -1;
+  memcpy(&((__pyx_v_directions[2])[0]), __pyx_t_15, sizeof((__pyx_v_directions[2])[0]) * (2));
+
+  /* "cythonfn.pyx":53
+ *     directions[1][:] = [1, 0]
+ *     directions[2][:] = [1, -1]
+ *     directions[3][:] = [0, -1]             # <<<<<<<<<<<<<<
+ *     directions[4][:] = [-1, -1]
+ *     directions[5][:] = [-1, 0]
+ */
+  __pyx_t_16[0] = 0;
+  __pyx_t_16[1] = -1;
+  memcpy(&((__pyx_v_directions[3])[0]), __pyx_t_16, sizeof((__pyx_v_directions[3])[0]) * (2));
+
+  /* "cythonfn.pyx":54
+ *     directions[2][:] = [1, -1]
+ *     directions[3][:] = [0, -1]
+ *     directions[4][:] = [-1, -1]             # <<<<<<<<<<<<<<
+ *     directions[5][:] = [-1, 0]
+ *     directions[6][:] = [-1, 1]
+ */
+  __pyx_t_17[0] = -1;
+  __pyx_t_17[1] = -1;
+  memcpy(&((__pyx_v_directions[4])[0]), __pyx_t_17, sizeof((__pyx_v_directions[4])[0]) * (2));
+
+  /* "cythonfn.pyx":55
+ *     directions[3][:] = [0, -1]
+ *     directions[4][:] = [-1, -1]
+ *     directions[5][:] = [-1, 0]             # <<<<<<<<<<<<<<
+ *     directions[6][:] = [-1, 1]
+ *     directions[7][:] = [0, 1]
+ */
+  __pyx_t_18[0] = -1;
+  __pyx_t_18[1] = 0;
+  memcpy(&((__pyx_v_directions[5])[0]), __pyx_t_18, sizeof((__pyx_v_directions[5])[0]) * (2));
+
+  /* "cythonfn.pyx":56
+ *     directions[4][:] = [-1, -1]
+ *     directions[5][:] = [-1, 0]
+ *     directions[6][:] = [-1, 1]             # <<<<<<<<<<<<<<
+ *     directions[7][:] = [0, 1]
+ * 
+ */
+  __pyx_t_19[0] = -1;
+  __pyx_t_19[1] = 1;
+  memcpy(&((__pyx_v_directions[6])[0]), __pyx_t_19, sizeof((__pyx_v_directions[6])[0]) * (2));
+
+  /* "cythonfn.pyx":57
+ *     directions[5][:] = [-1, 0]
+ *     directions[6][:] = [-1, 1]
+ *     directions[7][:] = [0, 1]             # <<<<<<<<<<<<<<
+ * 
+ *     board_view[agent_id, action_r, action_c] = 1
+ */
+  __pyx_t_20[0] = 0;
+  __pyx_t_20[1] = 1;
+  memcpy(&((__pyx_v_directions[7])[0]), __pyx_t_20, sizeof((__pyx_v_directions[7])[0]) * (2));
+
+  /* "cythonfn.pyx":59
+ *     directions[7][:] = [0, 1]
+ * 
+ *     board_view[agent_id, action_r, action_c] = 1             # <<<<<<<<<<<<<<
+ * 
+ *     flipped_something = 0
+ */
+  __pyx_t_11 = __pyx_v_agent_id;
+  __pyx_t_10 = __pyx_v_action_r;
+  __pyx_t_9 = __pyx_v_action_c;
+  *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_11 * __pyx_v_board_view.strides[0]) ) + __pyx_t_10 * __pyx_v_board_view.strides[1]) ) + __pyx_t_9 * __pyx_v_board_view.strides[2]) )) = 1;
+
+  /* "cythonfn.pyx":61
+ *     board_view[agent_id, action_r, action_c] = 1
+ * 
+ *     flipped_something = 0             # <<<<<<<<<<<<<<
+ *     for i in range(8):
+ *         flag = 0
+ */
+  __pyx_v_flipped_something = 0;
+
+  /* "cythonfn.pyx":62
+ * 
+ *     flipped_something = 0
+ *     for i in range(8):             # <<<<<<<<<<<<<<
+ *         flag = 0
+ *         now_r = action_r
+ */
+  for (__pyx_t_5 = 0; __pyx_t_5 < 8; __pyx_t_5+=1) {
+    __pyx_v_i = __pyx_t_5;
+
+    /* "cythonfn.pyx":63
+ *     flipped_something = 0
+ *     for i in range(8):
+ *         flag = 0             # <<<<<<<<<<<<<<
+ *         now_r = action_r
+ *         now_c = action_c
+ */
+    __pyx_v_flag = 0;
+
+    /* "cythonfn.pyx":64
+ *     for i in range(8):
+ *         flag = 0
+ *         now_r = action_r             # <<<<<<<<<<<<<<
+ *         now_c = action_c
+ *         for j in range(board_size):
+ */
+    __pyx_v_now_r = __pyx_v_action_r;
+
+    /* "cythonfn.pyx":65
+ *         flag = 0
+ *         now_r = action_r
+ *         now_c = action_c             # <<<<<<<<<<<<<<
+ *         for j in range(board_size):
+ *             now_r += directions[i][0]
+ */
+    __pyx_v_now_c = __pyx_v_action_c;
+
+    /* "cythonfn.pyx":66
+ *         now_r = action_r
+ *         now_c = action_c
+ *         for j in range(board_size):             # <<<<<<<<<<<<<<
+ *             now_r += directions[i][0]
+ *             now_c += directions[i][1]
+ */
+    __pyx_t_21 = __pyx_v_board_size;
+    __pyx_t_22 = __pyx_t_21;
+    for (__pyx_t_23 = 0; __pyx_t_23 < __pyx_t_22; __pyx_t_23+=1) {
+      __pyx_v_j = __pyx_t_23;
+
+      /* "cythonfn.pyx":67
+ *         now_c = action_c
+ *         for j in range(board_size):
+ *             now_r += directions[i][0]             # <<<<<<<<<<<<<<
+ *             now_c += directions[i][1]
+ *             if not _check_in_range(now_r, now_c, board_size):
+ */
+      __pyx_v_now_r = (__pyx_v_now_r + ((__pyx_v_directions[__pyx_v_i])[0]));
+
+      /* "cythonfn.pyx":68
+ *         for j in range(board_size):
+ *             now_r += directions[i][0]
+ *             now_c += directions[i][1]             # <<<<<<<<<<<<<<
+ *             if not _check_in_range(now_r, now_c, board_size):
+ *                 break
+ */
+      __pyx_v_now_c = (__pyx_v_now_c + ((__pyx_v_directions[__pyx_v_i])[1]));
+
+      /* "cythonfn.pyx":69
+ *             now_r += directions[i][0]
+ *             now_c += directions[i][1]
+ *             if not _check_in_range(now_r, now_c, board_size):             # <<<<<<<<<<<<<<
+ *                 break
+ *             if board_view[1-agent_id, now_r, now_c]:
+ */
+      __pyx_t_6.__pyx_n = 1;
+      __pyx_t_6.bottom_right = __pyx_v_board_size;
+      __pyx_t_24 = __pyx_f_8cythonfn__check_in_range(__pyx_v_now_r, __pyx_v_now_c, &__pyx_t_6); 
+      __pyx_t_8 = ((!(__pyx_t_24 != 0)) != 0);
+      if (__pyx_t_8) {
+
+        /* "cythonfn.pyx":70
+ *             now_c += directions[i][1]
+ *             if not _check_in_range(now_r, now_c, board_size):
+ *                 break             # <<<<<<<<<<<<<<
+ *             if board_view[1-agent_id, now_r, now_c]:
+ *                 flag = 1
+ */
+        goto __pyx_L14_break;
+
+        /* "cythonfn.pyx":69
+ *             now_r += directions[i][0]
+ *             now_c += directions[i][1]
+ *             if not _check_in_range(now_r, now_c, board_size):             # <<<<<<<<<<<<<<
+ *                 break
+ *             if board_view[1-agent_id, now_r, now_c]:
+ */
+      }
+
+      /* "cythonfn.pyx":71
+ *             if not _check_in_range(now_r, now_c, board_size):
+ *                 break
+ *             if board_view[1-agent_id, now_r, now_c]:             # <<<<<<<<<<<<<<
+ *                 flag = 1
+ *             elif board_view[agent_id, now_r, now_c]:
+ */
+      __pyx_t_9 = (1 - __pyx_v_agent_id);
+      __pyx_t_10 = __pyx_v_now_r;
+      __pyx_t_11 = __pyx_v_now_c;
+      __pyx_t_8 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_9 * __pyx_v_board_view.strides[0]) ) + __pyx_t_10 * __pyx_v_board_view.strides[1]) ) + __pyx_t_11 * __pyx_v_board_view.strides[2]) ))) != 0);
+      if (__pyx_t_8) {
+
+        /* "cythonfn.pyx":72
+ *                 break
+ *             if board_view[1-agent_id, now_r, now_c]:
+ *                 flag = 1             # <<<<<<<<<<<<<<
+ *             elif board_view[agent_id, now_r, now_c]:
+ *                 if flag:
+ */
+        __pyx_v_flag = 1;
+
+        /* "cythonfn.pyx":71
+ *             if not _check_in_range(now_r, now_c, board_size):
+ *                 break
+ *             if board_view[1-agent_id, now_r, now_c]:             # <<<<<<<<<<<<<<
+ *                 flag = 1
+ *             elif board_view[agent_id, now_r, now_c]:
+ */
+        goto __pyx_L16;
+      }
+
+      /* "cythonfn.pyx":73
+ *             if board_view[1-agent_id, now_r, now_c]:
+ *                 flag = 1
+ *             elif board_view[agent_id, now_r, now_c]:             # <<<<<<<<<<<<<<
+ *                 if flag:
+ *                     flipped_something = 1
+ */
+      __pyx_t_11 = __pyx_v_agent_id;
+      __pyx_t_10 = __pyx_v_now_r;
+      __pyx_t_9 = __pyx_v_now_c;
+      __pyx_t_8 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_11 * __pyx_v_board_view.strides[0]) ) + __pyx_t_10 * __pyx_v_board_view.strides[1]) ) + __pyx_t_9 * __pyx_v_board_view.strides[2]) ))) != 0);
+      if (__pyx_t_8) {
+
+        /* "cythonfn.pyx":74
+ *                 flag = 1
+ *             elif board_view[agent_id, now_r, now_c]:
+ *                 if flag:             # <<<<<<<<<<<<<<
+ *                     flipped_something = 1
+ *                     now_r = action_r
+ */
+        __pyx_t_8 = (__pyx_v_flag != 0);
+        if (__pyx_t_8) {
+
+          /* "cythonfn.pyx":75
+ *             elif board_view[agent_id, now_r, now_c]:
+ *                 if flag:
+ *                     flipped_something = 1             # <<<<<<<<<<<<<<
+ *                     now_r = action_r
+ *                     now_c = action_c
+ */
+          __pyx_v_flipped_something = 1;
+
+          /* "cythonfn.pyx":76
+ *                 if flag:
+ *                     flipped_something = 1
+ *                     now_r = action_r             # <<<<<<<<<<<<<<
+ *                     now_c = action_c
+ *                     for k in range(j):
+ */
+          __pyx_v_now_r = __pyx_v_action_r;
+
+          /* "cythonfn.pyx":77
+ *                     flipped_something = 1
+ *                     now_r = action_r
+ *                     now_c = action_c             # <<<<<<<<<<<<<<
+ *                     for k in range(j):
+ *                         now_r += directions[i][0]
+ */
+          __pyx_v_now_c = __pyx_v_action_c;
+
+          /* "cythonfn.pyx":78
+ *                     now_r = action_r
+ *                     now_c = action_c
+ *                     for k in range(j):             # <<<<<<<<<<<<<<
+ *                         now_r += directions[i][0]
+ *                         now_c += directions[i][1]
+ */
+          __pyx_t_24 = __pyx_v_j;
+          __pyx_t_25 = __pyx_t_24;
+          for (__pyx_t_26 = 0; __pyx_t_26 < __pyx_t_25; __pyx_t_26+=1) {
+            __pyx_v_k = __pyx_t_26;
+
+            /* "cythonfn.pyx":79
+ *                     now_c = action_c
+ *                     for k in range(j):
+ *                         now_r += directions[i][0]             # <<<<<<<<<<<<<<
+ *                         now_c += directions[i][1]
+ *                         board_view[agent_id, now_r, now_c] = 1
+ */
+            __pyx_v_now_r = (__pyx_v_now_r + ((__pyx_v_directions[__pyx_v_i])[0]));
+
+            /* "cythonfn.pyx":80
+ *                     for k in range(j):
+ *                         now_r += directions[i][0]
+ *                         now_c += directions[i][1]             # <<<<<<<<<<<<<<
+ *                         board_view[agent_id, now_r, now_c] = 1
+ *                         board_view[1-agent_id, now_r, now_c] = 0
+ */
+            __pyx_v_now_c = (__pyx_v_now_c + ((__pyx_v_directions[__pyx_v_i])[1]));
+
+            /* "cythonfn.pyx":81
+ *                         now_r += directions[i][0]
+ *                         now_c += directions[i][1]
+ *                         board_view[agent_id, now_r, now_c] = 1             # <<<<<<<<<<<<<<
+ *                         board_view[1-agent_id, now_r, now_c] = 0
+ *                     break
+ */
+            __pyx_t_9 = __pyx_v_agent_id;
+            __pyx_t_10 = __pyx_v_now_r;
+            __pyx_t_11 = __pyx_v_now_c;
+            *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_9 * __pyx_v_board_view.strides[0]) ) + __pyx_t_10 * __pyx_v_board_view.strides[1]) ) + __pyx_t_11 * __pyx_v_board_view.strides[2]) )) = 1;
+
+            /* "cythonfn.pyx":82
+ *                         now_c += directions[i][1]
+ *                         board_view[agent_id, now_r, now_c] = 1
+ *                         board_view[1-agent_id, now_r, now_c] = 0             # <<<<<<<<<<<<<<
+ *                     break
+ *                 else:
+ */
+            __pyx_t_11 = (1 - __pyx_v_agent_id);
+            __pyx_t_10 = __pyx_v_now_r;
+            __pyx_t_9 = __pyx_v_now_c;
+            *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_11 * __pyx_v_board_view.strides[0]) ) + __pyx_t_10 * __pyx_v_board_view.strides[1]) ) + __pyx_t_9 * __pyx_v_board_view.strides[2]) )) = 0;
+          }
+
+          /* "cythonfn.pyx":83
+ *                         board_view[agent_id, now_r, now_c] = 1
+ *                         board_view[1-agent_id, now_r, now_c] = 0
+ *                     break             # <<<<<<<<<<<<<<
+ *                 else:
+ *                     break
+ */
+          goto __pyx_L14_break;
+
+          /* "cythonfn.pyx":74
+ *                 flag = 1
+ *             elif board_view[agent_id, now_r, now_c]:
+ *                 if flag:             # <<<<<<<<<<<<<<
+ *                     flipped_something = 1
+ *                     now_r = action_r
+ */
+        }
+
+        /* "cythonfn.pyx":85
+ *                     break
+ *                 else:
+ *                     break             # <<<<<<<<<<<<<<
+ *             else:
+ *                 break
+ */
+        /*else*/ {
+          goto __pyx_L14_break;
+        }
+
+        /* "cythonfn.pyx":73
+ *             if board_view[1-agent_id, now_r, now_c]:
+ *                 flag = 1
+ *             elif board_view[agent_id, now_r, now_c]:             # <<<<<<<<<<<<<<
+ *                 if flag:
+ *                     flipped_something = 1
+ */
+      }
 
       /* "cythonfn.pyx":87
- *         if y == board_size-1:
- *             raise ValueError("cannot place wall on the edge")
- *         if x == board_size-1:             # <<<<<<<<<<<<<<
- *             raise ValueError("right section out of board")
- *         if board_view[2, x, y] or board_view[2, x+1, y]:
+ *                     break
+ *             else:
+ *                 break             # <<<<<<<<<<<<<<
+ *     if not flipped_something:
+ *         raise ValueError("There is no stone to flip")
  */
+      /*else*/ {
+        goto __pyx_L14_break;
+      }
+      __pyx_L16:;
     }
+    __pyx_L14_break:;
+  }
+
+  /* "cythonfn.pyx":88
+ *             else:
+ *                 break
+ *     if not flipped_something:             # <<<<<<<<<<<<<<
+ *         raise ValueError("There is no stone to flip")
+ * 
+ */
+  __pyx_t_8 = ((!(__pyx_v_flipped_something != 0)) != 0);
+  if (unlikely(__pyx_t_8)) {
 
     /* "cythonfn.pyx":89
- *         if x == board_size-1:
- *             raise ValueError("right section out of board")
- *         if board_view[2, x, y] or board_view[2, x+1, y]:             # <<<<<<<<<<<<<<
- *             raise ValueError("wall already placed")
- *         zero_index = -1
+ *                 break
+ *     if not flipped_something:
+ *         raise ValueError("There is no stone to flip")             # <<<<<<<<<<<<<<
+ * 
+ *     for i in range(board_size):
  */
-    __pyx_t_13 = 2;
-    __pyx_t_14 = __pyx_v_x;
-    __pyx_t_15 = __pyx_v_y;
-    __pyx_t_12 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_13 * __pyx_v_board_view.strides[0]) ) + __pyx_t_14 * __pyx_v_board_view.strides[1]) ) + __pyx_t_15 * __pyx_v_board_view.strides[2]) ))) != 0);
-    if (!__pyx_t_12) {
-    } else {
-      __pyx_t_9 = __pyx_t_12;
-      goto __pyx_L30_bool_binop_done;
-    }
-    __pyx_t_15 = 2;
-    __pyx_t_14 = (__pyx_v_x + 1);
-    __pyx_t_13 = __pyx_v_y;
-    __pyx_t_12 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_15 * __pyx_v_board_view.strides[0]) ) + __pyx_t_14 * __pyx_v_board_view.strides[1]) ) + __pyx_t_13 * __pyx_v_board_view.strides[2]) ))) != 0);
-    __pyx_t_9 = __pyx_t_12;
-    __pyx_L30_bool_binop_done:;
-    if (unlikely(__pyx_t_9)) {
+    __pyx_t_12 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 89, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_12);
+    __Pyx_Raise(__pyx_t_12, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
+    __PYX_ERR(0, 89, __pyx_L1_error)
 
-      /* "cythonfn.pyx":90
- *             raise ValueError("right section out of board")
- *         if board_view[2, x, y] or board_view[2, x+1, y]:
- *             raise ValueError("wall already placed")             # <<<<<<<<<<<<<<
- *         zero_index = -1
- *         for cy in range(y, -1, -1):
+    /* "cythonfn.pyx":88
+ *             else:
+ *                 break
+ *     if not flipped_something:             # <<<<<<<<<<<<<<
+ *         raise ValueError("There is no stone to flip")
+ * 
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 90, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 90, __pyx_L1_error)
+  }
 
-      /* "cythonfn.pyx":89
- *         if x == board_size-1:
- *             raise ValueError("right section out of board")
- *         if board_view[2, x, y] or board_view[2, x+1, y]:             # <<<<<<<<<<<<<<
- *             raise ValueError("wall already placed")
- *         zero_index = -1
+  /* "cythonfn.pyx":91
+ *         raise ValueError("There is no stone to flip")
+ * 
+ *     for i in range(board_size):             # <<<<<<<<<<<<<<
+ *         for j in range(board_size):
+ *             if board_view[0, i, j] or board_view[1, i, j]:
  */
-    }
-
-    /* "cythonfn.pyx":91
- *         if board_view[2, x, y] or board_view[2, x+1, y]:
- *             raise ValueError("wall already placed")
- *         zero_index = -1             # <<<<<<<<<<<<<<
- *         for cy in range(y, -1, -1):
- *             if board_view[3, x, cy] == 0:
- */
-    __pyx_v_zero_index = -1;
+  __pyx_t_5 = __pyx_v_board_size;
+  __pyx_t_21 = __pyx_t_5;
+  for (__pyx_t_22 = 0; __pyx_t_22 < __pyx_t_21; __pyx_t_22+=1) {
+    __pyx_v_i = __pyx_t_22;
 
     /* "cythonfn.pyx":92
- *             raise ValueError("wall already placed")
- *         zero_index = -1
- *         for cy in range(y, -1, -1):             # <<<<<<<<<<<<<<
- *             if board_view[3, x, cy] == 0:
- *                 zero_index = cy
+ * 
+ *     for i in range(board_size):
+ *         for j in range(board_size):             # <<<<<<<<<<<<<<
+ *             if board_view[0, i, j] or board_view[1, i, j]:
+ *                 legal_actions_view[0, i, j] = 0
  */
-    for (__pyx_t_11 = __pyx_v_y; __pyx_t_11 > -1; __pyx_t_11-=1) {
-      __pyx_v_cy = __pyx_t_11;
+    __pyx_t_23 = __pyx_v_board_size;
+    __pyx_t_24 = __pyx_t_23;
+    for (__pyx_t_25 = 0; __pyx_t_25 < __pyx_t_24; __pyx_t_25+=1) {
+      __pyx_v_j = __pyx_t_25;
 
       /* "cythonfn.pyx":93
- *         zero_index = -1
- *         for cy in range(y, -1, -1):
- *             if board_view[3, x, cy] == 0:             # <<<<<<<<<<<<<<
- *                 zero_index = cy
- *                 break
+ *     for i in range(board_size):
+ *         for j in range(board_size):
+ *             if board_view[0, i, j] or board_view[1, i, j]:             # <<<<<<<<<<<<<<
+ *                 legal_actions_view[0, i, j] = 0
+ *                 legal_actions_view[1, i, j] = 0
  */
-      __pyx_t_13 = 3;
-      __pyx_t_14 = __pyx_v_x;
-      __pyx_t_15 = __pyx_v_cy;
-      __pyx_t_9 = (((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_13 * __pyx_v_board_view.strides[0]) ) + __pyx_t_14 * __pyx_v_board_view.strides[1]) ) + __pyx_t_15 * __pyx_v_board_view.strides[2]) ))) == 0) != 0);
-      if (__pyx_t_9) {
+      __pyx_t_9 = 0;
+      __pyx_t_10 = __pyx_v_i;
+      __pyx_t_11 = __pyx_v_j;
+      __pyx_t_7 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_9 * __pyx_v_board_view.strides[0]) ) + __pyx_t_10 * __pyx_v_board_view.strides[1]) ) + __pyx_t_11 * __pyx_v_board_view.strides[2]) ))) != 0);
+      if (!__pyx_t_7) {
+      } else {
+        __pyx_t_8 = __pyx_t_7;
+        goto __pyx_L26_bool_binop_done;
+      }
+      __pyx_t_11 = 1;
+      __pyx_t_10 = __pyx_v_i;
+      __pyx_t_9 = __pyx_v_j;
+      __pyx_t_7 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_11 * __pyx_v_board_view.strides[0]) ) + __pyx_t_10 * __pyx_v_board_view.strides[1]) ) + __pyx_t_9 * __pyx_v_board_view.strides[2]) ))) != 0);
+      __pyx_t_8 = __pyx_t_7;
+      __pyx_L26_bool_binop_done:;
+      if (__pyx_t_8) {
 
         /* "cythonfn.pyx":94
- *         for cy in range(y, -1, -1):
- *             if board_view[3, x, cy] == 0:
- *                 zero_index = cy             # <<<<<<<<<<<<<<
- *                 break
- *         if zero_index == -1:
+ *         for j in range(board_size):
+ *             if board_view[0, i, j] or board_view[1, i, j]:
+ *                 legal_actions_view[0, i, j] = 0             # <<<<<<<<<<<<<<
+ *                 legal_actions_view[1, i, j] = 0
+ *             else:
  */
-        __pyx_v_zero_index = __pyx_v_cy;
+        __pyx_t_9 = 0;
+        __pyx_t_10 = __pyx_v_i;
+        __pyx_t_11 = __pyx_v_j;
+        *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_legal_actions_view.data + __pyx_t_9 * __pyx_v_legal_actions_view.strides[0]) ) + __pyx_t_10 * __pyx_v_legal_actions_view.strides[1]) ) + __pyx_t_11 * __pyx_v_legal_actions_view.strides[2]) )) = 0;
 
         /* "cythonfn.pyx":95
- *             if board_view[3, x, cy] == 0:
- *                 zero_index = cy
- *                 break             # <<<<<<<<<<<<<<
- *         if zero_index == -1:
- *             if y % 2 == 0:
+ *             if board_view[0, i, j] or board_view[1, i, j]:
+ *                 legal_actions_view[0, i, j] = 0
+ *                 legal_actions_view[1, i, j] = 0             # <<<<<<<<<<<<<<
+ *             else:
+ *                 legal_actions_view[0, i, j] = is_flippable(board_view, 0, i, j, board_size)
  */
-        goto __pyx_L33_break;
+        __pyx_t_11 = 1;
+        __pyx_t_10 = __pyx_v_i;
+        __pyx_t_9 = __pyx_v_j;
+        *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_legal_actions_view.data + __pyx_t_11 * __pyx_v_legal_actions_view.strides[0]) ) + __pyx_t_10 * __pyx_v_legal_actions_view.strides[1]) ) + __pyx_t_9 * __pyx_v_legal_actions_view.strides[2]) )) = 0;
 
         /* "cythonfn.pyx":93
- *         zero_index = -1
- *         for cy in range(y, -1, -1):
- *             if board_view[3, x, cy] == 0:             # <<<<<<<<<<<<<<
- *                 zero_index = cy
- *                 break
+ *     for i in range(board_size):
+ *         for j in range(board_size):
+ *             if board_view[0, i, j] or board_view[1, i, j]:             # <<<<<<<<<<<<<<
+ *                 legal_actions_view[0, i, j] = 0
+ *                 legal_actions_view[1, i, j] = 0
  */
+        goto __pyx_L25;
       }
-    }
-    __pyx_L33_break:;
-
-    /* "cythonfn.pyx":96
- *                 zero_index = cy
- *                 break
- *         if zero_index == -1:             # <<<<<<<<<<<<<<
- *             if y % 2 == 0:
- *                 raise ValueError("cannot create intersecting walls")
- */
-    __pyx_t_9 = ((__pyx_v_zero_index == -1L) != 0);
-    if (__pyx_t_9) {
 
       /* "cythonfn.pyx":97
- *                 break
- *         if zero_index == -1:
- *             if y % 2 == 0:             # <<<<<<<<<<<<<<
- *                 raise ValueError("cannot create intersecting walls")
- *         elif (y - zero_index) % 2 == 1:
+ *                 legal_actions_view[1, i, j] = 0
+ *             else:
+ *                 legal_actions_view[0, i, j] = is_flippable(board_view, 0, i, j, board_size)             # <<<<<<<<<<<<<<
+ *                 legal_actions_view[1, i, j] = is_flippable(board_view, 1, i, j, board_size)
+ * 
  */
-      __pyx_t_9 = (((__pyx_v_y % 2) == 0) != 0);
-      if (unlikely(__pyx_t_9)) {
+      /*else*/ {
+        __pyx_t_9 = 0;
+        __pyx_t_10 = __pyx_v_i;
+        __pyx_t_11 = __pyx_v_j;
+        *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_legal_actions_view.data + __pyx_t_9 * __pyx_v_legal_actions_view.strides[0]) ) + __pyx_t_10 * __pyx_v_legal_actions_view.strides[1]) ) + __pyx_t_11 * __pyx_v_legal_actions_view.strides[2]) )) = __pyx_f_8cythonfn_is_flippable(__pyx_v_board_view, 0, __pyx_v_i, __pyx_v_j, __pyx_v_board_size);
 
         /* "cythonfn.pyx":98
- *         if zero_index == -1:
- *             if y % 2 == 0:
- *                 raise ValueError("cannot create intersecting walls")             # <<<<<<<<<<<<<<
- *         elif (y - zero_index) % 2 == 1:
- *             raise ValueError("cannot create intersecting walls")
- */
-        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 98, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __PYX_ERR(0, 98, __pyx_L1_error)
-
-        /* "cythonfn.pyx":97
- *                 break
- *         if zero_index == -1:
- *             if y % 2 == 0:             # <<<<<<<<<<<<<<
- *                 raise ValueError("cannot create intersecting walls")
- *         elif (y - zero_index) % 2 == 1:
- */
-      }
-
-      /* "cythonfn.pyx":96
- *                 zero_index = cy
- *                 break
- *         if zero_index == -1:             # <<<<<<<<<<<<<<
- *             if y % 2 == 0:
- *                 raise ValueError("cannot create intersecting walls")
- */
-      goto __pyx_L35;
-    }
-
-    /* "cythonfn.pyx":99
- *             if y % 2 == 0:
- *                 raise ValueError("cannot create intersecting walls")
- *         elif (y - zero_index) % 2 == 1:             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot create intersecting walls")
- *         board_view[2, x, y] = 1 + agent_id
- */
-    __pyx_t_9 = ((((__pyx_v_y - __pyx_v_zero_index) % 2) == 1) != 0);
-    if (unlikely(__pyx_t_9)) {
-
-      /* "cythonfn.pyx":100
- *                 raise ValueError("cannot create intersecting walls")
- *         elif (y - zero_index) % 2 == 1:
- *             raise ValueError("cannot create intersecting walls")             # <<<<<<<<<<<<<<
- *         board_view[2, x, y] = 1 + agent_id
- *         board_view[2, x + 1, y] = 1 + agent_id
- */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 100, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 100, __pyx_L1_error)
-
-      /* "cythonfn.pyx":99
- *             if y % 2 == 0:
- *                 raise ValueError("cannot create intersecting walls")
- *         elif (y - zero_index) % 2 == 1:             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot create intersecting walls")
- *         board_view[2, x, y] = 1 + agent_id
- */
-    }
-    __pyx_L35:;
-
-    /* "cythonfn.pyx":101
- *         elif (y - zero_index) % 2 == 1:
- *             raise ValueError("cannot create intersecting walls")
- *         board_view[2, x, y] = 1 + agent_id             # <<<<<<<<<<<<<<
- *         board_view[2, x + 1, y] = 1 + agent_id
- *         walls_remaining_view[agent_id] -= 1
- */
-    __pyx_t_15 = 2;
-    __pyx_t_14 = __pyx_v_x;
-    __pyx_t_13 = __pyx_v_y;
-    *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_15 * __pyx_v_board_view.strides[0]) ) + __pyx_t_14 * __pyx_v_board_view.strides[1]) ) + __pyx_t_13 * __pyx_v_board_view.strides[2]) )) = (1 + __pyx_v_agent_id);
-
-    /* "cythonfn.pyx":102
- *             raise ValueError("cannot create intersecting walls")
- *         board_view[2, x, y] = 1 + agent_id
- *         board_view[2, x + 1, y] = 1 + agent_id             # <<<<<<<<<<<<<<
- *         walls_remaining_view[agent_id] -= 1
+ *             else:
+ *                 legal_actions_view[0, i, j] = is_flippable(board_view, 0, i, j, board_size)
+ *                 legal_actions_view[1, i, j] = is_flippable(board_view, 1, i, j, board_size)             # <<<<<<<<<<<<<<
  * 
+ *     has_action0 = 0
  */
-    __pyx_t_13 = 2;
-    __pyx_t_14 = (__pyx_v_x + 1);
-    __pyx_t_15 = __pyx_v_y;
-    *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_13 * __pyx_v_board_view.strides[0]) ) + __pyx_t_14 * __pyx_v_board_view.strides[1]) ) + __pyx_t_15 * __pyx_v_board_view.strides[2]) )) = (1 + __pyx_v_agent_id);
+        __pyx_t_11 = 1;
+        __pyx_t_10 = __pyx_v_i;
+        __pyx_t_9 = __pyx_v_j;
+        *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_legal_actions_view.data + __pyx_t_11 * __pyx_v_legal_actions_view.strides[0]) ) + __pyx_t_10 * __pyx_v_legal_actions_view.strides[1]) ) + __pyx_t_9 * __pyx_v_legal_actions_view.strides[2]) )) = __pyx_f_8cythonfn_is_flippable(__pyx_v_board_view, 1, __pyx_v_i, __pyx_v_j, __pyx_v_board_size);
+      }
+      __pyx_L25:;
+    }
+  }
+
+  /* "cythonfn.pyx":100
+ *                 legal_actions_view[1, i, j] = is_flippable(board_view, 1, i, j, board_size)
+ * 
+ *     has_action0 = 0             # <<<<<<<<<<<<<<
+ *     has_action1 = 0
+ *     for i in range(board_size):
+ */
+  __pyx_v_has_action0 = 0;
+
+  /* "cythonfn.pyx":101
+ * 
+ *     has_action0 = 0
+ *     has_action1 = 0             # <<<<<<<<<<<<<<
+ *     for i in range(board_size):
+ *         for j in range(board_size):
+ */
+  __pyx_v_has_action1 = 0;
+
+  /* "cythonfn.pyx":102
+ *     has_action0 = 0
+ *     has_action1 = 0
+ *     for i in range(board_size):             # <<<<<<<<<<<<<<
+ *         for j in range(board_size):
+ *             if legal_actions_view[0, i, j]:
+ */
+  __pyx_t_5 = __pyx_v_board_size;
+  __pyx_t_21 = __pyx_t_5;
+  for (__pyx_t_22 = 0; __pyx_t_22 < __pyx_t_21; __pyx_t_22+=1) {
+    __pyx_v_i = __pyx_t_22;
 
     /* "cythonfn.pyx":103
- *         board_view[2, x, y] = 1 + agent_id
- *         board_view[2, x + 1, y] = 1 + agent_id
- *         walls_remaining_view[agent_id] -= 1             # <<<<<<<<<<<<<<
- * 
- *     elif action_type == 2:  # Place wall vertically
+ *     has_action1 = 0
+ *     for i in range(board_size):
+ *         for j in range(board_size):             # <<<<<<<<<<<<<<
+ *             if legal_actions_view[0, i, j]:
+ *                 has_action0 = 1
  */
-    __pyx_t_15 = __pyx_v_agent_id;
-    *((int *) ( /* dim=0 */ (__pyx_v_walls_remaining_view.data + __pyx_t_15 * __pyx_v_walls_remaining_view.strides[0]) )) -= 1;
+    __pyx_t_23 = __pyx_v_board_size;
+    __pyx_t_24 = __pyx_t_23;
+    for (__pyx_t_25 = 0; __pyx_t_25 < __pyx_t_24; __pyx_t_25+=1) {
+      __pyx_v_j = __pyx_t_25;
 
-    /* "cythonfn.pyx":82
- *         board_view[agent_id, newpos_x, newpos_y] = 1
- * 
- *     elif action_type == 1:  # Place wall horizontally             # <<<<<<<<<<<<<<
- *         if walls_remaining_view[agent_id] == 0:
- *             raise ValueError(f"no walls left for agent {agent_id}")
+      /* "cythonfn.pyx":104
+ *     for i in range(board_size):
+ *         for j in range(board_size):
+ *             if legal_actions_view[0, i, j]:             # <<<<<<<<<<<<<<
+ *                 has_action0 = 1
+ *             if legal_actions_view[1, i, j]:
  */
-    break;
-    case 2:
+      __pyx_t_9 = 0;
+      __pyx_t_10 = __pyx_v_i;
+      __pyx_t_11 = __pyx_v_j;
+      __pyx_t_8 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_legal_actions_view.data + __pyx_t_9 * __pyx_v_legal_actions_view.strides[0]) ) + __pyx_t_10 * __pyx_v_legal_actions_view.strides[1]) ) + __pyx_t_11 * __pyx_v_legal_actions_view.strides[2]) ))) != 0);
+      if (__pyx_t_8) {
 
-    /* "cythonfn.pyx":106
- * 
- *     elif action_type == 2:  # Place wall vertically
- *         if walls_remaining_view[agent_id] == 0:             # <<<<<<<<<<<<<<
- *             raise ValueError(f"no walls left for agent {agent_id}")
- *         if x == board_size-1:
+        /* "cythonfn.pyx":105
+ *         for j in range(board_size):
+ *             if legal_actions_view[0, i, j]:
+ *                 has_action0 = 1             # <<<<<<<<<<<<<<
+ *             if legal_actions_view[1, i, j]:
+ *                 has_action1 = 1
  */
-    __pyx_t_15 = __pyx_v_agent_id;
-    __pyx_t_9 = (((*((int *) ( /* dim=0 */ (__pyx_v_walls_remaining_view.data + __pyx_t_15 * __pyx_v_walls_remaining_view.strides[0]) ))) == 0) != 0);
-    if (unlikely(__pyx_t_9)) {
+        __pyx_v_has_action0 = 1;
 
-      /* "cythonfn.pyx":107
- *     elif action_type == 2:  # Place wall vertically
- *         if walls_remaining_view[agent_id] == 0:
- *             raise ValueError(f"no walls left for agent {agent_id}")             # <<<<<<<<<<<<<<
- *         if x == board_size-1:
- *             raise ValueError("cannot place wall on the edge")
+        /* "cythonfn.pyx":104
+ *     for i in range(board_size):
+ *         for j in range(board_size):
+ *             if legal_actions_view[0, i, j]:             # <<<<<<<<<<<<<<
+ *                 has_action0 = 1
+ *             if legal_actions_view[1, i, j]:
  */
-      __pyx_t_3 = __Pyx_PyUnicode_From_int(__pyx_v_agent_id, 0, ' ', 'd'); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_kp_u_no_walls_left_for_agent, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 107, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 107, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 107, __pyx_L1_error)
+      }
 
       /* "cythonfn.pyx":106
+ *             if legal_actions_view[0, i, j]:
+ *                 has_action0 = 1
+ *             if legal_actions_view[1, i, j]:             # <<<<<<<<<<<<<<
+ *                 has_action1 = 1
  * 
- *     elif action_type == 2:  # Place wall vertically
- *         if walls_remaining_view[agent_id] == 0:             # <<<<<<<<<<<<<<
- *             raise ValueError(f"no walls left for agent {agent_id}")
- *         if x == board_size-1:
  */
+      __pyx_t_11 = 1;
+      __pyx_t_10 = __pyx_v_i;
+      __pyx_t_9 = __pyx_v_j;
+      __pyx_t_8 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_legal_actions_view.data + __pyx_t_11 * __pyx_v_legal_actions_view.strides[0]) ) + __pyx_t_10 * __pyx_v_legal_actions_view.strides[1]) ) + __pyx_t_9 * __pyx_v_legal_actions_view.strides[2]) ))) != 0);
+      if (__pyx_t_8) {
+
+        /* "cythonfn.pyx":107
+ *                 has_action0 = 1
+ *             if legal_actions_view[1, i, j]:
+ *                 has_action1 = 1             # <<<<<<<<<<<<<<
+ * 
+ *     if has_action0 == 0:
+ */
+        __pyx_v_has_action1 = 1;
+
+        /* "cythonfn.pyx":106
+ *             if legal_actions_view[0, i, j]:
+ *                 has_action0 = 1
+ *             if legal_actions_view[1, i, j]:             # <<<<<<<<<<<<<<
+ *                 has_action1 = 1
+ * 
+ */
+      }
     }
+  }
 
-    /* "cythonfn.pyx":108
- *         if walls_remaining_view[agent_id] == 0:
- *             raise ValueError(f"no walls left for agent {agent_id}")
- *         if x == board_size-1:             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot place wall on the edge")
- *         if y == board_size-1:
+  /* "cythonfn.pyx":109
+ *                 has_action1 = 1
+ * 
+ *     if has_action0 == 0:             # <<<<<<<<<<<<<<
+ *         legal_actions_view[0, 3, 3] = 1
+ *     if has_action1 == 0:
  */
-    __pyx_t_9 = ((__pyx_v_x == (__pyx_v_board_size - 1)) != 0);
-    if (unlikely(__pyx_t_9)) {
-
-      /* "cythonfn.pyx":109
- *             raise ValueError(f"no walls left for agent {agent_id}")
- *         if x == board_size-1:
- *             raise ValueError("cannot place wall on the edge")             # <<<<<<<<<<<<<<
- *         if y == board_size-1:
- *             raise ValueError("right section out of board")
- */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 109, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 109, __pyx_L1_error)
-
-      /* "cythonfn.pyx":108
- *         if walls_remaining_view[agent_id] == 0:
- *             raise ValueError(f"no walls left for agent {agent_id}")
- *         if x == board_size-1:             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot place wall on the edge")
- *         if y == board_size-1:
- */
-    }
+  __pyx_t_8 = ((__pyx_v_has_action0 == 0) != 0);
+  if (__pyx_t_8) {
 
     /* "cythonfn.pyx":110
- *         if x == board_size-1:
- *             raise ValueError("cannot place wall on the edge")
- *         if y == board_size-1:             # <<<<<<<<<<<<<<
- *             raise ValueError("right section out of board")
- *         if board_view[3, x, y] or board_view[3, x, y+1]:
+ * 
+ *     if has_action0 == 0:
+ *         legal_actions_view[0, 3, 3] = 1             # <<<<<<<<<<<<<<
+ *     if has_action1 == 0:
+ *         legal_actions_view[1, 3, 3] = 1
  */
-    __pyx_t_9 = ((__pyx_v_y == (__pyx_v_board_size - 1)) != 0);
-    if (unlikely(__pyx_t_9)) {
+    __pyx_t_9 = 0;
+    __pyx_t_10 = 3;
+    __pyx_t_11 = 3;
+    *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_legal_actions_view.data + __pyx_t_9 * __pyx_v_legal_actions_view.strides[0]) ) + __pyx_t_10 * __pyx_v_legal_actions_view.strides[1]) ) + __pyx_t_11 * __pyx_v_legal_actions_view.strides[2]) )) = 1;
 
-      /* "cythonfn.pyx":111
- *             raise ValueError("cannot place wall on the edge")
- *         if y == board_size-1:
- *             raise ValueError("right section out of board")             # <<<<<<<<<<<<<<
- *         if board_view[3, x, y] or board_view[3, x, y+1]:
- *             raise ValueError("wall already placed")
+    /* "cythonfn.pyx":109
+ *                 has_action1 = 1
+ * 
+ *     if has_action0 == 0:             # <<<<<<<<<<<<<<
+ *         legal_actions_view[0, 3, 3] = 1
+ *     if has_action1 == 0:
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 111, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 111, __pyx_L1_error)
+  }
 
-      /* "cythonfn.pyx":110
- *         if x == board_size-1:
- *             raise ValueError("cannot place wall on the edge")
- *         if y == board_size-1:             # <<<<<<<<<<<<<<
- *             raise ValueError("right section out of board")
- *         if board_view[3, x, y] or board_view[3, x, y+1]:
+  /* "cythonfn.pyx":111
+ *     if has_action0 == 0:
+ *         legal_actions_view[0, 3, 3] = 1
+ *     if has_action1 == 0:             # <<<<<<<<<<<<<<
+ *         legal_actions_view[1, 3, 3] = 1
+ * 
  */
-    }
+  __pyx_t_8 = ((__pyx_v_has_action1 == 0) != 0);
+  if (__pyx_t_8) {
 
     /* "cythonfn.pyx":112
- *         if y == board_size-1:
- *             raise ValueError("right section out of board")
- *         if board_view[3, x, y] or board_view[3, x, y+1]:             # <<<<<<<<<<<<<<
- *             raise ValueError("wall already placed")
- *         zero_index = -1
+ *         legal_actions_view[0, 3, 3] = 1
+ *     if has_action1 == 0:
+ *         legal_actions_view[1, 3, 3] = 1             # <<<<<<<<<<<<<<
+ * 
+ *     if has_action0 == 0 and has_action1 == 0:
  */
-    __pyx_t_15 = 3;
-    __pyx_t_14 = __pyx_v_x;
-    __pyx_t_13 = __pyx_v_y;
-    __pyx_t_12 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_15 * __pyx_v_board_view.strides[0]) ) + __pyx_t_14 * __pyx_v_board_view.strides[1]) ) + __pyx_t_13 * __pyx_v_board_view.strides[2]) ))) != 0);
-    if (!__pyx_t_12) {
-    } else {
-      __pyx_t_9 = __pyx_t_12;
-      goto __pyx_L41_bool_binop_done;
-    }
-    __pyx_t_13 = 3;
-    __pyx_t_14 = __pyx_v_x;
-    __pyx_t_15 = (__pyx_v_y + 1);
-    __pyx_t_12 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_13 * __pyx_v_board_view.strides[0]) ) + __pyx_t_14 * __pyx_v_board_view.strides[1]) ) + __pyx_t_15 * __pyx_v_board_view.strides[2]) ))) != 0);
-    __pyx_t_9 = __pyx_t_12;
-    __pyx_L41_bool_binop_done:;
-    if (unlikely(__pyx_t_9)) {
+    __pyx_t_11 = 1;
+    __pyx_t_10 = 3;
+    __pyx_t_9 = 3;
+    *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_legal_actions_view.data + __pyx_t_11 * __pyx_v_legal_actions_view.strides[0]) ) + __pyx_t_10 * __pyx_v_legal_actions_view.strides[1]) ) + __pyx_t_9 * __pyx_v_legal_actions_view.strides[2]) )) = 1;
 
-      /* "cythonfn.pyx":113
- *             raise ValueError("right section out of board")
- *         if board_view[3, x, y] or board_view[3, x, y+1]:
- *             raise ValueError("wall already placed")             # <<<<<<<<<<<<<<
- *         zero_index = -1
- *         for cx in range(x, -1, -1):
+    /* "cythonfn.pyx":111
+ *     if has_action0 == 0:
+ *         legal_actions_view[0, 3, 3] = 1
+ *     if has_action1 == 0:             # <<<<<<<<<<<<<<
+ *         legal_actions_view[1, 3, 3] = 1
+ * 
  */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 113, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 113, __pyx_L1_error)
+  }
 
-      /* "cythonfn.pyx":112
- *         if y == board_size-1:
- *             raise ValueError("right section out of board")
- *         if board_view[3, x, y] or board_view[3, x, y+1]:             # <<<<<<<<<<<<<<
- *             raise ValueError("wall already placed")
- *         zero_index = -1
+  /* "cythonfn.pyx":114
+ *         legal_actions_view[1, 3, 3] = 1
+ * 
+ *     if has_action0 == 0 and has_action1 == 0:             # <<<<<<<<<<<<<<
+ *         done = True
+ *         reward[0] = _check_wins(board_view, board_size)
  */
-    }
-
-    /* "cythonfn.pyx":114
- *         if board_view[3, x, y] or board_view[3, x, y+1]:
- *             raise ValueError("wall already placed")
- *         zero_index = -1             # <<<<<<<<<<<<<<
- *         for cx in range(x, -1, -1):
- *             if board_view[2, cx, y] == 0:
- */
-    __pyx_v_zero_index = -1;
+  __pyx_t_7 = ((__pyx_v_has_action0 == 0) != 0);
+  if (__pyx_t_7) {
+  } else {
+    __pyx_t_8 = __pyx_t_7;
+    goto __pyx_L37_bool_binop_done;
+  }
+  __pyx_t_7 = ((__pyx_v_has_action1 == 0) != 0);
+  __pyx_t_8 = __pyx_t_7;
+  __pyx_L37_bool_binop_done:;
+  if (__pyx_t_8) {
 
     /* "cythonfn.pyx":115
- *             raise ValueError("wall already placed")
- *         zero_index = -1
- *         for cx in range(x, -1, -1):             # <<<<<<<<<<<<<<
- *             if board_view[2, cx, y] == 0:
- *                 zero_index = cx
+ * 
+ *     if has_action0 == 0 and has_action1 == 0:
+ *         done = True             # <<<<<<<<<<<<<<
+ *         reward[0] = _check_wins(board_view, board_size)
+ *         reward[1] = -reward[0]
  */
-    for (__pyx_t_11 = __pyx_v_x; __pyx_t_11 > -1; __pyx_t_11-=1) {
-      __pyx_v_cx = __pyx_t_11;
+    __pyx_v_done = 1;
 
-      /* "cythonfn.pyx":116
- *         zero_index = -1
- *         for cx in range(x, -1, -1):
- *             if board_view[2, cx, y] == 0:             # <<<<<<<<<<<<<<
- *                 zero_index = cx
- *                 break
- */
-      __pyx_t_15 = 2;
-      __pyx_t_14 = __pyx_v_cx;
-      __pyx_t_13 = __pyx_v_y;
-      __pyx_t_9 = (((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_15 * __pyx_v_board_view.strides[0]) ) + __pyx_t_14 * __pyx_v_board_view.strides[1]) ) + __pyx_t_13 * __pyx_v_board_view.strides[2]) ))) == 0) != 0);
-      if (__pyx_t_9) {
-
-        /* "cythonfn.pyx":117
- *         for cx in range(x, -1, -1):
- *             if board_view[2, cx, y] == 0:
- *                 zero_index = cx             # <<<<<<<<<<<<<<
- *                 break
- *         if zero_index == -1:
- */
-        __pyx_v_zero_index = __pyx_v_cx;
-
-        /* "cythonfn.pyx":118
- *             if board_view[2, cx, y] == 0:
- *                 zero_index = cx
- *                 break             # <<<<<<<<<<<<<<
- *         if zero_index == -1:
- *             if x % 2 == 0:
- */
-        goto __pyx_L44_break;
-
-        /* "cythonfn.pyx":116
- *         zero_index = -1
- *         for cx in range(x, -1, -1):
- *             if board_view[2, cx, y] == 0:             # <<<<<<<<<<<<<<
- *                 zero_index = cx
- *                 break
- */
-      }
-    }
-    __pyx_L44_break:;
-
-    /* "cythonfn.pyx":119
- *                 zero_index = cx
- *                 break
- *         if zero_index == -1:             # <<<<<<<<<<<<<<
- *             if x % 2 == 0:
- *                 raise ValueError("cannot create intersecting walls")
- */
-    __pyx_t_9 = ((__pyx_v_zero_index == -1L) != 0);
-    if (__pyx_t_9) {
-
-      /* "cythonfn.pyx":120
- *                 break
- *         if zero_index == -1:
- *             if x % 2 == 0:             # <<<<<<<<<<<<<<
- *                 raise ValueError("cannot create intersecting walls")
- *         elif (x - zero_index) % 2 == 1:
- */
-      __pyx_t_9 = (((__pyx_v_x % 2) == 0) != 0);
-      if (unlikely(__pyx_t_9)) {
-
-        /* "cythonfn.pyx":121
- *         if zero_index == -1:
- *             if x % 2 == 0:
- *                 raise ValueError("cannot create intersecting walls")             # <<<<<<<<<<<<<<
- *         elif (x - zero_index) % 2 == 1:
- *             raise ValueError("cannot create intersecting walls")
- */
-        __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 121, __pyx_L1_error)
-        __Pyx_GOTREF(__pyx_t_3);
-        __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-        __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-        __PYX_ERR(0, 121, __pyx_L1_error)
-
-        /* "cythonfn.pyx":120
- *                 break
- *         if zero_index == -1:
- *             if x % 2 == 0:             # <<<<<<<<<<<<<<
- *                 raise ValueError("cannot create intersecting walls")
- *         elif (x - zero_index) % 2 == 1:
- */
-      }
-
-      /* "cythonfn.pyx":119
- *                 zero_index = cx
- *                 break
- *         if zero_index == -1:             # <<<<<<<<<<<<<<
- *             if x % 2 == 0:
- *                 raise ValueError("cannot create intersecting walls")
- */
-      goto __pyx_L46;
-    }
-
-    /* "cythonfn.pyx":122
- *             if x % 2 == 0:
- *                 raise ValueError("cannot create intersecting walls")
- *         elif (x - zero_index) % 2 == 1:             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot create intersecting walls")
- *         board_view[3, x, y] = 1 + agent_id
- */
-    __pyx_t_9 = ((((__pyx_v_x - __pyx_v_zero_index) % 2) == 1) != 0);
-    if (unlikely(__pyx_t_9)) {
-
-      /* "cythonfn.pyx":123
- *                 raise ValueError("cannot create intersecting walls")
- *         elif (x - zero_index) % 2 == 1:
- *             raise ValueError("cannot create intersecting walls")             # <<<<<<<<<<<<<<
- *         board_view[3, x, y] = 1 + agent_id
- *         board_view[3, x, y + 1] = 1 + agent_id
- */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 123, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 123, __pyx_L1_error)
-
-      /* "cythonfn.pyx":122
- *             if x % 2 == 0:
- *                 raise ValueError("cannot create intersecting walls")
- *         elif (x - zero_index) % 2 == 1:             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot create intersecting walls")
- *         board_view[3, x, y] = 1 + agent_id
- */
-    }
-    __pyx_L46:;
-
-    /* "cythonfn.pyx":124
- *         elif (x - zero_index) % 2 == 1:
- *             raise ValueError("cannot create intersecting walls")
- *         board_view[3, x, y] = 1 + agent_id             # <<<<<<<<<<<<<<
- *         board_view[3, x, y + 1] = 1 + agent_id
- *         walls_remaining_view[agent_id] -= 1
- */
-    __pyx_t_13 = 3;
-    __pyx_t_14 = __pyx_v_x;
-    __pyx_t_15 = __pyx_v_y;
-    *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_13 * __pyx_v_board_view.strides[0]) ) + __pyx_t_14 * __pyx_v_board_view.strides[1]) ) + __pyx_t_15 * __pyx_v_board_view.strides[2]) )) = (1 + __pyx_v_agent_id);
-
-    /* "cythonfn.pyx":125
- *             raise ValueError("cannot create intersecting walls")
- *         board_view[3, x, y] = 1 + agent_id
- *         board_view[3, x, y + 1] = 1 + agent_id             # <<<<<<<<<<<<<<
- *         walls_remaining_view[agent_id] -= 1
+    /* "cythonfn.pyx":116
+ *     if has_action0 == 0 and has_action1 == 0:
+ *         done = True
+ *         reward[0] = _check_wins(board_view, board_size)             # <<<<<<<<<<<<<<
+ *         reward[1] = -reward[0]
  * 
  */
-    __pyx_t_15 = 3;
-    __pyx_t_14 = __pyx_v_x;
-    __pyx_t_13 = (__pyx_v_y + 1);
-    *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_15 * __pyx_v_board_view.strides[0]) ) + __pyx_t_14 * __pyx_v_board_view.strides[1]) ) + __pyx_t_13 * __pyx_v_board_view.strides[2]) )) = (1 + __pyx_v_agent_id);
+    (__pyx_v_reward[0]) = __pyx_f_8cythonfn__check_wins(__pyx_v_board_view, __pyx_v_board_size);
 
-    /* "cythonfn.pyx":126
- *         board_view[3, x, y] = 1 + agent_id
- *         board_view[3, x, y + 1] = 1 + agent_id
- *         walls_remaining_view[agent_id] -= 1             # <<<<<<<<<<<<<<
+    /* "cythonfn.pyx":117
+ *         done = True
+ *         reward[0] = _check_wins(board_view, board_size)
+ *         reward[1] = -reward[0]             # <<<<<<<<<<<<<<
  * 
- *     else:
+ *     return (board, legal_actions, reward[0], reward[1], done)
  */
-    __pyx_t_13 = __pyx_v_agent_id;
-    *((int *) ( /* dim=0 */ (__pyx_v_walls_remaining_view.data + __pyx_t_13 * __pyx_v_walls_remaining_view.strides[0]) )) -= 1;
+    (__pyx_v_reward[1]) = (-(__pyx_v_reward[0]));
 
-    /* "cythonfn.pyx":105
- *         walls_remaining_view[agent_id] -= 1
+    /* "cythonfn.pyx":114
+ *         legal_actions_view[1, 3, 3] = 1
  * 
- *     elif action_type == 2:  # Place wall vertically             # <<<<<<<<<<<<<<
- *         if walls_remaining_view[agent_id] == 0:
- *             raise ValueError(f"no walls left for agent {agent_id}")
- */
-    break;
-    default:
-
-    /* "cythonfn.pyx":129
- * 
- *     else:
- *         raise ValueError(f"invalid action_type: {action_type}")             # <<<<<<<<<<<<<<
- * 
- *     if action_type > 0:
- */
-    __pyx_t_3 = __Pyx_PyUnicode_From_int(__pyx_v_action_type, 0, ' ', 'd'); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 129, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_kp_u_invalid_action_type, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 129, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = __Pyx_PyObject_CallOneArg(__pyx_builtin_ValueError, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 129, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 129, __pyx_L1_error)
-    break;
-  }
-
-  /* "cythonfn.pyx":131
- *         raise ValueError(f"invalid action_type: {action_type}")
- * 
- *     if action_type > 0:             # <<<<<<<<<<<<<<
- *         if not _check_path_exists(board_view, 0, board_size) or not _check_path_exists(board_view, 1, board_size):
- *             raise ValueError("cannot place wall blocking all paths")
- */
-  __pyx_t_9 = ((__pyx_v_action_type > 0) != 0);
-  if (__pyx_t_9) {
-
-    /* "cythonfn.pyx":132
- * 
- *     if action_type > 0:
- *         if not _check_path_exists(board_view, 0, board_size) or not _check_path_exists(board_view, 1, board_size):             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot place wall blocking all paths")
- * 
- */
-    __pyx_t_12 = ((!(__pyx_f_8cythonfn__check_path_exists(__pyx_v_board_view, 0, __pyx_v_board_size) != 0)) != 0);
-    if (!__pyx_t_12) {
-    } else {
-      __pyx_t_9 = __pyx_t_12;
-      goto __pyx_L50_bool_binop_done;
-    }
-    __pyx_t_12 = ((!(__pyx_f_8cythonfn__check_path_exists(__pyx_v_board_view, 1, __pyx_v_board_size) != 0)) != 0);
-    __pyx_t_9 = __pyx_t_12;
-    __pyx_L50_bool_binop_done:;
-    if (unlikely(__pyx_t_9)) {
-
-      /* "cythonfn.pyx":133
- *     if action_type > 0:
- *         if not _check_path_exists(board_view, 0, board_size) or not _check_path_exists(board_view, 1, board_size):
- *             raise ValueError("cannot place wall blocking all paths")             # <<<<<<<<<<<<<<
- * 
- *     return (board, walls_remaining, _check_wins(board_view, board_size))
- */
-      __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__12, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 133, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_3);
-      __Pyx_Raise(__pyx_t_3, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __PYX_ERR(0, 133, __pyx_L1_error)
-
-      /* "cythonfn.pyx":132
- * 
- *     if action_type > 0:
- *         if not _check_path_exists(board_view, 0, board_size) or not _check_path_exists(board_view, 1, board_size):             # <<<<<<<<<<<<<<
- *             raise ValueError("cannot place wall blocking all paths")
- * 
- */
-    }
-
-    /* "cythonfn.pyx":131
- *         raise ValueError(f"invalid action_type: {action_type}")
- * 
- *     if action_type > 0:             # <<<<<<<<<<<<<<
- *         if not _check_path_exists(board_view, 0, board_size) or not _check_path_exists(board_view, 1, board_size):
- *             raise ValueError("cannot place wall blocking all paths")
+ *     if has_action0 == 0 and has_action1 == 0:             # <<<<<<<<<<<<<<
+ *         done = True
+ *         reward[0] = _check_wins(board_view, board_size)
  */
   }
 
-  /* "cythonfn.pyx":135
- *             raise ValueError("cannot place wall blocking all paths")
+  /* "cythonfn.pyx":119
+ *         reward[1] = -reward[0]
  * 
- *     return (board, walls_remaining, _check_wins(board_view, board_size))             # <<<<<<<<<<<<<<
+ *     return (board, legal_actions, reward[0], reward[1], done)             # <<<<<<<<<<<<<<
  * 
- * cdef int _is_moving_legal(int [:,:,:] board_view, int x, int y, int agent_id, int board_size):
+ * cdef int is_flippable(int [:,:,:] board_view, int agent_id, int r, int c, int board_size):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_f_8cythonfn__check_wins(__pyx_v_board_view, __pyx_v_board_size)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 135, __pyx_L1_error)
+  __pyx_t_12 = __Pyx_PyInt_From_int((__pyx_v_reward[0])); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_12);
+  __pyx_t_1 = __Pyx_PyInt_From_int((__pyx_v_reward[1])); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_done); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 119, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = PyTuple_New(3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 135, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_2 = PyTuple_New(5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_v_board);
   __Pyx_GIVEREF(__pyx_v_board);
-  PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_v_board);
-  __Pyx_INCREF(__pyx_v_walls_remaining);
-  __Pyx_GIVEREF(__pyx_v_walls_remaining);
-  PyTuple_SET_ITEM(__pyx_t_4, 1, __pyx_v_walls_remaining);
+  PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_board);
+  __Pyx_INCREF(__pyx_v_legal_actions);
+  __Pyx_GIVEREF(__pyx_v_legal_actions);
+  PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_v_legal_actions);
+  __Pyx_GIVEREF(__pyx_t_12);
+  PyTuple_SET_ITEM(__pyx_t_2, 2, __pyx_t_12);
+  __Pyx_GIVEREF(__pyx_t_1);
+  PyTuple_SET_ITEM(__pyx_t_2, 3, __pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_3);
-  PyTuple_SET_ITEM(__pyx_t_4, 2, __pyx_t_3);
+  PyTuple_SET_ITEM(__pyx_t_2, 4, __pyx_t_3);
+  __pyx_t_12 = 0;
+  __pyx_t_1 = 0;
   __pyx_t_3 = 0;
-  __pyx_r = __pyx_t_4;
-  __pyx_t_4 = 0;
+  __pyx_r = __pyx_t_2;
+  __pyx_t_2 = 0;
   goto __pyx_L0;
 
   /* "cythonfn.pyx":6
@@ -4529,1233 +4067,435 @@ static PyObject *__pyx_pf_8cythonfn_fast_step(CYTHON_UNUSED PyObject *__pyx_self
  * 
  * def fast_step(             # <<<<<<<<<<<<<<
  *     pre_board,
- *     pre_walls_remaining,
+ *     pre_legal_actions,
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __PYX_XDEC_MEMVIEW(&__pyx_t_5, 1);
-  __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_t_4, 1);
+  __Pyx_XDECREF(__pyx_t_12);
   __Pyx_AddTraceback("cythonfn.fast_step", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_board);
-  __Pyx_XDECREF(__pyx_v_walls_remaining);
   __PYX_XDEC_MEMVIEW(&__pyx_v_board_view, 1);
-  __PYX_XDEC_MEMVIEW(&__pyx_v_walls_remaining_view, 1);
+  __Pyx_XDECREF(__pyx_v_legal_actions);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_pre_legal_actions_view, 1);
+  __PYX_XDEC_MEMVIEW(&__pyx_v_legal_actions_view, 1);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "cythonfn.pyx":137
- *     return (board, walls_remaining, _check_wins(board_view, board_size))
+/* "cythonfn.pyx":121
+ *     return (board, legal_actions, reward[0], reward[1], done)
  * 
- * cdef int _is_moving_legal(int [:,:,:] board_view, int x, int y, int agent_id, int board_size):             # <<<<<<<<<<<<<<
+ * cdef int is_flippable(int [:,:,:] board_view, int agent_id, int r, int c, int board_size):             # <<<<<<<<<<<<<<
  * 
- *     cdef int curpos_x, curpos_y, newpos_x, newpos_y, opppos_x, opppos_y, delpos_x, delpos_y
+ *     cdef int i, j
  */
 
-static int __pyx_f_8cythonfn__is_moving_legal(__Pyx_memviewslice __pyx_v_board_view, int __pyx_v_x, int __pyx_v_y, int __pyx_v_agent_id, int __pyx_v_board_size) {
-  int __pyx_v_curpos_x;
-  int __pyx_v_curpos_y;
-  int __pyx_v_newpos_x;
-  int __pyx_v_newpos_y;
-  int __pyx_v_opppos_x;
-  int __pyx_v_opppos_y;
-  int __pyx_v_delpos_x;
-  int __pyx_v_delpos_y;
-  int __pyx_v_taxicab_dist;
-  int __pyx_v_original_jump_pos_x;
-  int __pyx_v_original_jump_pos_y;
+static int __pyx_f_8cythonfn_is_flippable(__Pyx_memviewslice __pyx_v_board_view, int __pyx_v_agent_id, int __pyx_v_r, int __pyx_v_c, int __pyx_v_board_size) {
+  int __pyx_v_i;
+  CYTHON_UNUSED int __pyx_v_j;
+  int __pyx_v_flag;
+  int __pyx_v_directions[8][2];
+  PyObject *__pyx_v_now_r = NULL;
+  PyObject *__pyx_v_now_c = NULL;
   int __pyx_r;
   __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  struct __pyx_opt_args_8cythonfn__check_in_range __pyx_t_2;
-  int __pyx_t_3;
-  __pyx_ctuple_int__and_int __pyx_t_4;
-  int __pyx_t_5;
-  int __pyx_t_6;
-  int __pyx_t_7;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("_is_moving_legal", 0);
-
-  /* "cythonfn.pyx":142
- *     cdef int taxicab_dist, original_jump_pos_x, original_jump_pos_y
- * 
- *     if not _check_in_range(x, y, board_size):             # <<<<<<<<<<<<<<
- *         return 0
- * 
- */
-  __pyx_t_2.__pyx_n = 1;
-  __pyx_t_2.bottom_right = __pyx_v_board_size;
-  __pyx_t_1 = __pyx_f_8cythonfn__check_in_range(__pyx_v_x, __pyx_v_y, &__pyx_t_2); 
-  __pyx_t_3 = ((!(__pyx_t_1 != 0)) != 0);
-  if (__pyx_t_3) {
-
-    /* "cythonfn.pyx":143
- * 
- *     if not _check_in_range(x, y, board_size):
- *         return 0             # <<<<<<<<<<<<<<
- * 
- *     (curpos_x, curpos_y) = _agent_pos(board_view, agent_id, board_size)
- */
-    __pyx_r = 0;
-    goto __pyx_L0;
-
-    /* "cythonfn.pyx":142
- *     cdef int taxicab_dist, original_jump_pos_x, original_jump_pos_y
- * 
- *     if not _check_in_range(x, y, board_size):             # <<<<<<<<<<<<<<
- *         return 0
- * 
- */
-  }
-
-  /* "cythonfn.pyx":145
- *         return 0
- * 
- *     (curpos_x, curpos_y) = _agent_pos(board_view, agent_id, board_size)             # <<<<<<<<<<<<<<
- *     (opppos_x, opppos_y) = _agent_pos(board_view, 1-agent_id, board_size)
- *     newpos_x = x
- */
-  __pyx_t_4 = __pyx_f_8cythonfn__agent_pos(__pyx_v_board_view, __pyx_v_agent_id, __pyx_v_board_size);
-  __pyx_t_1 = __pyx_t_4.f0;
-  __pyx_t_5 = __pyx_t_4.f1;
-  __pyx_v_curpos_x = __pyx_t_1;
-  __pyx_v_curpos_y = __pyx_t_5;
-
-  /* "cythonfn.pyx":146
- * 
- *     (curpos_x, curpos_y) = _agent_pos(board_view, agent_id, board_size)
- *     (opppos_x, opppos_y) = _agent_pos(board_view, 1-agent_id, board_size)             # <<<<<<<<<<<<<<
- *     newpos_x = x
- *     newpos_y = y
- */
-  __pyx_t_4 = __pyx_f_8cythonfn__agent_pos(__pyx_v_board_view, (1 - __pyx_v_agent_id), __pyx_v_board_size);
-  __pyx_t_5 = __pyx_t_4.f0;
-  __pyx_t_1 = __pyx_t_4.f1;
-  __pyx_v_opppos_x = __pyx_t_5;
-  __pyx_v_opppos_y = __pyx_t_1;
-
-  /* "cythonfn.pyx":147
- *     (curpos_x, curpos_y) = _agent_pos(board_view, agent_id, board_size)
- *     (opppos_x, opppos_y) = _agent_pos(board_view, 1-agent_id, board_size)
- *     newpos_x = x             # <<<<<<<<<<<<<<
- *     newpos_y = y
- * 
- */
-  __pyx_v_newpos_x = __pyx_v_x;
-
-  /* "cythonfn.pyx":148
- *     (opppos_x, opppos_y) = _agent_pos(board_view, 1-agent_id, board_size)
- *     newpos_x = x
- *     newpos_y = y             # <<<<<<<<<<<<<<
- * 
- *     if newpos_x == opppos_x and newpos_y == opppos_y:
- */
-  __pyx_v_newpos_y = __pyx_v_y;
-
-  /* "cythonfn.pyx":150
- *     newpos_y = y
- * 
- *     if newpos_x == opppos_x and newpos_y == opppos_y:             # <<<<<<<<<<<<<<
- *         return 0
- * 
- */
-  __pyx_t_6 = ((__pyx_v_newpos_x == __pyx_v_opppos_x) != 0);
-  if (__pyx_t_6) {
-  } else {
-    __pyx_t_3 = __pyx_t_6;
-    goto __pyx_L5_bool_binop_done;
-  }
-  __pyx_t_6 = ((__pyx_v_newpos_y == __pyx_v_opppos_y) != 0);
-  __pyx_t_3 = __pyx_t_6;
-  __pyx_L5_bool_binop_done:;
-  if (__pyx_t_3) {
-
-    /* "cythonfn.pyx":151
- * 
- *     if newpos_x == opppos_x and newpos_y == opppos_y:
- *         return 0             # <<<<<<<<<<<<<<
- * 
- *     delpos_x = newpos_x - curpos_x
- */
-    __pyx_r = 0;
-    goto __pyx_L0;
-
-    /* "cythonfn.pyx":150
- *     newpos_y = y
- * 
- *     if newpos_x == opppos_x and newpos_y == opppos_y:             # <<<<<<<<<<<<<<
- *         return 0
- * 
- */
-  }
-
-  /* "cythonfn.pyx":153
- *         return 0
- * 
- *     delpos_x = newpos_x - curpos_x             # <<<<<<<<<<<<<<
- *     delpos_y = newpos_y - curpos_y
- *     taxicab_dist = abs(delpos_x) + abs(delpos_y)
- */
-  __pyx_v_delpos_x = (__pyx_v_newpos_x - __pyx_v_curpos_x);
-
-  /* "cythonfn.pyx":154
- * 
- *     delpos_x = newpos_x - curpos_x
- *     delpos_y = newpos_y - curpos_y             # <<<<<<<<<<<<<<
- *     taxicab_dist = abs(delpos_x) + abs(delpos_y)
- *     if (
- */
-  __pyx_v_delpos_y = (__pyx_v_newpos_y - __pyx_v_curpos_y);
-
-  /* "cythonfn.pyx":155
- *     delpos_x = newpos_x - curpos_x
- *     delpos_y = newpos_y - curpos_y
- *     taxicab_dist = abs(delpos_x) + abs(delpos_y)             # <<<<<<<<<<<<<<
- *     if (
- *         taxicab_dist == 2
- */
-  __pyx_t_1 = abs(__pyx_v_delpos_x); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 155, __pyx_L1_error)
-  __pyx_t_5 = abs(__pyx_v_delpos_y); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 155, __pyx_L1_error)
-  __pyx_v_taxicab_dist = (__pyx_t_1 + __pyx_t_5);
-
-  /* "cythonfn.pyx":157
- *     taxicab_dist = abs(delpos_x) + abs(delpos_y)
- *     if (
- *         taxicab_dist == 2             # <<<<<<<<<<<<<<
- *         and (delpos_x == 0 or delpos_y == 0)
- *         and not (curpos_x + delpos_x / 2 == opppos_x and curpos_y + delpos_y / 2 == opppos_y)
- */
-  __pyx_t_6 = ((__pyx_v_taxicab_dist == 2) != 0);
-  if (__pyx_t_6) {
-  } else {
-    __pyx_t_3 = __pyx_t_6;
-    goto __pyx_L8_bool_binop_done;
-  }
-
-  /* "cythonfn.pyx":158
- *     if (
- *         taxicab_dist == 2
- *         and (delpos_x == 0 or delpos_y == 0)             # <<<<<<<<<<<<<<
- *         and not (curpos_x + delpos_x / 2 == opppos_x and curpos_y + delpos_y / 2 == opppos_y)
- *     ):
- */
-  __pyx_t_6 = ((__pyx_v_delpos_x == 0) != 0);
-  if (!__pyx_t_6) {
-  } else {
-    goto __pyx_L10_next_and;
-  }
-  __pyx_t_6 = ((__pyx_v_delpos_y == 0) != 0);
-  if (__pyx_t_6) {
-  } else {
-    __pyx_t_3 = __pyx_t_6;
-    goto __pyx_L8_bool_binop_done;
-  }
-  __pyx_L10_next_and:;
-
-  /* "cythonfn.pyx":159
- *         taxicab_dist == 2
- *         and (delpos_x == 0 or delpos_y == 0)
- *         and not (curpos_x + delpos_x / 2 == opppos_x and curpos_y + delpos_y / 2 == opppos_y)             # <<<<<<<<<<<<<<
- *     ):
- *         return 0
- */
-  __pyx_t_7 = (((__pyx_v_curpos_x + (((long)__pyx_v_delpos_x) / 2)) == __pyx_v_opppos_x) != 0);
-  if (__pyx_t_7) {
-  } else {
-    __pyx_t_6 = __pyx_t_7;
-    goto __pyx_L12_bool_binop_done;
-  }
-  __pyx_t_7 = (((__pyx_v_curpos_y + (((long)__pyx_v_delpos_y) / 2)) == __pyx_v_opppos_y) != 0);
-  __pyx_t_6 = __pyx_t_7;
-  __pyx_L12_bool_binop_done:;
-  __pyx_t_7 = ((!__pyx_t_6) != 0);
-  __pyx_t_3 = __pyx_t_7;
-  __pyx_L8_bool_binop_done:;
-
-  /* "cythonfn.pyx":156
- *     delpos_y = newpos_y - curpos_y
- *     taxicab_dist = abs(delpos_x) + abs(delpos_y)
- *     if (             # <<<<<<<<<<<<<<
- *         taxicab_dist == 2
- *         and (delpos_x == 0 or delpos_y == 0)
- */
-  if (__pyx_t_3) {
-
-    /* "cythonfn.pyx":161
- *         and not (curpos_x + delpos_x / 2 == opppos_x and curpos_y + delpos_y / 2 == opppos_y)
- *     ):
- *         return 0             # <<<<<<<<<<<<<<
- * 
- *     if delpos_x and delpos_y:  # If moving diagonally
- */
-    __pyx_r = 0;
-    goto __pyx_L0;
-
-    /* "cythonfn.pyx":156
- *     delpos_y = newpos_y - curpos_y
- *     taxicab_dist = abs(delpos_x) + abs(delpos_y)
- *     if (             # <<<<<<<<<<<<<<
- *         taxicab_dist == 2
- *         and (delpos_x == 0 or delpos_y == 0)
- */
-  }
-
-  /* "cythonfn.pyx":163
- *         return 0
- * 
- *     if delpos_x and delpos_y:  # If moving diagonally             # <<<<<<<<<<<<<<
- *         if (curpos_x + delpos_x != opppos_x or curpos_y != opppos_y) and (
- *             curpos_x != opppos_x or curpos_y + delpos_y != opppos_y
- */
-  __pyx_t_7 = (__pyx_v_delpos_x != 0);
-  if (__pyx_t_7) {
-  } else {
-    __pyx_t_3 = __pyx_t_7;
-    goto __pyx_L15_bool_binop_done;
-  }
-  __pyx_t_7 = (__pyx_v_delpos_y != 0);
-  __pyx_t_3 = __pyx_t_7;
-  __pyx_L15_bool_binop_done:;
-  if (__pyx_t_3) {
-
-    /* "cythonfn.pyx":164
- * 
- *     if delpos_x and delpos_y:  # If moving diagonally
- *         if (curpos_x + delpos_x != opppos_x or curpos_y != opppos_y) and (             # <<<<<<<<<<<<<<
- *             curpos_x != opppos_x or curpos_y + delpos_y != opppos_y
- *         ):
- */
-    __pyx_t_7 = (((__pyx_v_curpos_x + __pyx_v_delpos_x) != __pyx_v_opppos_x) != 0);
-    if (!__pyx_t_7) {
-    } else {
-      goto __pyx_L19_next_and;
-    }
-    __pyx_t_7 = ((__pyx_v_curpos_y != __pyx_v_opppos_y) != 0);
-    if (__pyx_t_7) {
-    } else {
-      __pyx_t_3 = __pyx_t_7;
-      goto __pyx_L18_bool_binop_done;
-    }
-    __pyx_L19_next_and:;
-
-    /* "cythonfn.pyx":165
- *     if delpos_x and delpos_y:  # If moving diagonally
- *         if (curpos_x + delpos_x != opppos_x or curpos_y != opppos_y) and (
- *             curpos_x != opppos_x or curpos_y + delpos_y != opppos_y             # <<<<<<<<<<<<<<
- *         ):
- *             # Only diagonal jumps are permitted.
- */
-    __pyx_t_7 = ((__pyx_v_curpos_x != __pyx_v_opppos_x) != 0);
-    if (!__pyx_t_7) {
-    } else {
-      __pyx_t_3 = __pyx_t_7;
-      goto __pyx_L18_bool_binop_done;
-    }
-    __pyx_t_7 = (((__pyx_v_curpos_y + __pyx_v_delpos_y) != __pyx_v_opppos_y) != 0);
-    __pyx_t_3 = __pyx_t_7;
-    __pyx_L18_bool_binop_done:;
-
-    /* "cythonfn.pyx":164
- * 
- *     if delpos_x and delpos_y:  # If moving diagonally
- *         if (curpos_x + delpos_x != opppos_x or curpos_y != opppos_y) and (             # <<<<<<<<<<<<<<
- *             curpos_x != opppos_x or curpos_y + delpos_y != opppos_y
- *         ):
- */
-    if (__pyx_t_3) {
-
-      /* "cythonfn.pyx":169
- *             # Only diagonal jumps are permitted.
- *             # Agents cannot simply move in diagonal direction.
- *             return 0             # <<<<<<<<<<<<<<
- *         elif _check_wall_blocked(board_view, curpos_x, curpos_y, opppos_x, opppos_y):
- *             return 0
- */
-      __pyx_r = 0;
-      goto __pyx_L0;
-
-      /* "cythonfn.pyx":164
- * 
- *     if delpos_x and delpos_y:  # If moving diagonally
- *         if (curpos_x + delpos_x != opppos_x or curpos_y != opppos_y) and (             # <<<<<<<<<<<<<<
- *             curpos_x != opppos_x or curpos_y + delpos_y != opppos_y
- *         ):
- */
-    }
-
-    /* "cythonfn.pyx":170
- *             # Agents cannot simply move in diagonal direction.
- *             return 0
- *         elif _check_wall_blocked(board_view, curpos_x, curpos_y, opppos_x, opppos_y):             # <<<<<<<<<<<<<<
- *             return 0
- * 
- */
-    __pyx_t_3 = (__pyx_f_8cythonfn__check_wall_blocked(__pyx_v_board_view, __pyx_v_curpos_x, __pyx_v_curpos_y, __pyx_v_opppos_x, __pyx_v_opppos_y) != 0);
-    if (__pyx_t_3) {
-
-      /* "cythonfn.pyx":171
- *             return 0
- *         elif _check_wall_blocked(board_view, curpos_x, curpos_y, opppos_x, opppos_y):
- *             return 0             # <<<<<<<<<<<<<<
- * 
- *         original_jump_pos_x = curpos_x + 2 * (opppos_x - curpos_x)
- */
-      __pyx_r = 0;
-      goto __pyx_L0;
-
-      /* "cythonfn.pyx":170
- *             # Agents cannot simply move in diagonal direction.
- *             return 0
- *         elif _check_wall_blocked(board_view, curpos_x, curpos_y, opppos_x, opppos_y):             # <<<<<<<<<<<<<<
- *             return 0
- * 
- */
-    }
-
-    /* "cythonfn.pyx":173
- *             return 0
- * 
- *         original_jump_pos_x = curpos_x + 2 * (opppos_x - curpos_x)             # <<<<<<<<<<<<<<
- *         original_jump_pos_y = curpos_y + 2 * (opppos_y - curpos_y)
- *         if _check_in_range(original_jump_pos_x, original_jump_pos_y, board_size) and not _check_wall_blocked(
- */
-    __pyx_v_original_jump_pos_x = (__pyx_v_curpos_x + (2 * (__pyx_v_opppos_x - __pyx_v_curpos_x)));
-
-    /* "cythonfn.pyx":174
- * 
- *         original_jump_pos_x = curpos_x + 2 * (opppos_x - curpos_x)
- *         original_jump_pos_y = curpos_y + 2 * (opppos_y - curpos_y)             # <<<<<<<<<<<<<<
- *         if _check_in_range(original_jump_pos_x, original_jump_pos_y, board_size) and not _check_wall_blocked(
- *             board_view, curpos_x, curpos_y, original_jump_pos_x, original_jump_pos_y
- */
-    __pyx_v_original_jump_pos_y = (__pyx_v_curpos_y + (2 * (__pyx_v_opppos_y - __pyx_v_curpos_y)));
-
-    /* "cythonfn.pyx":175
- *         original_jump_pos_x = curpos_x + 2 * (opppos_x - curpos_x)
- *         original_jump_pos_y = curpos_y + 2 * (opppos_y - curpos_y)
- *         if _check_in_range(original_jump_pos_x, original_jump_pos_y, board_size) and not _check_wall_blocked(             # <<<<<<<<<<<<<<
- *             board_view, curpos_x, curpos_y, original_jump_pos_x, original_jump_pos_y
- *         ):
- */
-    __pyx_t_2.__pyx_n = 1;
-    __pyx_t_2.bottom_right = __pyx_v_board_size;
-    __pyx_t_5 = __pyx_f_8cythonfn__check_in_range(__pyx_v_original_jump_pos_x, __pyx_v_original_jump_pos_y, &__pyx_t_2); 
-    __pyx_t_7 = (__pyx_t_5 != 0);
-    if (__pyx_t_7) {
-    } else {
-      __pyx_t_3 = __pyx_t_7;
-      goto __pyx_L23_bool_binop_done;
-    }
-
-    /* "cythonfn.pyx":176
- *         original_jump_pos_y = curpos_y + 2 * (opppos_y - curpos_y)
- *         if _check_in_range(original_jump_pos_x, original_jump_pos_y, board_size) and not _check_wall_blocked(
- *             board_view, curpos_x, curpos_y, original_jump_pos_x, original_jump_pos_y             # <<<<<<<<<<<<<<
- *         ):
- *             return 0
- */
-    __pyx_t_7 = ((!(__pyx_f_8cythonfn__check_wall_blocked(__pyx_v_board_view, __pyx_v_curpos_x, __pyx_v_curpos_y, __pyx_v_original_jump_pos_x, __pyx_v_original_jump_pos_y) != 0)) != 0);
-    __pyx_t_3 = __pyx_t_7;
-    __pyx_L23_bool_binop_done:;
-
-    /* "cythonfn.pyx":175
- *         original_jump_pos_x = curpos_x + 2 * (opppos_x - curpos_x)
- *         original_jump_pos_y = curpos_y + 2 * (opppos_y - curpos_y)
- *         if _check_in_range(original_jump_pos_x, original_jump_pos_y, board_size) and not _check_wall_blocked(             # <<<<<<<<<<<<<<
- *             board_view, curpos_x, curpos_y, original_jump_pos_x, original_jump_pos_y
- *         ):
- */
-    if (__pyx_t_3) {
-
-      /* "cythonfn.pyx":178
- *             board_view, curpos_x, curpos_y, original_jump_pos_x, original_jump_pos_y
- *         ):
- *             return 0             # <<<<<<<<<<<<<<
- *         elif _check_wall_blocked(board_view, opppos_x, opppos_y, newpos_x, newpos_y):
- *             return 0
- */
-      __pyx_r = 0;
-      goto __pyx_L0;
-
-      /* "cythonfn.pyx":175
- *         original_jump_pos_x = curpos_x + 2 * (opppos_x - curpos_x)
- *         original_jump_pos_y = curpos_y + 2 * (opppos_y - curpos_y)
- *         if _check_in_range(original_jump_pos_x, original_jump_pos_y, board_size) and not _check_wall_blocked(             # <<<<<<<<<<<<<<
- *             board_view, curpos_x, curpos_y, original_jump_pos_x, original_jump_pos_y
- *         ):
- */
-    }
-
-    /* "cythonfn.pyx":179
- *         ):
- *             return 0
- *         elif _check_wall_blocked(board_view, opppos_x, opppos_y, newpos_x, newpos_y):             # <<<<<<<<<<<<<<
- *             return 0
- *     elif _check_wall_blocked(board_view, curpos_x, curpos_y, newpos_x, newpos_y):
- */
-    __pyx_t_3 = (__pyx_f_8cythonfn__check_wall_blocked(__pyx_v_board_view, __pyx_v_opppos_x, __pyx_v_opppos_y, __pyx_v_newpos_x, __pyx_v_newpos_y) != 0);
-    if (__pyx_t_3) {
-
-      /* "cythonfn.pyx":180
- *             return 0
- *         elif _check_wall_blocked(board_view, opppos_x, opppos_y, newpos_x, newpos_y):
- *             return 0             # <<<<<<<<<<<<<<
- *     elif _check_wall_blocked(board_view, curpos_x, curpos_y, newpos_x, newpos_y):
- *         return 0
- */
-      __pyx_r = 0;
-      goto __pyx_L0;
-
-      /* "cythonfn.pyx":179
- *         ):
- *             return 0
- *         elif _check_wall_blocked(board_view, opppos_x, opppos_y, newpos_x, newpos_y):             # <<<<<<<<<<<<<<
- *             return 0
- *     elif _check_wall_blocked(board_view, curpos_x, curpos_y, newpos_x, newpos_y):
- */
-    }
-
-    /* "cythonfn.pyx":163
- *         return 0
- * 
- *     if delpos_x and delpos_y:  # If moving diagonally             # <<<<<<<<<<<<<<
- *         if (curpos_x + delpos_x != opppos_x or curpos_y != opppos_y) and (
- *             curpos_x != opppos_x or curpos_y + delpos_y != opppos_y
- */
-    goto __pyx_L14;
-  }
-
-  /* "cythonfn.pyx":181
- *         elif _check_wall_blocked(board_view, opppos_x, opppos_y, newpos_x, newpos_y):
- *             return 0
- *     elif _check_wall_blocked(board_view, curpos_x, curpos_y, newpos_x, newpos_y):             # <<<<<<<<<<<<<<
- *         return 0
- * 
- */
-  __pyx_t_3 = (__pyx_f_8cythonfn__check_wall_blocked(__pyx_v_board_view, __pyx_v_curpos_x, __pyx_v_curpos_y, __pyx_v_newpos_x, __pyx_v_newpos_y) != 0);
-  if (__pyx_t_3) {
-
-    /* "cythonfn.pyx":182
- *             return 0
- *     elif _check_wall_blocked(board_view, curpos_x, curpos_y, newpos_x, newpos_y):
- *         return 0             # <<<<<<<<<<<<<<
- * 
- *     return 1
- */
-    __pyx_r = 0;
-    goto __pyx_L0;
-
-    /* "cythonfn.pyx":181
- *         elif _check_wall_blocked(board_view, opppos_x, opppos_y, newpos_x, newpos_y):
- *             return 0
- *     elif _check_wall_blocked(board_view, curpos_x, curpos_y, newpos_x, newpos_y):             # <<<<<<<<<<<<<<
- *         return 0
- * 
- */
-  }
-  __pyx_L14:;
-
-  /* "cythonfn.pyx":184
- *         return 0
- * 
- *     return 1             # <<<<<<<<<<<<<<
- * 
- * def fast_legal_actions(state, int agent_id, int board_size):
- */
-  __pyx_r = 1;
-  goto __pyx_L0;
-
-  /* "cythonfn.pyx":137
- *     return (board, walls_remaining, _check_wins(board_view, board_size))
- * 
- * cdef int _is_moving_legal(int [:,:,:] board_view, int x, int y, int agent_id, int board_size):             # <<<<<<<<<<<<<<
- * 
- *     cdef int curpos_x, curpos_y, newpos_x, newpos_y, opppos_x, opppos_y, delpos_x, delpos_y
- */
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_WriteUnraisable("cythonfn._is_moving_legal", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
-  __pyx_r = 0;
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "cythonfn.pyx":186
- *     return 1
- * 
- * def fast_legal_actions(state, int agent_id, int board_size):             # <<<<<<<<<<<<<<
- * 
- *     cdef int dir_id, action_type, next_pos_x, next_pos_y, cx, cy, nowpos_x, nowpos_y
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_8cythonfn_3fast_legal_actions(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyMethodDef __pyx_mdef_8cythonfn_3fast_legal_actions = {"fast_legal_actions", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_8cythonfn_3fast_legal_actions, METH_VARARGS|METH_KEYWORDS, 0};
-static PyObject *__pyx_pw_8cythonfn_3fast_legal_actions(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyObject *__pyx_v_state = 0;
-  int __pyx_v_agent_id;
-  int __pyx_v_board_size;
-  int __pyx_lineno = 0;
-  const char *__pyx_filename = NULL;
-  int __pyx_clineno = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("fast_legal_actions (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_state,&__pyx_n_s_agent_id,&__pyx_n_s_board_size,0};
-    PyObject* values[3] = {0,0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        CYTHON_FALLTHROUGH;
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        CYTHON_FALLTHROUGH;
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        CYTHON_FALLTHROUGH;
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_state)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        CYTHON_FALLTHROUGH;
-        case  1:
-        if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_agent_id)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("fast_legal_actions", 1, 3, 3, 1); __PYX_ERR(0, 186, __pyx_L3_error)
-        }
-        CYTHON_FALLTHROUGH;
-        case  2:
-        if (likely((values[2] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_board_size)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("fast_legal_actions", 1, 3, 3, 2); __PYX_ERR(0, 186, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "fast_legal_actions") < 0)) __PYX_ERR(0, 186, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-    }
-    __pyx_v_state = values[0];
-    __pyx_v_agent_id = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_agent_id == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 186, __pyx_L3_error)
-    __pyx_v_board_size = __Pyx_PyInt_As_int(values[2]); if (unlikely((__pyx_v_board_size == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 186, __pyx_L3_error)
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("fast_legal_actions", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 186, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("cythonfn.fast_legal_actions", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_8cythonfn_2fast_legal_actions(__pyx_self, __pyx_v_state, __pyx_v_agent_id, __pyx_v_board_size);
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_8cythonfn_2fast_legal_actions(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_state, int __pyx_v_agent_id, int __pyx_v_board_size) {
-  int __pyx_v_dir_id;
-  int __pyx_v_action_type;
-  int __pyx_v_next_pos_x;
-  int __pyx_v_next_pos_y;
-  int __pyx_v_cx;
-  int __pyx_v_cy;
-  int __pyx_v_nowpos_x;
-  int __pyx_v_nowpos_y;
-  int __pyx_v_directions[12][2];
-  __Pyx_memviewslice __pyx_v_board_view = { 0, 0, { 0 }, { 0 }, { 0 } };
-  PyObject *__pyx_v_legal_actions_np = NULL;
-  __Pyx_memviewslice __pyx_v_legal_actions_np_view = { 0, 0, { 0 }, { 0 }, { 0 } };
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  __Pyx_memviewslice __pyx_t_2 = { 0, 0, { 0 }, { 0 }, { 0 } };
+  int __pyx_t_1[2];
+  int __pyx_t_2[2];
   int __pyx_t_3[2];
   int __pyx_t_4[2];
   int __pyx_t_5[2];
   int __pyx_t_6[2];
   int __pyx_t_7[2];
   int __pyx_t_8[2];
-  int __pyx_t_9[2];
-  int __pyx_t_10[2];
-  int __pyx_t_11[2];
-  int __pyx_t_12[2];
-  int __pyx_t_13[2];
-  int __pyx_t_14[2];
-  PyObject *__pyx_t_15 = NULL;
-  PyObject *__pyx_t_16 = NULL;
-  PyObject *__pyx_t_17 = NULL;
-  __pyx_ctuple_int__and_int __pyx_t_18;
+  int __pyx_t_9;
+  PyObject *__pyx_t_10 = NULL;
+  int __pyx_t_11;
+  int __pyx_t_12;
+  int __pyx_t_13;
+  PyObject *__pyx_t_14 = NULL;
+  int __pyx_t_15;
+  int __pyx_t_16;
+  int __pyx_t_17;
+  struct __pyx_opt_args_8cythonfn__check_in_range __pyx_t_18;
   int __pyx_t_19;
-  int __pyx_t_20;
-  int __pyx_t_21;
+  Py_ssize_t __pyx_t_20;
+  Py_ssize_t __pyx_t_21;
   Py_ssize_t __pyx_t_22;
   Py_ssize_t __pyx_t_23;
   Py_ssize_t __pyx_t_24;
-  long __pyx_t_25;
-  long __pyx_t_26;
-  long __pyx_t_27;
-  long __pyx_t_28;
-  int __pyx_t_29;
-  PyObject *__pyx_t_30 = NULL;
-  PyObject *__pyx_t_31 = NULL;
-  PyObject *__pyx_t_32 = NULL;
-  PyObject *__pyx_t_33 = NULL;
-  PyObject *__pyx_t_34 = NULL;
-  PyObject *__pyx_t_35 = NULL;
-  PyObject *__pyx_t_36 = NULL;
-  PyObject *__pyx_t_37 = NULL;
-  int __pyx_t_38;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
-  __Pyx_RefNannySetupContext("fast_legal_actions", 0);
+  __Pyx_RefNannySetupContext("is_flippable", 0);
 
-  /* "cythonfn.pyx":190
- *     cdef int dir_id, action_type, next_pos_x, next_pos_y, cx, cy, nowpos_x, nowpos_y
- *     cdef int directions[12][2]
- *     cdef int [:,:,:] board_view = state.board             # <<<<<<<<<<<<<<
- * 
- *     directions[0][:] = [0, -2]
+  /* "cythonfn.pyx":126
+ *     cdef int flag
+ *     cdef int directions[8][2]
+ *     directions[0][:] = [1, 1]             # <<<<<<<<<<<<<<
+ *     directions[1][:] = [1, 0]
+ *     directions[2][:] = [1, -1]
  */
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_state, __pyx_n_s_board); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 190, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dsdsds_int(__pyx_t_1, PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 190, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_board_view = __pyx_t_2;
-  __pyx_t_2.memview = NULL;
-  __pyx_t_2.data = NULL;
+  __pyx_t_1[0] = 1;
+  __pyx_t_1[1] = 1;
+  memcpy(&((__pyx_v_directions[0])[0]), __pyx_t_1, sizeof((__pyx_v_directions[0])[0]) * (2));
 
-  /* "cythonfn.pyx":192
- *     cdef int [:,:,:] board_view = state.board
- * 
- *     directions[0][:] = [0, -2]             # <<<<<<<<<<<<<<
- *     directions[1][:] = [-1, -1]
- *     directions[2][:] = [0, -1]
+  /* "cythonfn.pyx":127
+ *     cdef int directions[8][2]
+ *     directions[0][:] = [1, 1]
+ *     directions[1][:] = [1, 0]             # <<<<<<<<<<<<<<
+ *     directions[2][:] = [1, -1]
+ *     directions[3][:] = [0, -1]
  */
-  __pyx_t_3[0] = 0;
-  __pyx_t_3[1] = -2;
-  memcpy(&((__pyx_v_directions[0])[0]), __pyx_t_3, sizeof((__pyx_v_directions[0])[0]) * (2));
+  __pyx_t_2[0] = 1;
+  __pyx_t_2[1] = 0;
+  memcpy(&((__pyx_v_directions[1])[0]), __pyx_t_2, sizeof((__pyx_v_directions[1])[0]) * (2));
 
-  /* "cythonfn.pyx":193
- * 
- *     directions[0][:] = [0, -2]
- *     directions[1][:] = [-1, -1]             # <<<<<<<<<<<<<<
- *     directions[2][:] = [0, -1]
- *     directions[3][:] = [1, -1]
+  /* "cythonfn.pyx":128
+ *     directions[0][:] = [1, 1]
+ *     directions[1][:] = [1, 0]
+ *     directions[2][:] = [1, -1]             # <<<<<<<<<<<<<<
+ *     directions[3][:] = [0, -1]
+ *     directions[4][:] = [-1, -1]
  */
-  __pyx_t_4[0] = -1;
+  __pyx_t_3[0] = 1;
+  __pyx_t_3[1] = -1;
+  memcpy(&((__pyx_v_directions[2])[0]), __pyx_t_3, sizeof((__pyx_v_directions[2])[0]) * (2));
+
+  /* "cythonfn.pyx":129
+ *     directions[1][:] = [1, 0]
+ *     directions[2][:] = [1, -1]
+ *     directions[3][:] = [0, -1]             # <<<<<<<<<<<<<<
+ *     directions[4][:] = [-1, -1]
+ *     directions[5][:] = [-1, 0]
+ */
+  __pyx_t_4[0] = 0;
   __pyx_t_4[1] = -1;
-  memcpy(&((__pyx_v_directions[1])[0]), __pyx_t_4, sizeof((__pyx_v_directions[1])[0]) * (2));
+  memcpy(&((__pyx_v_directions[3])[0]), __pyx_t_4, sizeof((__pyx_v_directions[3])[0]) * (2));
 
-  /* "cythonfn.pyx":194
- *     directions[0][:] = [0, -2]
- *     directions[1][:] = [-1, -1]
- *     directions[2][:] = [0, -1]             # <<<<<<<<<<<<<<
- *     directions[3][:] = [1, -1]
- *     directions[4][:] = [-2, 0]
+  /* "cythonfn.pyx":130
+ *     directions[2][:] = [1, -1]
+ *     directions[3][:] = [0, -1]
+ *     directions[4][:] = [-1, -1]             # <<<<<<<<<<<<<<
+ *     directions[5][:] = [-1, 0]
+ *     directions[6][:] = [-1, 1]
  */
-  __pyx_t_5[0] = 0;
+  __pyx_t_5[0] = -1;
   __pyx_t_5[1] = -1;
-  memcpy(&((__pyx_v_directions[2])[0]), __pyx_t_5, sizeof((__pyx_v_directions[2])[0]) * (2));
+  memcpy(&((__pyx_v_directions[4])[0]), __pyx_t_5, sizeof((__pyx_v_directions[4])[0]) * (2));
 
-  /* "cythonfn.pyx":195
- *     directions[1][:] = [-1, -1]
- *     directions[2][:] = [0, -1]
- *     directions[3][:] = [1, -1]             # <<<<<<<<<<<<<<
- *     directions[4][:] = [-2, 0]
- *     directions[5][:] = [-1, 0]
- */
-  __pyx_t_6[0] = 1;
-  __pyx_t_6[1] = -1;
-  memcpy(&((__pyx_v_directions[3])[0]), __pyx_t_6, sizeof((__pyx_v_directions[3])[0]) * (2));
-
-  /* "cythonfn.pyx":196
- *     directions[2][:] = [0, -1]
- *     directions[3][:] = [1, -1]
- *     directions[4][:] = [-2, 0]             # <<<<<<<<<<<<<<
- *     directions[5][:] = [-1, 0]
- *     directions[6][:] = [1, 0]
- */
-  __pyx_t_7[0] = -2;
-  __pyx_t_7[1] = 0;
-  memcpy(&((__pyx_v_directions[4])[0]), __pyx_t_7, sizeof((__pyx_v_directions[4])[0]) * (2));
-
-  /* "cythonfn.pyx":197
- *     directions[3][:] = [1, -1]
- *     directions[4][:] = [-2, 0]
+  /* "cythonfn.pyx":131
+ *     directions[3][:] = [0, -1]
+ *     directions[4][:] = [-1, -1]
  *     directions[5][:] = [-1, 0]             # <<<<<<<<<<<<<<
- *     directions[6][:] = [1, 0]
- *     directions[7][:] = [2, 0]
+ *     directions[6][:] = [-1, 1]
+ *     directions[7][:] = [0, 1]
  */
-  __pyx_t_8[0] = -1;
-  __pyx_t_8[1] = 0;
-  memcpy(&((__pyx_v_directions[5])[0]), __pyx_t_8, sizeof((__pyx_v_directions[5])[0]) * (2));
+  __pyx_t_6[0] = -1;
+  __pyx_t_6[1] = 0;
+  memcpy(&((__pyx_v_directions[5])[0]), __pyx_t_6, sizeof((__pyx_v_directions[5])[0]) * (2));
 
-  /* "cythonfn.pyx":198
- *     directions[4][:] = [-2, 0]
+  /* "cythonfn.pyx":132
+ *     directions[4][:] = [-1, -1]
  *     directions[5][:] = [-1, 0]
- *     directions[6][:] = [1, 0]             # <<<<<<<<<<<<<<
- *     directions[7][:] = [2, 0]
- *     directions[8][:] = [-1, 1]
+ *     directions[6][:] = [-1, 1]             # <<<<<<<<<<<<<<
+ *     directions[7][:] = [0, 1]
+ * 
  */
-  __pyx_t_9[0] = 1;
-  __pyx_t_9[1] = 0;
-  memcpy(&((__pyx_v_directions[6])[0]), __pyx_t_9, sizeof((__pyx_v_directions[6])[0]) * (2));
+  __pyx_t_7[0] = -1;
+  __pyx_t_7[1] = 1;
+  memcpy(&((__pyx_v_directions[6])[0]), __pyx_t_7, sizeof((__pyx_v_directions[6])[0]) * (2));
 
-  /* "cythonfn.pyx":199
+  /* "cythonfn.pyx":133
  *     directions[5][:] = [-1, 0]
- *     directions[6][:] = [1, 0]
- *     directions[7][:] = [2, 0]             # <<<<<<<<<<<<<<
- *     directions[8][:] = [-1, 1]
- *     directions[9][:] = [0, 1]
- */
-  __pyx_t_10[0] = 2;
-  __pyx_t_10[1] = 0;
-  memcpy(&((__pyx_v_directions[7])[0]), __pyx_t_10, sizeof((__pyx_v_directions[7])[0]) * (2));
-
-  /* "cythonfn.pyx":200
- *     directions[6][:] = [1, 0]
- *     directions[7][:] = [2, 0]
- *     directions[8][:] = [-1, 1]             # <<<<<<<<<<<<<<
- *     directions[9][:] = [0, 1]
- *     directions[10][:] = [1, 1]
- */
-  __pyx_t_11[0] = -1;
-  __pyx_t_11[1] = 1;
-  memcpy(&((__pyx_v_directions[8])[0]), __pyx_t_11, sizeof((__pyx_v_directions[8])[0]) * (2));
-
-  /* "cythonfn.pyx":201
- *     directions[7][:] = [2, 0]
- *     directions[8][:] = [-1, 1]
- *     directions[9][:] = [0, 1]             # <<<<<<<<<<<<<<
- *     directions[10][:] = [1, 1]
- *     directions[11][:] = [0, 2]
- */
-  __pyx_t_12[0] = 0;
-  __pyx_t_12[1] = 1;
-  memcpy(&((__pyx_v_directions[9])[0]), __pyx_t_12, sizeof((__pyx_v_directions[9])[0]) * (2));
-
-  /* "cythonfn.pyx":202
- *     directions[8][:] = [-1, 1]
- *     directions[9][:] = [0, 1]
- *     directions[10][:] = [1, 1]             # <<<<<<<<<<<<<<
- *     directions[11][:] = [0, 2]
+ *     directions[6][:] = [-1, 1]
+ *     directions[7][:] = [0, 1]             # <<<<<<<<<<<<<<
  * 
+ *     for i in range(8):
  */
-  __pyx_t_13[0] = 1;
-  __pyx_t_13[1] = 1;
-  memcpy(&((__pyx_v_directions[10])[0]), __pyx_t_13, sizeof((__pyx_v_directions[10])[0]) * (2));
+  __pyx_t_8[0] = 0;
+  __pyx_t_8[1] = 1;
+  memcpy(&((__pyx_v_directions[7])[0]), __pyx_t_8, sizeof((__pyx_v_directions[7])[0]) * (2));
 
-  /* "cythonfn.pyx":203
- *     directions[9][:] = [0, 1]
- *     directions[10][:] = [1, 1]
- *     directions[11][:] = [0, 2]             # <<<<<<<<<<<<<<
+  /* "cythonfn.pyx":135
+ *     directions[7][:] = [0, 1]
  * 
- *     legal_actions_np = np.zeros((3, 9, 9), dtype=np.int_)
+ *     for i in range(8):             # <<<<<<<<<<<<<<
+ *         flag = 0
+ *         now_r = r
  */
-  __pyx_t_14[0] = 0;
-  __pyx_t_14[1] = 2;
-  memcpy(&((__pyx_v_directions[11])[0]), __pyx_t_14, sizeof((__pyx_v_directions[11])[0]) * (2));
+  for (__pyx_t_9 = 0; __pyx_t_9 < 8; __pyx_t_9+=1) {
+    __pyx_v_i = __pyx_t_9;
 
-  /* "cythonfn.pyx":205
- *     directions[11][:] = [0, 2]
+    /* "cythonfn.pyx":136
  * 
- *     legal_actions_np = np.zeros((3, 9, 9), dtype=np.int_)             # <<<<<<<<<<<<<<
- *     cdef int [:,:,:] legal_actions_np_view = legal_actions_np
- *     (nowpos_x, nowpos_y) = _agent_pos(board_view, agent_id, board_size)
+ *     for i in range(8):
+ *         flag = 0             # <<<<<<<<<<<<<<
+ *         now_r = r
+ *         now_c = c
  */
-  __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 205, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_15 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 205, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_15);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 205, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_GetModuleGlobalName(__pyx_t_16, __pyx_n_s_np); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 205, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_16);
-  __pyx_t_17 = __Pyx_PyObject_GetAttrStr(__pyx_t_16, __pyx_n_s_int); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 205, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_17);
-  __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-  if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_dtype, __pyx_t_17) < 0) __PYX_ERR(0, 205, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-  __pyx_t_17 = __Pyx_PyObject_Call(__pyx_t_15, __pyx_tuple__14, __pyx_t_1); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 205, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_17);
-  __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_v_legal_actions_np = __pyx_t_17;
-  __pyx_t_17 = 0;
+    __pyx_v_flag = 0;
 
-  /* "cythonfn.pyx":206
- * 
- *     legal_actions_np = np.zeros((3, 9, 9), dtype=np.int_)
- *     cdef int [:,:,:] legal_actions_np_view = legal_actions_np             # <<<<<<<<<<<<<<
- *     (nowpos_x, nowpos_y) = _agent_pos(board_view, agent_id, board_size)
- * 
+    /* "cythonfn.pyx":137
+ *     for i in range(8):
+ *         flag = 0
+ *         now_r = r             # <<<<<<<<<<<<<<
+ *         now_c = c
+ *         for j in range(board_size):
  */
-  __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dsdsds_int(__pyx_v_legal_actions_np, PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 206, __pyx_L1_error)
-  __pyx_v_legal_actions_np_view = __pyx_t_2;
-  __pyx_t_2.memview = NULL;
-  __pyx_t_2.data = NULL;
+    __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_r); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 137, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __Pyx_XDECREF_SET(__pyx_v_now_r, __pyx_t_10);
+    __pyx_t_10 = 0;
 
-  /* "cythonfn.pyx":207
- *     legal_actions_np = np.zeros((3, 9, 9), dtype=np.int_)
- *     cdef int [:,:,:] legal_actions_np_view = legal_actions_np
- *     (nowpos_x, nowpos_y) = _agent_pos(board_view, agent_id, board_size)             # <<<<<<<<<<<<<<
- * 
- *     for dir_id in range(12):
+    /* "cythonfn.pyx":138
+ *         flag = 0
+ *         now_r = r
+ *         now_c = c             # <<<<<<<<<<<<<<
+ *         for j in range(board_size):
+ *             now_r += directions[i][0]
  */
-  __pyx_t_18 = __pyx_f_8cythonfn__agent_pos(__pyx_v_board_view, __pyx_v_agent_id, __pyx_v_board_size);
-  __pyx_t_19 = __pyx_t_18.f0;
-  __pyx_t_20 = __pyx_t_18.f1;
-  __pyx_v_nowpos_x = __pyx_t_19;
-  __pyx_v_nowpos_y = __pyx_t_20;
+    __pyx_t_10 = __Pyx_PyInt_From_int(__pyx_v_c); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 138, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_10);
+    __Pyx_XDECREF_SET(__pyx_v_now_c, __pyx_t_10);
+    __pyx_t_10 = 0;
 
-  /* "cythonfn.pyx":209
- *     (nowpos_x, nowpos_y) = _agent_pos(board_view, agent_id, board_size)
- * 
- *     for dir_id in range(12):             # <<<<<<<<<<<<<<
- *         next_pos_x = nowpos_x + directions[dir_id][0]
- *         next_pos_y = nowpos_y + directions[dir_id][1]
+    /* "cythonfn.pyx":139
+ *         now_r = r
+ *         now_c = c
+ *         for j in range(board_size):             # <<<<<<<<<<<<<<
+ *             now_r += directions[i][0]
+ *             now_c += directions[i][1]
  */
-  for (__pyx_t_20 = 0; __pyx_t_20 < 12; __pyx_t_20+=1) {
-    __pyx_v_dir_id = __pyx_t_20;
+    __pyx_t_11 = __pyx_v_board_size;
+    __pyx_t_12 = __pyx_t_11;
+    for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
+      __pyx_v_j = __pyx_t_13;
 
-    /* "cythonfn.pyx":210
- * 
- *     for dir_id in range(12):
- *         next_pos_x = nowpos_x + directions[dir_id][0]             # <<<<<<<<<<<<<<
- *         next_pos_y = nowpos_y + directions[dir_id][1]
- *         if _is_moving_legal(board_view, next_pos_x, next_pos_y, agent_id, board_size):
+      /* "cythonfn.pyx":140
+ *         now_c = c
+ *         for j in range(board_size):
+ *             now_r += directions[i][0]             # <<<<<<<<<<<<<<
+ *             now_c += directions[i][1]
+ *             if not _check_in_range(now_r, now_c, board_size):
  */
-    __pyx_v_next_pos_x = (__pyx_v_nowpos_x + ((__pyx_v_directions[__pyx_v_dir_id])[0]));
+      __pyx_t_10 = __Pyx_PyInt_From_int(((__pyx_v_directions[__pyx_v_i])[0])); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 140, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_10);
+      __pyx_t_14 = PyNumber_InPlaceAdd(__pyx_v_now_r, __pyx_t_10); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 140, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_14);
+      __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
+      __Pyx_DECREF_SET(__pyx_v_now_r, __pyx_t_14);
+      __pyx_t_14 = 0;
 
-    /* "cythonfn.pyx":211
- *     for dir_id in range(12):
- *         next_pos_x = nowpos_x + directions[dir_id][0]
- *         next_pos_y = nowpos_y + directions[dir_id][1]             # <<<<<<<<<<<<<<
- *         if _is_moving_legal(board_view, next_pos_x, next_pos_y, agent_id, board_size):
- *             legal_actions_np_view[0, next_pos_x, next_pos_y] = 1
+      /* "cythonfn.pyx":141
+ *         for j in range(board_size):
+ *             now_r += directions[i][0]
+ *             now_c += directions[i][1]             # <<<<<<<<<<<<<<
+ *             if not _check_in_range(now_r, now_c, board_size):
+ *                 break
  */
-    __pyx_v_next_pos_y = (__pyx_v_nowpos_y + ((__pyx_v_directions[__pyx_v_dir_id])[1]));
+      __pyx_t_14 = __Pyx_PyInt_From_int(((__pyx_v_directions[__pyx_v_i])[1])); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 141, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_14);
+      __pyx_t_10 = PyNumber_InPlaceAdd(__pyx_v_now_c, __pyx_t_14); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 141, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_10);
+      __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
+      __Pyx_DECREF_SET(__pyx_v_now_c, __pyx_t_10);
+      __pyx_t_10 = 0;
 
-    /* "cythonfn.pyx":212
- *         next_pos_x = nowpos_x + directions[dir_id][0]
- *         next_pos_y = nowpos_y + directions[dir_id][1]
- *         if _is_moving_legal(board_view, next_pos_x, next_pos_y, agent_id, board_size):             # <<<<<<<<<<<<<<
- *             legal_actions_np_view[0, next_pos_x, next_pos_y] = 1
- *     for action_type in range(1, 3):
+      /* "cythonfn.pyx":142
+ *             now_r += directions[i][0]
+ *             now_c += directions[i][1]
+ *             if not _check_in_range(now_r, now_c, board_size):             # <<<<<<<<<<<<<<
+ *                 break
+ *             if board_view[1-agent_id, now_r, now_c]:
  */
-    __pyx_t_21 = (__pyx_f_8cythonfn__is_moving_legal(__pyx_v_board_view, __pyx_v_next_pos_x, __pyx_v_next_pos_y, __pyx_v_agent_id, __pyx_v_board_size) != 0);
-    if (__pyx_t_21) {
+      __pyx_t_15 = __Pyx_PyInt_As_int(__pyx_v_now_r); if (unlikely((__pyx_t_15 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 142, __pyx_L1_error)
+      __pyx_t_16 = __Pyx_PyInt_As_int(__pyx_v_now_c); if (unlikely((__pyx_t_16 == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 142, __pyx_L1_error)
+      __pyx_t_18.__pyx_n = 1;
+      __pyx_t_18.bottom_right = __pyx_v_board_size;
+      __pyx_t_17 = __pyx_f_8cythonfn__check_in_range(__pyx_t_15, __pyx_t_16, &__pyx_t_18); 
+      __pyx_t_19 = ((!(__pyx_t_17 != 0)) != 0);
+      if (__pyx_t_19) {
 
-      /* "cythonfn.pyx":213
- *         next_pos_y = nowpos_y + directions[dir_id][1]
- *         if _is_moving_legal(board_view, next_pos_x, next_pos_y, agent_id, board_size):
- *             legal_actions_np_view[0, next_pos_x, next_pos_y] = 1             # <<<<<<<<<<<<<<
- *     for action_type in range(1, 3):
- *         for cx in range(board_size-1):
+        /* "cythonfn.pyx":143
+ *             now_c += directions[i][1]
+ *             if not _check_in_range(now_r, now_c, board_size):
+ *                 break             # <<<<<<<<<<<<<<
+ *             if board_view[1-agent_id, now_r, now_c]:
+ *                 flag = 1
  */
-      __pyx_t_22 = 0;
-      __pyx_t_23 = __pyx_v_next_pos_x;
-      __pyx_t_24 = __pyx_v_next_pos_y;
-      *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_legal_actions_np_view.data + __pyx_t_22 * __pyx_v_legal_actions_np_view.strides[0]) ) + __pyx_t_23 * __pyx_v_legal_actions_np_view.strides[1]) ) + __pyx_t_24 * __pyx_v_legal_actions_np_view.strides[2]) )) = 1;
+        goto __pyx_L6_break;
 
-      /* "cythonfn.pyx":212
- *         next_pos_x = nowpos_x + directions[dir_id][0]
- *         next_pos_y = nowpos_y + directions[dir_id][1]
- *         if _is_moving_legal(board_view, next_pos_x, next_pos_y, agent_id, board_size):             # <<<<<<<<<<<<<<
- *             legal_actions_np_view[0, next_pos_x, next_pos_y] = 1
- *     for action_type in range(1, 3):
+        /* "cythonfn.pyx":142
+ *             now_r += directions[i][0]
+ *             now_c += directions[i][1]
+ *             if not _check_in_range(now_r, now_c, board_size):             # <<<<<<<<<<<<<<
+ *                 break
+ *             if board_view[1-agent_id, now_r, now_c]:
  */
-    }
-  }
-
-  /* "cythonfn.pyx":214
- *         if _is_moving_legal(board_view, next_pos_x, next_pos_y, agent_id, board_size):
- *             legal_actions_np_view[0, next_pos_x, next_pos_y] = 1
- *     for action_type in range(1, 3):             # <<<<<<<<<<<<<<
- *         for cx in range(board_size-1):
- *             for cy in range(board_size-1):
- */
-  for (__pyx_t_20 = 1; __pyx_t_20 < 3; __pyx_t_20+=1) {
-    __pyx_v_action_type = __pyx_t_20;
-
-    /* "cythonfn.pyx":215
- *             legal_actions_np_view[0, next_pos_x, next_pos_y] = 1
- *     for action_type in range(1, 3):
- *         for cx in range(board_size-1):             # <<<<<<<<<<<<<<
- *             for cy in range(board_size-1):
- *                 try:
- */
-    __pyx_t_25 = (__pyx_v_board_size - 1);
-    __pyx_t_26 = __pyx_t_25;
-    for (__pyx_t_19 = 0; __pyx_t_19 < __pyx_t_26; __pyx_t_19+=1) {
-      __pyx_v_cx = __pyx_t_19;
-
-      /* "cythonfn.pyx":216
- *     for action_type in range(1, 3):
- *         for cx in range(board_size-1):
- *             for cy in range(board_size-1):             # <<<<<<<<<<<<<<
- *                 try:
- *                     fast_step(state.board, state.walls_remaining, agent_id, (action_type, cx, cy), board_size)
- */
-      __pyx_t_27 = (__pyx_v_board_size - 1);
-      __pyx_t_28 = __pyx_t_27;
-      for (__pyx_t_29 = 0; __pyx_t_29 < __pyx_t_28; __pyx_t_29+=1) {
-        __pyx_v_cy = __pyx_t_29;
-
-        /* "cythonfn.pyx":217
- *         for cx in range(board_size-1):
- *             for cy in range(board_size-1):
- *                 try:             # <<<<<<<<<<<<<<
- *                     fast_step(state.board, state.walls_remaining, agent_id, (action_type, cx, cy), board_size)
- *                 except:
- */
-        {
-          __Pyx_PyThreadState_declare
-          __Pyx_PyThreadState_assign
-          __Pyx_ExceptionSave(&__pyx_t_30, &__pyx_t_31, &__pyx_t_32);
-          __Pyx_XGOTREF(__pyx_t_30);
-          __Pyx_XGOTREF(__pyx_t_31);
-          __Pyx_XGOTREF(__pyx_t_32);
-          /*try:*/ {
-
-            /* "cythonfn.pyx":218
- *             for cy in range(board_size-1):
- *                 try:
- *                     fast_step(state.board, state.walls_remaining, agent_id, (action_type, cx, cy), board_size)             # <<<<<<<<<<<<<<
- *                 except:
- *                     ...
- */
-            __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_fast_step); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 218, __pyx_L12_error)
-            __Pyx_GOTREF(__pyx_t_1);
-            __pyx_t_15 = __Pyx_PyObject_GetAttrStr(__pyx_v_state, __pyx_n_s_board); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 218, __pyx_L12_error)
-            __Pyx_GOTREF(__pyx_t_15);
-            __pyx_t_16 = __Pyx_PyObject_GetAttrStr(__pyx_v_state, __pyx_n_s_walls_remaining); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 218, __pyx_L12_error)
-            __Pyx_GOTREF(__pyx_t_16);
-            __pyx_t_33 = __Pyx_PyInt_From_int(__pyx_v_agent_id); if (unlikely(!__pyx_t_33)) __PYX_ERR(0, 218, __pyx_L12_error)
-            __Pyx_GOTREF(__pyx_t_33);
-            __pyx_t_34 = __Pyx_PyInt_From_int(__pyx_v_action_type); if (unlikely(!__pyx_t_34)) __PYX_ERR(0, 218, __pyx_L12_error)
-            __Pyx_GOTREF(__pyx_t_34);
-            __pyx_t_35 = __Pyx_PyInt_From_int(__pyx_v_cx); if (unlikely(!__pyx_t_35)) __PYX_ERR(0, 218, __pyx_L12_error)
-            __Pyx_GOTREF(__pyx_t_35);
-            __pyx_t_36 = __Pyx_PyInt_From_int(__pyx_v_cy); if (unlikely(!__pyx_t_36)) __PYX_ERR(0, 218, __pyx_L12_error)
-            __Pyx_GOTREF(__pyx_t_36);
-            __pyx_t_37 = PyTuple_New(3); if (unlikely(!__pyx_t_37)) __PYX_ERR(0, 218, __pyx_L12_error)
-            __Pyx_GOTREF(__pyx_t_37);
-            __Pyx_GIVEREF(__pyx_t_34);
-            PyTuple_SET_ITEM(__pyx_t_37, 0, __pyx_t_34);
-            __Pyx_GIVEREF(__pyx_t_35);
-            PyTuple_SET_ITEM(__pyx_t_37, 1, __pyx_t_35);
-            __Pyx_GIVEREF(__pyx_t_36);
-            PyTuple_SET_ITEM(__pyx_t_37, 2, __pyx_t_36);
-            __pyx_t_34 = 0;
-            __pyx_t_35 = 0;
-            __pyx_t_36 = 0;
-            __pyx_t_36 = __Pyx_PyInt_From_int(__pyx_v_board_size); if (unlikely(!__pyx_t_36)) __PYX_ERR(0, 218, __pyx_L12_error)
-            __Pyx_GOTREF(__pyx_t_36);
-            __pyx_t_35 = NULL;
-            __pyx_t_38 = 0;
-            if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
-              __pyx_t_35 = PyMethod_GET_SELF(__pyx_t_1);
-              if (likely(__pyx_t_35)) {
-                PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-                __Pyx_INCREF(__pyx_t_35);
-                __Pyx_INCREF(function);
-                __Pyx_DECREF_SET(__pyx_t_1, function);
-                __pyx_t_38 = 1;
-              }
-            }
-            #if CYTHON_FAST_PYCALL
-            if (PyFunction_Check(__pyx_t_1)) {
-              PyObject *__pyx_temp[6] = {__pyx_t_35, __pyx_t_15, __pyx_t_16, __pyx_t_33, __pyx_t_37, __pyx_t_36};
-              __pyx_t_17 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_38, 5+__pyx_t_38); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 218, __pyx_L12_error)
-              __Pyx_XDECREF(__pyx_t_35); __pyx_t_35 = 0;
-              __Pyx_GOTREF(__pyx_t_17);
-              __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
-              __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-              __Pyx_DECREF(__pyx_t_33); __pyx_t_33 = 0;
-              __Pyx_DECREF(__pyx_t_37); __pyx_t_37 = 0;
-              __Pyx_DECREF(__pyx_t_36); __pyx_t_36 = 0;
-            } else
-            #endif
-            #if CYTHON_FAST_PYCCALL
-            if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
-              PyObject *__pyx_temp[6] = {__pyx_t_35, __pyx_t_15, __pyx_t_16, __pyx_t_33, __pyx_t_37, __pyx_t_36};
-              __pyx_t_17 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_38, 5+__pyx_t_38); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 218, __pyx_L12_error)
-              __Pyx_XDECREF(__pyx_t_35); __pyx_t_35 = 0;
-              __Pyx_GOTREF(__pyx_t_17);
-              __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
-              __Pyx_DECREF(__pyx_t_16); __pyx_t_16 = 0;
-              __Pyx_DECREF(__pyx_t_33); __pyx_t_33 = 0;
-              __Pyx_DECREF(__pyx_t_37); __pyx_t_37 = 0;
-              __Pyx_DECREF(__pyx_t_36); __pyx_t_36 = 0;
-            } else
-            #endif
-            {
-              __pyx_t_34 = PyTuple_New(5+__pyx_t_38); if (unlikely(!__pyx_t_34)) __PYX_ERR(0, 218, __pyx_L12_error)
-              __Pyx_GOTREF(__pyx_t_34);
-              if (__pyx_t_35) {
-                __Pyx_GIVEREF(__pyx_t_35); PyTuple_SET_ITEM(__pyx_t_34, 0, __pyx_t_35); __pyx_t_35 = NULL;
-              }
-              __Pyx_GIVEREF(__pyx_t_15);
-              PyTuple_SET_ITEM(__pyx_t_34, 0+__pyx_t_38, __pyx_t_15);
-              __Pyx_GIVEREF(__pyx_t_16);
-              PyTuple_SET_ITEM(__pyx_t_34, 1+__pyx_t_38, __pyx_t_16);
-              __Pyx_GIVEREF(__pyx_t_33);
-              PyTuple_SET_ITEM(__pyx_t_34, 2+__pyx_t_38, __pyx_t_33);
-              __Pyx_GIVEREF(__pyx_t_37);
-              PyTuple_SET_ITEM(__pyx_t_34, 3+__pyx_t_38, __pyx_t_37);
-              __Pyx_GIVEREF(__pyx_t_36);
-              PyTuple_SET_ITEM(__pyx_t_34, 4+__pyx_t_38, __pyx_t_36);
-              __pyx_t_15 = 0;
-              __pyx_t_16 = 0;
-              __pyx_t_33 = 0;
-              __pyx_t_37 = 0;
-              __pyx_t_36 = 0;
-              __pyx_t_17 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_34, NULL); if (unlikely(!__pyx_t_17)) __PYX_ERR(0, 218, __pyx_L12_error)
-              __Pyx_GOTREF(__pyx_t_17);
-              __Pyx_DECREF(__pyx_t_34); __pyx_t_34 = 0;
-            }
-            __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-            __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-
-            /* "cythonfn.pyx":217
- *         for cx in range(board_size-1):
- *             for cy in range(board_size-1):
- *                 try:             # <<<<<<<<<<<<<<
- *                     fast_step(state.board, state.walls_remaining, agent_id, (action_type, cx, cy), board_size)
- *                 except:
- */
-          }
-
-          /* "cythonfn.pyx":222
- *                     ...
- *                 else:
- *                     legal_actions_np_view[action_type, cx, cy] = 1             # <<<<<<<<<<<<<<
- *     return legal_actions_np
- * 
- */
-          /*else:*/ {
-            __pyx_t_24 = __pyx_v_action_type;
-            __pyx_t_23 = __pyx_v_cx;
-            __pyx_t_22 = __pyx_v_cy;
-            *((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_legal_actions_np_view.data + __pyx_t_24 * __pyx_v_legal_actions_np_view.strides[0]) ) + __pyx_t_23 * __pyx_v_legal_actions_np_view.strides[1]) ) + __pyx_t_22 * __pyx_v_legal_actions_np_view.strides[2]) )) = 1;
-          }
-          __Pyx_XDECREF(__pyx_t_30); __pyx_t_30 = 0;
-          __Pyx_XDECREF(__pyx_t_31); __pyx_t_31 = 0;
-          __Pyx_XDECREF(__pyx_t_32); __pyx_t_32 = 0;
-          goto __pyx_L19_try_end;
-          __pyx_L12_error:;
-          __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
-          __Pyx_XDECREF(__pyx_t_15); __pyx_t_15 = 0;
-          __Pyx_XDECREF(__pyx_t_16); __pyx_t_16 = 0;
-          __Pyx_XDECREF(__pyx_t_17); __pyx_t_17 = 0;
-          __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
-          __Pyx_XDECREF(__pyx_t_33); __pyx_t_33 = 0;
-          __Pyx_XDECREF(__pyx_t_34); __pyx_t_34 = 0;
-          __Pyx_XDECREF(__pyx_t_35); __pyx_t_35 = 0;
-          __Pyx_XDECREF(__pyx_t_36); __pyx_t_36 = 0;
-          __Pyx_XDECREF(__pyx_t_37); __pyx_t_37 = 0;
-
-          /* "cythonfn.pyx":219
- *                 try:
- *                     fast_step(state.board, state.walls_remaining, agent_id, (action_type, cx, cy), board_size)
- *                 except:             # <<<<<<<<<<<<<<
- *                     ...
- *                 else:
- */
-          /*except:*/ {
-            __Pyx_ErrRestore(0,0,0);
-            goto __pyx_L13_exception_handled;
-          }
-          __pyx_L13_exception_handled:;
-          __Pyx_XGIVEREF(__pyx_t_30);
-          __Pyx_XGIVEREF(__pyx_t_31);
-          __Pyx_XGIVEREF(__pyx_t_32);
-          __Pyx_ExceptionReset(__pyx_t_30, __pyx_t_31, __pyx_t_32);
-          __pyx_L19_try_end:;
-        }
       }
+
+      /* "cythonfn.pyx":144
+ *             if not _check_in_range(now_r, now_c, board_size):
+ *                 break
+ *             if board_view[1-agent_id, now_r, now_c]:             # <<<<<<<<<<<<<<
+ *                 flag = 1
+ *             elif board_view[agent_id, now_r, now_c]:
+ */
+      __pyx_t_20 = __Pyx_PyIndex_AsSsize_t(__pyx_v_now_r); if (unlikely((__pyx_t_20 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 144, __pyx_L1_error)
+      __pyx_t_21 = __Pyx_PyIndex_AsSsize_t(__pyx_v_now_c); if (unlikely((__pyx_t_21 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 144, __pyx_L1_error)
+      __pyx_t_22 = (1 - __pyx_v_agent_id);
+      __pyx_t_23 = __pyx_t_20;
+      __pyx_t_24 = __pyx_t_21;
+      __pyx_t_19 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_22 * __pyx_v_board_view.strides[0]) ) + __pyx_t_23 * __pyx_v_board_view.strides[1]) ) + __pyx_t_24 * __pyx_v_board_view.strides[2]) ))) != 0);
+      if (__pyx_t_19) {
+
+        /* "cythonfn.pyx":145
+ *                 break
+ *             if board_view[1-agent_id, now_r, now_c]:
+ *                 flag = 1             # <<<<<<<<<<<<<<
+ *             elif board_view[agent_id, now_r, now_c]:
+ *                 if flag:
+ */
+        __pyx_v_flag = 1;
+
+        /* "cythonfn.pyx":144
+ *             if not _check_in_range(now_r, now_c, board_size):
+ *                 break
+ *             if board_view[1-agent_id, now_r, now_c]:             # <<<<<<<<<<<<<<
+ *                 flag = 1
+ *             elif board_view[agent_id, now_r, now_c]:
+ */
+        goto __pyx_L8;
+      }
+
+      /* "cythonfn.pyx":146
+ *             if board_view[1-agent_id, now_r, now_c]:
+ *                 flag = 1
+ *             elif board_view[agent_id, now_r, now_c]:             # <<<<<<<<<<<<<<
+ *                 if flag:
+ *                     return 1
+ */
+      __pyx_t_21 = __Pyx_PyIndex_AsSsize_t(__pyx_v_now_r); if (unlikely((__pyx_t_21 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 146, __pyx_L1_error)
+      __pyx_t_20 = __Pyx_PyIndex_AsSsize_t(__pyx_v_now_c); if (unlikely((__pyx_t_20 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 146, __pyx_L1_error)
+      __pyx_t_24 = __pyx_v_agent_id;
+      __pyx_t_23 = __pyx_t_21;
+      __pyx_t_22 = __pyx_t_20;
+      __pyx_t_19 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_24 * __pyx_v_board_view.strides[0]) ) + __pyx_t_23 * __pyx_v_board_view.strides[1]) ) + __pyx_t_22 * __pyx_v_board_view.strides[2]) ))) != 0);
+      if (__pyx_t_19) {
+
+        /* "cythonfn.pyx":147
+ *                 flag = 1
+ *             elif board_view[agent_id, now_r, now_c]:
+ *                 if flag:             # <<<<<<<<<<<<<<
+ *                     return 1
+ *                 else:
+ */
+        __pyx_t_19 = (__pyx_v_flag != 0);
+        if (__pyx_t_19) {
+
+          /* "cythonfn.pyx":148
+ *             elif board_view[agent_id, now_r, now_c]:
+ *                 if flag:
+ *                     return 1             # <<<<<<<<<<<<<<
+ *                 else:
+ *                     break
+ */
+          __pyx_r = 1;
+          goto __pyx_L0;
+
+          /* "cythonfn.pyx":147
+ *                 flag = 1
+ *             elif board_view[agent_id, now_r, now_c]:
+ *                 if flag:             # <<<<<<<<<<<<<<
+ *                     return 1
+ *                 else:
+ */
+        }
+
+        /* "cythonfn.pyx":150
+ *                     return 1
+ *                 else:
+ *                     break             # <<<<<<<<<<<<<<
+ *             else:
+ *                 break
+ */
+        /*else*/ {
+          goto __pyx_L6_break;
+        }
+
+        /* "cythonfn.pyx":146
+ *             if board_view[1-agent_id, now_r, now_c]:
+ *                 flag = 1
+ *             elif board_view[agent_id, now_r, now_c]:             # <<<<<<<<<<<<<<
+ *                 if flag:
+ *                     return 1
+ */
+      }
+
+      /* "cythonfn.pyx":152
+ *                     break
+ *             else:
+ *                 break             # <<<<<<<<<<<<<<
+ *     return 0
+ * 
+ */
+      /*else*/ {
+        goto __pyx_L6_break;
+      }
+      __pyx_L8:;
     }
+    __pyx_L6_break:;
   }
 
-  /* "cythonfn.pyx":223
- *                 else:
- *                     legal_actions_np_view[action_type, cx, cy] = 1
- *     return legal_actions_np             # <<<<<<<<<<<<<<
+  /* "cythonfn.pyx":153
+ *             else:
+ *                 break
+ *     return 0             # <<<<<<<<<<<<<<
  * 
- * cdef int _check_in_range(int pos_x, int pos_y, int bottom_right = 9):
+ * cdef int _check_in_range(int pos_r, int pos_c, int bottom_right = 8):
  */
-  __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_legal_actions_np);
-  __pyx_r = __pyx_v_legal_actions_np;
+  __pyx_r = 0;
   goto __pyx_L0;
 
-  /* "cythonfn.pyx":186
- *     return 1
+  /* "cythonfn.pyx":121
+ *     return (board, legal_actions, reward[0], reward[1], done)
  * 
- * def fast_legal_actions(state, int agent_id, int board_size):             # <<<<<<<<<<<<<<
+ * cdef int is_flippable(int [:,:,:] board_view, int agent_id, int r, int c, int board_size):             # <<<<<<<<<<<<<<
  * 
- *     cdef int dir_id, action_type, next_pos_x, next_pos_y, cx, cy, nowpos_x, nowpos_y
+ *     cdef int i, j
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
-  __Pyx_XDECREF(__pyx_t_15);
-  __Pyx_XDECREF(__pyx_t_16);
-  __Pyx_XDECREF(__pyx_t_17);
-  __Pyx_XDECREF(__pyx_t_33);
-  __Pyx_XDECREF(__pyx_t_34);
-  __Pyx_XDECREF(__pyx_t_35);
-  __Pyx_XDECREF(__pyx_t_36);
-  __Pyx_XDECREF(__pyx_t_37);
-  __Pyx_AddTraceback("cythonfn.fast_legal_actions", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
+  __Pyx_XDECREF(__pyx_t_10);
+  __Pyx_XDECREF(__pyx_t_14);
+  __Pyx_WriteUnraisable("cythonfn.is_flippable", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_r = 0;
   __pyx_L0:;
-  __PYX_XDEC_MEMVIEW(&__pyx_v_board_view, 1);
-  __Pyx_XDECREF(__pyx_v_legal_actions_np);
-  __PYX_XDEC_MEMVIEW(&__pyx_v_legal_actions_np_view, 1);
-  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_XDECREF(__pyx_v_now_r);
+  __Pyx_XDECREF(__pyx_v_now_c);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "cythonfn.pyx":225
- *     return legal_actions_np
+/* "cythonfn.pyx":155
+ *     return 0
  * 
- * cdef int _check_in_range(int pos_x, int pos_y, int bottom_right = 9):             # <<<<<<<<<<<<<<
- *     return (0 <= pos_x < bottom_right and 0 <= pos_y < bottom_right)
+ * cdef int _check_in_range(int pos_r, int pos_c, int bottom_right = 8):             # <<<<<<<<<<<<<<
+ *     return (0 <= pos_r < bottom_right and 0 <= pos_c < bottom_right)
  * 
  */
 
-static int __pyx_f_8cythonfn__check_in_range(int __pyx_v_pos_x, int __pyx_v_pos_y, struct __pyx_opt_args_8cythonfn__check_in_range *__pyx_optional_args) {
-  int __pyx_v_bottom_right = ((int)9);
+static int __pyx_f_8cythonfn__check_in_range(int __pyx_v_pos_r, int __pyx_v_pos_c, struct __pyx_opt_args_8cythonfn__check_in_range *__pyx_optional_args) {
+  int __pyx_v_bottom_right = ((int)8);
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -5767,36 +4507,36 @@ static int __pyx_f_8cythonfn__check_in_range(int __pyx_v_pos_x, int __pyx_v_pos_
     }
   }
 
-  /* "cythonfn.pyx":226
+  /* "cythonfn.pyx":156
  * 
- * cdef int _check_in_range(int pos_x, int pos_y, int bottom_right = 9):
- *     return (0 <= pos_x < bottom_right and 0 <= pos_y < bottom_right)             # <<<<<<<<<<<<<<
+ * cdef int _check_in_range(int pos_r, int pos_c, int bottom_right = 8):
+ *     return (0 <= pos_r < bottom_right and 0 <= pos_c < bottom_right)             # <<<<<<<<<<<<<<
  * 
- * cdef int _check_path_exists(int [:,:,:] board_view, int agent_id, int board_size):
+ * cdef int _check_wins(int [:,:,:] board_view, int board_size):
  */
-  __pyx_t_2 = (0 <= __pyx_v_pos_x);
+  __pyx_t_2 = (0 <= __pyx_v_pos_r);
   if (__pyx_t_2) {
-    __pyx_t_2 = (__pyx_v_pos_x < __pyx_v_bottom_right);
+    __pyx_t_2 = (__pyx_v_pos_r < __pyx_v_bottom_right);
   }
   if (__pyx_t_2) {
   } else {
     __pyx_t_1 = __pyx_t_2;
     goto __pyx_L3_bool_binop_done;
   }
-  __pyx_t_2 = (0 <= __pyx_v_pos_y);
+  __pyx_t_2 = (0 <= __pyx_v_pos_c);
   if (__pyx_t_2) {
-    __pyx_t_2 = (__pyx_v_pos_y < __pyx_v_bottom_right);
+    __pyx_t_2 = (__pyx_v_pos_c < __pyx_v_bottom_right);
   }
   __pyx_t_1 = __pyx_t_2;
   __pyx_L3_bool_binop_done:;
   __pyx_r = __pyx_t_1;
   goto __pyx_L0;
 
-  /* "cythonfn.pyx":225
- *     return legal_actions_np
+  /* "cythonfn.pyx":155
+ *     return 0
  * 
- * cdef int _check_in_range(int pos_x, int pos_y, int bottom_right = 9):             # <<<<<<<<<<<<<<
- *     return (0 <= pos_x < bottom_right and 0 <= pos_y < bottom_right)
+ * cdef int _check_in_range(int pos_r, int pos_c, int bottom_right = 8):             # <<<<<<<<<<<<<<
+ *     return (0 <= pos_r < bottom_right and 0 <= pos_c < bottom_right)
  * 
  */
 
@@ -5806,1019 +4546,20 @@ static int __pyx_f_8cythonfn__check_in_range(int __pyx_v_pos_x, int __pyx_v_pos_
   return __pyx_r;
 }
 
-/* "cythonfn.pyx":228
- *     return (0 <= pos_x < bottom_right and 0 <= pos_y < bottom_right)
- * 
- * cdef int _check_path_exists(int [:,:,:] board_view, int agent_id, int board_size):             # <<<<<<<<<<<<<<
- * 
- *     cdef int pos_x, pos_y
- */
-
-static int __pyx_f_8cythonfn__check_path_exists(__Pyx_memviewslice __pyx_v_board_view, int __pyx_v_agent_id, int __pyx_v_board_size) {
-  int __pyx_v_pos_x;
-  int __pyx_v_pos_y;
-  int __pyx_v_i;
-  int __pyx_v_j;
-  int __pyx_v_cnt;
-  int __pyx_v_tail;
-  int __pyx_v_there_x;
-  int __pyx_v_there_y;
-  int __pyx_v_goal;
-  int __pyx_v_queue_x[81];
-  int __pyx_v_queue_y[81];
-  int __pyx_v_visited[81][81];
-  int __pyx_v_directions[4][2];
-  int __pyx_r;
-  __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  int __pyx_t_2;
-  int __pyx_t_3;
-  int __pyx_t_4[2];
-  int __pyx_t_5[2];
-  int __pyx_t_6[2];
-  int __pyx_t_7[2];
-  int __pyx_t_8[2];
-  int __pyx_t_9[2];
-  int __pyx_t_10[2];
-  int __pyx_t_11[2];
-  __pyx_ctuple_int__and_int __pyx_t_12;
-  int __pyx_t_13;
-  int __pyx_t_14;
-  int __pyx_t_15;
-  int __pyx_t_16;
-  __Pyx_RefNannySetupContext("_check_path_exists", 0);
-
-  /* "cythonfn.pyx":232
- *     cdef int pos_x, pos_y
- *     cdef int i, j
- *     cdef int cnt = 0, tail = 0             # <<<<<<<<<<<<<<
- *     cdef int there_x, there_y
- *     cdef int goal = (1-agent_id) * 8
- */
-  __pyx_v_cnt = 0;
-  __pyx_v_tail = 0;
-
-  /* "cythonfn.pyx":234
- *     cdef int cnt = 0, tail = 0
- *     cdef int there_x, there_y
- *     cdef int goal = (1-agent_id) * 8             # <<<<<<<<<<<<<<
- *     cdef int queue_x[81]
- *     cdef int queue_y[81]
- */
-  __pyx_v_goal = ((1 - __pyx_v_agent_id) * 8);
-
-  /* "cythonfn.pyx":240
- *     cdef int directions[4][2]
- * 
- *     for i in range(9):             # <<<<<<<<<<<<<<
- *         for j in range(9):
- *             visited[i][j] = 0
- */
-  for (__pyx_t_1 = 0; __pyx_t_1 < 9; __pyx_t_1+=1) {
-    __pyx_v_i = __pyx_t_1;
-
-    /* "cythonfn.pyx":241
- * 
- *     for i in range(9):
- *         for j in range(9):             # <<<<<<<<<<<<<<
- *             visited[i][j] = 0
- * 
- */
-    for (__pyx_t_2 = 0; __pyx_t_2 < 9; __pyx_t_2+=1) {
-      __pyx_v_j = __pyx_t_2;
-
-      /* "cythonfn.pyx":242
- *     for i in range(9):
- *         for j in range(9):
- *             visited[i][j] = 0             # <<<<<<<<<<<<<<
- * 
- *     if agent_id:
- */
-      ((__pyx_v_visited[__pyx_v_i])[__pyx_v_j]) = 0;
-    }
-  }
-
-  /* "cythonfn.pyx":244
- *             visited[i][j] = 0
- * 
- *     if agent_id:             # <<<<<<<<<<<<<<
- *         directions[0][:] = [0, -1]
- *         directions[1][:] = [1, 0]
- */
-  __pyx_t_3 = (__pyx_v_agent_id != 0);
-  if (__pyx_t_3) {
-
-    /* "cythonfn.pyx":245
- * 
- *     if agent_id:
- *         directions[0][:] = [0, -1]             # <<<<<<<<<<<<<<
- *         directions[1][:] = [1, 0]
- *         directions[2][:] = [-1, 0]
- */
-    __pyx_t_4[0] = 0;
-    __pyx_t_4[1] = -1;
-    memcpy(&((__pyx_v_directions[0])[0]), __pyx_t_4, sizeof((__pyx_v_directions[0])[0]) * (2));
-
-    /* "cythonfn.pyx":246
- *     if agent_id:
- *         directions[0][:] = [0, -1]
- *         directions[1][:] = [1, 0]             # <<<<<<<<<<<<<<
- *         directions[2][:] = [-1, 0]
- *         directions[3][:] = [0, 1]
- */
-    __pyx_t_5[0] = 1;
-    __pyx_t_5[1] = 0;
-    memcpy(&((__pyx_v_directions[1])[0]), __pyx_t_5, sizeof((__pyx_v_directions[1])[0]) * (2));
-
-    /* "cythonfn.pyx":247
- *         directions[0][:] = [0, -1]
- *         directions[1][:] = [1, 0]
- *         directions[2][:] = [-1, 0]             # <<<<<<<<<<<<<<
- *         directions[3][:] = [0, 1]
- *     else:
- */
-    __pyx_t_6[0] = -1;
-    __pyx_t_6[1] = 0;
-    memcpy(&((__pyx_v_directions[2])[0]), __pyx_t_6, sizeof((__pyx_v_directions[2])[0]) * (2));
-
-    /* "cythonfn.pyx":248
- *         directions[1][:] = [1, 0]
- *         directions[2][:] = [-1, 0]
- *         directions[3][:] = [0, 1]             # <<<<<<<<<<<<<<
- *     else:
- *         directions[0][:] = [0, 1]
- */
-    __pyx_t_7[0] = 0;
-    __pyx_t_7[1] = 1;
-    memcpy(&((__pyx_v_directions[3])[0]), __pyx_t_7, sizeof((__pyx_v_directions[3])[0]) * (2));
-
-    /* "cythonfn.pyx":244
- *             visited[i][j] = 0
- * 
- *     if agent_id:             # <<<<<<<<<<<<<<
- *         directions[0][:] = [0, -1]
- *         directions[1][:] = [1, 0]
- */
-    goto __pyx_L7;
-  }
-
-  /* "cythonfn.pyx":250
- *         directions[3][:] = [0, 1]
- *     else:
- *         directions[0][:] = [0, 1]             # <<<<<<<<<<<<<<
- *         directions[1][:] = [1, 0]
- *         directions[2][:] = [-1, 0]
- */
-  /*else*/ {
-    __pyx_t_8[0] = 0;
-    __pyx_t_8[1] = 1;
-    memcpy(&((__pyx_v_directions[0])[0]), __pyx_t_8, sizeof((__pyx_v_directions[0])[0]) * (2));
-
-    /* "cythonfn.pyx":251
- *     else:
- *         directions[0][:] = [0, 1]
- *         directions[1][:] = [1, 0]             # <<<<<<<<<<<<<<
- *         directions[2][:] = [-1, 0]
- *         directions[3][:] = [0, -1]
- */
-    __pyx_t_9[0] = 1;
-    __pyx_t_9[1] = 0;
-    memcpy(&((__pyx_v_directions[1])[0]), __pyx_t_9, sizeof((__pyx_v_directions[1])[0]) * (2));
-
-    /* "cythonfn.pyx":252
- *         directions[0][:] = [0, 1]
- *         directions[1][:] = [1, 0]
- *         directions[2][:] = [-1, 0]             # <<<<<<<<<<<<<<
- *         directions[3][:] = [0, -1]
- * 
- */
-    __pyx_t_10[0] = -1;
-    __pyx_t_10[1] = 0;
-    memcpy(&((__pyx_v_directions[2])[0]), __pyx_t_10, sizeof((__pyx_v_directions[2])[0]) * (2));
-
-    /* "cythonfn.pyx":253
- *         directions[1][:] = [1, 0]
- *         directions[2][:] = [-1, 0]
- *         directions[3][:] = [0, -1]             # <<<<<<<<<<<<<<
- * 
- *     (pos_x, pos_y) = _agent_pos(board_view, agent_id, board_size)
- */
-    __pyx_t_11[0] = 0;
-    __pyx_t_11[1] = -1;
-    memcpy(&((__pyx_v_directions[3])[0]), __pyx_t_11, sizeof((__pyx_v_directions[3])[0]) * (2));
-  }
-  __pyx_L7:;
-
-  /* "cythonfn.pyx":255
- *         directions[3][:] = [0, -1]
- * 
- *     (pos_x, pos_y) = _agent_pos(board_view, agent_id, board_size)             # <<<<<<<<<<<<<<
- *     if pos_y == goal:   return 1
- * 
- */
-  __pyx_t_12 = __pyx_f_8cythonfn__agent_pos(__pyx_v_board_view, __pyx_v_agent_id, __pyx_v_board_size);
-  __pyx_t_1 = __pyx_t_12.f0;
-  __pyx_t_2 = __pyx_t_12.f1;
-  __pyx_v_pos_x = __pyx_t_1;
-  __pyx_v_pos_y = __pyx_t_2;
-
-  /* "cythonfn.pyx":256
- * 
- *     (pos_x, pos_y) = _agent_pos(board_view, agent_id, board_size)
- *     if pos_y == goal:   return 1             # <<<<<<<<<<<<<<
- * 
- *     queue_x[tail] = pos_x
- */
-  __pyx_t_3 = ((__pyx_v_pos_y == __pyx_v_goal) != 0);
-  if (__pyx_t_3) {
-    __pyx_r = 1;
-    goto __pyx_L0;
-  }
-
-  /* "cythonfn.pyx":258
- *     if pos_y == goal:   return 1
- * 
- *     queue_x[tail] = pos_x             # <<<<<<<<<<<<<<
- *     queue_y[tail] = pos_y
- *     tail += 1
- */
-  (__pyx_v_queue_x[__pyx_v_tail]) = __pyx_v_pos_x;
-
-  /* "cythonfn.pyx":259
- * 
- *     queue_x[tail] = pos_x
- *     queue_y[tail] = pos_y             # <<<<<<<<<<<<<<
- *     tail += 1
- *     visited[pos_x][pos_y] = 1
- */
-  (__pyx_v_queue_y[__pyx_v_tail]) = __pyx_v_pos_y;
-
-  /* "cythonfn.pyx":260
- *     queue_x[tail] = pos_x
- *     queue_y[tail] = pos_y
- *     tail += 1             # <<<<<<<<<<<<<<
- *     visited[pos_x][pos_y] = 1
- * 
- */
-  __pyx_v_tail = (__pyx_v_tail + 1);
-
-  /* "cythonfn.pyx":261
- *     queue_y[tail] = pos_y
- *     tail += 1
- *     visited[pos_x][pos_y] = 1             # <<<<<<<<<<<<<<
- * 
- *     for i in range(board_size * board_size):
- */
-  ((__pyx_v_visited[__pyx_v_pos_x])[__pyx_v_pos_y]) = 1;
-
-  /* "cythonfn.pyx":263
- *     visited[pos_x][pos_y] = 1
- * 
- *     for i in range(board_size * board_size):             # <<<<<<<<<<<<<<
- *         if cnt == tail: break
- *         pos_x = queue_x[cnt]
- */
-  __pyx_t_2 = (__pyx_v_board_size * __pyx_v_board_size);
-  __pyx_t_1 = __pyx_t_2;
-  for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_1; __pyx_t_13+=1) {
-    __pyx_v_i = __pyx_t_13;
-
-    /* "cythonfn.pyx":264
- * 
- *     for i in range(board_size * board_size):
- *         if cnt == tail: break             # <<<<<<<<<<<<<<
- *         pos_x = queue_x[cnt]
- *         pos_y = queue_y[cnt]
- */
-    __pyx_t_3 = ((__pyx_v_cnt == __pyx_v_tail) != 0);
-    if (__pyx_t_3) {
-      goto __pyx_L10_break;
-    }
-
-    /* "cythonfn.pyx":265
- *     for i in range(board_size * board_size):
- *         if cnt == tail: break
- *         pos_x = queue_x[cnt]             # <<<<<<<<<<<<<<
- *         pos_y = queue_y[cnt]
- *         cnt += 1
- */
-    __pyx_v_pos_x = (__pyx_v_queue_x[__pyx_v_cnt]);
-
-    /* "cythonfn.pyx":266
- *         if cnt == tail: break
- *         pos_x = queue_x[cnt]
- *         pos_y = queue_y[cnt]             # <<<<<<<<<<<<<<
- *         cnt += 1
- *         for j in range(4):
- */
-    __pyx_v_pos_y = (__pyx_v_queue_y[__pyx_v_cnt]);
-
-    /* "cythonfn.pyx":267
- *         pos_x = queue_x[cnt]
- *         pos_y = queue_y[cnt]
- *         cnt += 1             # <<<<<<<<<<<<<<
- *         for j in range(4):
- *             there_x = pos_x + directions[j][0]
- */
-    __pyx_v_cnt = (__pyx_v_cnt + 1);
-
-    /* "cythonfn.pyx":268
- *         pos_y = queue_y[cnt]
- *         cnt += 1
- *         for j in range(4):             # <<<<<<<<<<<<<<
- *             there_x = pos_x + directions[j][0]
- *             there_y = pos_y + directions[j][1]
- */
-    for (__pyx_t_14 = 0; __pyx_t_14 < 4; __pyx_t_14+=1) {
-      __pyx_v_j = __pyx_t_14;
-
-      /* "cythonfn.pyx":269
- *         cnt += 1
- *         for j in range(4):
- *             there_x = pos_x + directions[j][0]             # <<<<<<<<<<<<<<
- *             there_y = pos_y + directions[j][1]
- *             if not (0 <= there_x < board_size and 0 <= there_y < board_size):
- */
-      __pyx_v_there_x = (__pyx_v_pos_x + ((__pyx_v_directions[__pyx_v_j])[0]));
-
-      /* "cythonfn.pyx":270
- *         for j in range(4):
- *             there_x = pos_x + directions[j][0]
- *             there_y = pos_y + directions[j][1]             # <<<<<<<<<<<<<<
- *             if not (0 <= there_x < board_size and 0 <= there_y < board_size):
- *                 continue
- */
-      __pyx_v_there_y = (__pyx_v_pos_y + ((__pyx_v_directions[__pyx_v_j])[1]));
-
-      /* "cythonfn.pyx":271
- *             there_x = pos_x + directions[j][0]
- *             there_y = pos_y + directions[j][1]
- *             if not (0 <= there_x < board_size and 0 <= there_y < board_size):             # <<<<<<<<<<<<<<
- *                 continue
- *             if visited[there_x][there_y]:
- */
-      __pyx_t_15 = (0 <= __pyx_v_there_x);
-      if (__pyx_t_15) {
-        __pyx_t_15 = (__pyx_v_there_x < __pyx_v_board_size);
-      }
-      __pyx_t_16 = (__pyx_t_15 != 0);
-      if (__pyx_t_16) {
-      } else {
-        __pyx_t_3 = __pyx_t_16;
-        goto __pyx_L15_bool_binop_done;
-      }
-      __pyx_t_16 = (0 <= __pyx_v_there_y);
-      if (__pyx_t_16) {
-        __pyx_t_16 = (__pyx_v_there_y < __pyx_v_board_size);
-      }
-      __pyx_t_15 = (__pyx_t_16 != 0);
-      __pyx_t_3 = __pyx_t_15;
-      __pyx_L15_bool_binop_done:;
-      __pyx_t_15 = ((!__pyx_t_3) != 0);
-      if (__pyx_t_15) {
-
-        /* "cythonfn.pyx":272
- *             there_y = pos_y + directions[j][1]
- *             if not (0 <= there_x < board_size and 0 <= there_y < board_size):
- *                 continue             # <<<<<<<<<<<<<<
- *             if visited[there_x][there_y]:
- *                 continue
- */
-        goto __pyx_L12_continue;
-
-        /* "cythonfn.pyx":271
- *             there_x = pos_x + directions[j][0]
- *             there_y = pos_y + directions[j][1]
- *             if not (0 <= there_x < board_size and 0 <= there_y < board_size):             # <<<<<<<<<<<<<<
- *                 continue
- *             if visited[there_x][there_y]:
- */
-      }
-
-      /* "cythonfn.pyx":273
- *             if not (0 <= there_x < board_size and 0 <= there_y < board_size):
- *                 continue
- *             if visited[there_x][there_y]:             # <<<<<<<<<<<<<<
- *                 continue
- *             if _check_wall_blocked(board_view, pos_x, pos_y, there_x, there_y):
- */
-      __pyx_t_15 = (((__pyx_v_visited[__pyx_v_there_x])[__pyx_v_there_y]) != 0);
-      if (__pyx_t_15) {
-
-        /* "cythonfn.pyx":274
- *                 continue
- *             if visited[there_x][there_y]:
- *                 continue             # <<<<<<<<<<<<<<
- *             if _check_wall_blocked(board_view, pos_x, pos_y, there_x, there_y):
- *                 continue
- */
-        goto __pyx_L12_continue;
-
-        /* "cythonfn.pyx":273
- *             if not (0 <= there_x < board_size and 0 <= there_y < board_size):
- *                 continue
- *             if visited[there_x][there_y]:             # <<<<<<<<<<<<<<
- *                 continue
- *             if _check_wall_blocked(board_view, pos_x, pos_y, there_x, there_y):
- */
-      }
-
-      /* "cythonfn.pyx":275
- *             if visited[there_x][there_y]:
- *                 continue
- *             if _check_wall_blocked(board_view, pos_x, pos_y, there_x, there_y):             # <<<<<<<<<<<<<<
- *                 continue
- *             if there_y == goal:
- */
-      __pyx_t_15 = (__pyx_f_8cythonfn__check_wall_blocked(__pyx_v_board_view, __pyx_v_pos_x, __pyx_v_pos_y, __pyx_v_there_x, __pyx_v_there_y) != 0);
-      if (__pyx_t_15) {
-
-        /* "cythonfn.pyx":276
- *                 continue
- *             if _check_wall_blocked(board_view, pos_x, pos_y, there_x, there_y):
- *                 continue             # <<<<<<<<<<<<<<
- *             if there_y == goal:
- *                 return 1
- */
-        goto __pyx_L12_continue;
-
-        /* "cythonfn.pyx":275
- *             if visited[there_x][there_y]:
- *                 continue
- *             if _check_wall_blocked(board_view, pos_x, pos_y, there_x, there_y):             # <<<<<<<<<<<<<<
- *                 continue
- *             if there_y == goal:
- */
-      }
-
-      /* "cythonfn.pyx":277
- *             if _check_wall_blocked(board_view, pos_x, pos_y, there_x, there_y):
- *                 continue
- *             if there_y == goal:             # <<<<<<<<<<<<<<
- *                 return 1
- *             visited[there_x][there_y] = 1
- */
-      __pyx_t_15 = ((__pyx_v_there_y == __pyx_v_goal) != 0);
-      if (__pyx_t_15) {
-
-        /* "cythonfn.pyx":278
- *                 continue
- *             if there_y == goal:
- *                 return 1             # <<<<<<<<<<<<<<
- *             visited[there_x][there_y] = 1
- *             queue_x[tail] = there_x
- */
-        __pyx_r = 1;
-        goto __pyx_L0;
-
-        /* "cythonfn.pyx":277
- *             if _check_wall_blocked(board_view, pos_x, pos_y, there_x, there_y):
- *                 continue
- *             if there_y == goal:             # <<<<<<<<<<<<<<
- *                 return 1
- *             visited[there_x][there_y] = 1
- */
-      }
-
-      /* "cythonfn.pyx":279
- *             if there_y == goal:
- *                 return 1
- *             visited[there_x][there_y] = 1             # <<<<<<<<<<<<<<
- *             queue_x[tail] = there_x
- *             queue_y[tail] = there_y
- */
-      ((__pyx_v_visited[__pyx_v_there_x])[__pyx_v_there_y]) = 1;
-
-      /* "cythonfn.pyx":280
- *                 return 1
- *             visited[there_x][there_y] = 1
- *             queue_x[tail] = there_x             # <<<<<<<<<<<<<<
- *             queue_y[tail] = there_y
- *             tail += 1
- */
-      (__pyx_v_queue_x[__pyx_v_tail]) = __pyx_v_there_x;
-
-      /* "cythonfn.pyx":281
- *             visited[there_x][there_y] = 1
- *             queue_x[tail] = there_x
- *             queue_y[tail] = there_y             # <<<<<<<<<<<<<<
- *             tail += 1
- * 
- */
-      (__pyx_v_queue_y[__pyx_v_tail]) = __pyx_v_there_y;
-
-      /* "cythonfn.pyx":282
- *             queue_x[tail] = there_x
- *             queue_y[tail] = there_y
- *             tail += 1             # <<<<<<<<<<<<<<
- * 
- *     return 0
- */
-      __pyx_v_tail = (__pyx_v_tail + 1);
-      __pyx_L12_continue:;
-    }
-  }
-  __pyx_L10_break:;
-
-  /* "cythonfn.pyx":284
- *             tail += 1
- * 
- *     return 0             # <<<<<<<<<<<<<<
- * 
- * cdef int _check_wall_blocked(int [:,:,:] board_view, int cx, int cy, int nx, int ny):
- */
-  __pyx_r = 0;
-  goto __pyx_L0;
-
-  /* "cythonfn.pyx":228
- *     return (0 <= pos_x < bottom_right and 0 <= pos_y < bottom_right)
- * 
- * cdef int _check_path_exists(int [:,:,:] board_view, int agent_id, int board_size):             # <<<<<<<<<<<<<<
- * 
- *     cdef int pos_x, pos_y
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "cythonfn.pyx":286
- *     return 0
- * 
- * cdef int _check_wall_blocked(int [:,:,:] board_view, int cx, int cy, int nx, int ny):             # <<<<<<<<<<<<<<
- *     cdef int i
- *     if nx > cx:
- */
-
-static int __pyx_f_8cythonfn__check_wall_blocked(__Pyx_memviewslice __pyx_v_board_view, int __pyx_v_cx, int __pyx_v_cy, int __pyx_v_nx, int __pyx_v_ny) {
-  int __pyx_v_i;
-  int __pyx_r;
-  __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  int __pyx_t_2;
-  int __pyx_t_3;
-  int __pyx_t_4;
-  Py_ssize_t __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  Py_ssize_t __pyx_t_7;
-  __Pyx_RefNannySetupContext("_check_wall_blocked", 0);
-
-  /* "cythonfn.pyx":288
- * cdef int _check_wall_blocked(int [:,:,:] board_view, int cx, int cy, int nx, int ny):
- *     cdef int i
- *     if nx > cx:             # <<<<<<<<<<<<<<
- *         for i in range(cx, nx):
- *             if board_view[3, i, cy]:
- */
-  __pyx_t_1 = ((__pyx_v_nx > __pyx_v_cx) != 0);
-  if (__pyx_t_1) {
-
-    /* "cythonfn.pyx":289
- *     cdef int i
- *     if nx > cx:
- *         for i in range(cx, nx):             # <<<<<<<<<<<<<<
- *             if board_view[3, i, cy]:
- *                 return 1
- */
-    __pyx_t_2 = __pyx_v_nx;
-    __pyx_t_3 = __pyx_t_2;
-    for (__pyx_t_4 = __pyx_v_cx; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
-      __pyx_v_i = __pyx_t_4;
-
-      /* "cythonfn.pyx":290
- *     if nx > cx:
- *         for i in range(cx, nx):
- *             if board_view[3, i, cy]:             # <<<<<<<<<<<<<<
- *                 return 1
- *         return 0
- */
-      __pyx_t_5 = 3;
-      __pyx_t_6 = __pyx_v_i;
-      __pyx_t_7 = __pyx_v_cy;
-      __pyx_t_1 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_5 * __pyx_v_board_view.strides[0]) ) + __pyx_t_6 * __pyx_v_board_view.strides[1]) ) + __pyx_t_7 * __pyx_v_board_view.strides[2]) ))) != 0);
-      if (__pyx_t_1) {
-
-        /* "cythonfn.pyx":291
- *         for i in range(cx, nx):
- *             if board_view[3, i, cy]:
- *                 return 1             # <<<<<<<<<<<<<<
- *         return 0
- *     if nx < cx:
- */
-        __pyx_r = 1;
-        goto __pyx_L0;
-
-        /* "cythonfn.pyx":290
- *     if nx > cx:
- *         for i in range(cx, nx):
- *             if board_view[3, i, cy]:             # <<<<<<<<<<<<<<
- *                 return 1
- *         return 0
- */
-      }
-    }
-
-    /* "cythonfn.pyx":292
- *             if board_view[3, i, cy]:
- *                 return 1
- *         return 0             # <<<<<<<<<<<<<<
- *     if nx < cx:
- *         for i in range(nx, cx):
- */
-    __pyx_r = 0;
-    goto __pyx_L0;
-
-    /* "cythonfn.pyx":288
- * cdef int _check_wall_blocked(int [:,:,:] board_view, int cx, int cy, int nx, int ny):
- *     cdef int i
- *     if nx > cx:             # <<<<<<<<<<<<<<
- *         for i in range(cx, nx):
- *             if board_view[3, i, cy]:
- */
-  }
-
-  /* "cythonfn.pyx":293
- *                 return 1
- *         return 0
- *     if nx < cx:             # <<<<<<<<<<<<<<
- *         for i in range(nx, cx):
- *             if board_view[3, i, cy]:
- */
-  __pyx_t_1 = ((__pyx_v_nx < __pyx_v_cx) != 0);
-  if (__pyx_t_1) {
-
-    /* "cythonfn.pyx":294
- *         return 0
- *     if nx < cx:
- *         for i in range(nx, cx):             # <<<<<<<<<<<<<<
- *             if board_view[3, i, cy]:
- *                 return 1
- */
-    __pyx_t_2 = __pyx_v_cx;
-    __pyx_t_3 = __pyx_t_2;
-    for (__pyx_t_4 = __pyx_v_nx; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
-      __pyx_v_i = __pyx_t_4;
-
-      /* "cythonfn.pyx":295
- *     if nx < cx:
- *         for i in range(nx, cx):
- *             if board_view[3, i, cy]:             # <<<<<<<<<<<<<<
- *                 return 1
- *         return 0
- */
-      __pyx_t_7 = 3;
-      __pyx_t_6 = __pyx_v_i;
-      __pyx_t_5 = __pyx_v_cy;
-      __pyx_t_1 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_7 * __pyx_v_board_view.strides[0]) ) + __pyx_t_6 * __pyx_v_board_view.strides[1]) ) + __pyx_t_5 * __pyx_v_board_view.strides[2]) ))) != 0);
-      if (__pyx_t_1) {
-
-        /* "cythonfn.pyx":296
- *         for i in range(nx, cx):
- *             if board_view[3, i, cy]:
- *                 return 1             # <<<<<<<<<<<<<<
- *         return 0
- *     if ny > cy:
- */
-        __pyx_r = 1;
-        goto __pyx_L0;
-
-        /* "cythonfn.pyx":295
- *     if nx < cx:
- *         for i in range(nx, cx):
- *             if board_view[3, i, cy]:             # <<<<<<<<<<<<<<
- *                 return 1
- *         return 0
- */
-      }
-    }
-
-    /* "cythonfn.pyx":297
- *             if board_view[3, i, cy]:
- *                 return 1
- *         return 0             # <<<<<<<<<<<<<<
- *     if ny > cy:
- *         for i in range(cy, ny):
- */
-    __pyx_r = 0;
-    goto __pyx_L0;
-
-    /* "cythonfn.pyx":293
- *                 return 1
- *         return 0
- *     if nx < cx:             # <<<<<<<<<<<<<<
- *         for i in range(nx, cx):
- *             if board_view[3, i, cy]:
- */
-  }
-
-  /* "cythonfn.pyx":298
- *                 return 1
- *         return 0
- *     if ny > cy:             # <<<<<<<<<<<<<<
- *         for i in range(cy, ny):
- *             if board_view[2, cx, i]:
- */
-  __pyx_t_1 = ((__pyx_v_ny > __pyx_v_cy) != 0);
-  if (__pyx_t_1) {
-
-    /* "cythonfn.pyx":299
- *         return 0
- *     if ny > cy:
- *         for i in range(cy, ny):             # <<<<<<<<<<<<<<
- *             if board_view[2, cx, i]:
- *                 return 1
- */
-    __pyx_t_2 = __pyx_v_ny;
-    __pyx_t_3 = __pyx_t_2;
-    for (__pyx_t_4 = __pyx_v_cy; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
-      __pyx_v_i = __pyx_t_4;
-
-      /* "cythonfn.pyx":300
- *     if ny > cy:
- *         for i in range(cy, ny):
- *             if board_view[2, cx, i]:             # <<<<<<<<<<<<<<
- *                 return 1
- *         return 0
- */
-      __pyx_t_5 = 2;
-      __pyx_t_6 = __pyx_v_cx;
-      __pyx_t_7 = __pyx_v_i;
-      __pyx_t_1 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_5 * __pyx_v_board_view.strides[0]) ) + __pyx_t_6 * __pyx_v_board_view.strides[1]) ) + __pyx_t_7 * __pyx_v_board_view.strides[2]) ))) != 0);
-      if (__pyx_t_1) {
-
-        /* "cythonfn.pyx":301
- *         for i in range(cy, ny):
- *             if board_view[2, cx, i]:
- *                 return 1             # <<<<<<<<<<<<<<
- *         return 0
- *     if ny < cy:
- */
-        __pyx_r = 1;
-        goto __pyx_L0;
-
-        /* "cythonfn.pyx":300
- *     if ny > cy:
- *         for i in range(cy, ny):
- *             if board_view[2, cx, i]:             # <<<<<<<<<<<<<<
- *                 return 1
- *         return 0
- */
-      }
-    }
-
-    /* "cythonfn.pyx":302
- *             if board_view[2, cx, i]:
- *                 return 1
- *         return 0             # <<<<<<<<<<<<<<
- *     if ny < cy:
- *         for i in range(ny, cy):
- */
-    __pyx_r = 0;
-    goto __pyx_L0;
-
-    /* "cythonfn.pyx":298
- *                 return 1
- *         return 0
- *     if ny > cy:             # <<<<<<<<<<<<<<
- *         for i in range(cy, ny):
- *             if board_view[2, cx, i]:
- */
-  }
-
-  /* "cythonfn.pyx":303
- *                 return 1
- *         return 0
- *     if ny < cy:             # <<<<<<<<<<<<<<
- *         for i in range(ny, cy):
- *             if board_view[2, cx, i]:
- */
-  __pyx_t_1 = ((__pyx_v_ny < __pyx_v_cy) != 0);
-  if (__pyx_t_1) {
-
-    /* "cythonfn.pyx":304
- *         return 0
- *     if ny < cy:
- *         for i in range(ny, cy):             # <<<<<<<<<<<<<<
- *             if board_view[2, cx, i]:
- *                 return 1
- */
-    __pyx_t_2 = __pyx_v_cy;
-    __pyx_t_3 = __pyx_t_2;
-    for (__pyx_t_4 = __pyx_v_ny; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
-      __pyx_v_i = __pyx_t_4;
-
-      /* "cythonfn.pyx":305
- *     if ny < cy:
- *         for i in range(ny, cy):
- *             if board_view[2, cx, i]:             # <<<<<<<<<<<<<<
- *                 return 1
- *         return 0
- */
-      __pyx_t_7 = 2;
-      __pyx_t_6 = __pyx_v_cx;
-      __pyx_t_5 = __pyx_v_i;
-      __pyx_t_1 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_7 * __pyx_v_board_view.strides[0]) ) + __pyx_t_6 * __pyx_v_board_view.strides[1]) ) + __pyx_t_5 * __pyx_v_board_view.strides[2]) ))) != 0);
-      if (__pyx_t_1) {
-
-        /* "cythonfn.pyx":306
- *         for i in range(ny, cy):
- *             if board_view[2, cx, i]:
- *                 return 1             # <<<<<<<<<<<<<<
- *         return 0
- *     return 0
- */
-        __pyx_r = 1;
-        goto __pyx_L0;
-
-        /* "cythonfn.pyx":305
- *     if ny < cy:
- *         for i in range(ny, cy):
- *             if board_view[2, cx, i]:             # <<<<<<<<<<<<<<
- *                 return 1
- *         return 0
- */
-      }
-    }
-
-    /* "cythonfn.pyx":307
- *             if board_view[2, cx, i]:
- *                 return 1
- *         return 0             # <<<<<<<<<<<<<<
- *     return 0
- * 
- */
-    __pyx_r = 0;
-    goto __pyx_L0;
-
-    /* "cythonfn.pyx":303
- *                 return 1
- *         return 0
- *     if ny < cy:             # <<<<<<<<<<<<<<
- *         for i in range(ny, cy):
- *             if board_view[2, cx, i]:
- */
-  }
-
-  /* "cythonfn.pyx":308
- *                 return 1
- *         return 0
- *     return 0             # <<<<<<<<<<<<<<
- * 
- * cdef int _check_wins(int [:,:,:] board_view, int board_size):
- */
-  __pyx_r = 0;
-  goto __pyx_L0;
-
-  /* "cythonfn.pyx":286
- *     return 0
- * 
- * cdef int _check_wall_blocked(int [:,:,:] board_view, int cx, int cy, int nx, int ny):             # <<<<<<<<<<<<<<
- *     cdef int i
- *     if nx > cx:
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "cythonfn.pyx":310
- *     return 0
+/* "cythonfn.pyx":158
+ *     return (0 <= pos_r < bottom_right and 0 <= pos_c < bottom_right)
  * 
  * cdef int _check_wins(int [:,:,:] board_view, int board_size):             # <<<<<<<<<<<<<<
- *     cdef int i
- *     for i in range(board_size):
+ *     cdef int i, j
+ *     cdef agent0_cnt = 0, agent1_cnt = 0
  */
 
 static int __pyx_f_8cythonfn__check_wins(__Pyx_memviewslice __pyx_v_board_view, int __pyx_v_board_size) {
   int __pyx_v_i;
-  int __pyx_r;
-  __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  int __pyx_t_2;
-  int __pyx_t_3;
-  Py_ssize_t __pyx_t_4;
-  Py_ssize_t __pyx_t_5;
-  Py_ssize_t __pyx_t_6;
-  int __pyx_t_7;
-  __Pyx_RefNannySetupContext("_check_wins", 0);
-
-  /* "cythonfn.pyx":312
- * cdef int _check_wins(int [:,:,:] board_view, int board_size):
- *     cdef int i
- *     for i in range(board_size):             # <<<<<<<<<<<<<<
- *         if board_view[0, i, board_size-1]:
- *             return 1
- */
-  __pyx_t_1 = __pyx_v_board_size;
-  __pyx_t_2 = __pyx_t_1;
-  for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
-    __pyx_v_i = __pyx_t_3;
-
-    /* "cythonfn.pyx":313
- *     cdef int i
- *     for i in range(board_size):
- *         if board_view[0, i, board_size-1]:             # <<<<<<<<<<<<<<
- *             return 1
- *         if board_view[1, i, 0]:
- */
-    __pyx_t_4 = 0;
-    __pyx_t_5 = __pyx_v_i;
-    __pyx_t_6 = (__pyx_v_board_size - 1);
-    __pyx_t_7 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_4 * __pyx_v_board_view.strides[0]) ) + __pyx_t_5 * __pyx_v_board_view.strides[1]) ) + __pyx_t_6 * __pyx_v_board_view.strides[2]) ))) != 0);
-    if (__pyx_t_7) {
-
-      /* "cythonfn.pyx":314
- *     for i in range(board_size):
- *         if board_view[0, i, board_size-1]:
- *             return 1             # <<<<<<<<<<<<<<
- *         if board_view[1, i, 0]:
- *             return 1
- */
-      __pyx_r = 1;
-      goto __pyx_L0;
-
-      /* "cythonfn.pyx":313
- *     cdef int i
- *     for i in range(board_size):
- *         if board_view[0, i, board_size-1]:             # <<<<<<<<<<<<<<
- *             return 1
- *         if board_view[1, i, 0]:
- */
-    }
-
-    /* "cythonfn.pyx":315
- *         if board_view[0, i, board_size-1]:
- *             return 1
- *         if board_view[1, i, 0]:             # <<<<<<<<<<<<<<
- *             return 1
- *     return 0
- */
-    __pyx_t_6 = 1;
-    __pyx_t_5 = __pyx_v_i;
-    __pyx_t_4 = 0;
-    __pyx_t_7 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_6 * __pyx_v_board_view.strides[0]) ) + __pyx_t_5 * __pyx_v_board_view.strides[1]) ) + __pyx_t_4 * __pyx_v_board_view.strides[2]) ))) != 0);
-    if (__pyx_t_7) {
-
-      /* "cythonfn.pyx":316
- *             return 1
- *         if board_view[1, i, 0]:
- *             return 1             # <<<<<<<<<<<<<<
- *     return 0
- * 
- */
-      __pyx_r = 1;
-      goto __pyx_L0;
-
-      /* "cythonfn.pyx":315
- *         if board_view[0, i, board_size-1]:
- *             return 1
- *         if board_view[1, i, 0]:             # <<<<<<<<<<<<<<
- *             return 1
- *     return 0
- */
-    }
-  }
-
-  /* "cythonfn.pyx":317
- *         if board_view[1, i, 0]:
- *             return 1
- *     return 0             # <<<<<<<<<<<<<<
- * 
- * cdef (int, int) _agent_pos(int [:,:,:] board_view, int agent_id, int board_size):
- */
-  __pyx_r = 0;
-  goto __pyx_L0;
-
-  /* "cythonfn.pyx":310
- *     return 0
- * 
- * cdef int _check_wins(int [:,:,:] board_view, int board_size):             # <<<<<<<<<<<<<<
- *     cdef int i
- *     for i in range(board_size):
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "cythonfn.pyx":319
- *     return 0
- * 
- * cdef (int, int) _agent_pos(int [:,:,:] board_view, int agent_id, int board_size):             # <<<<<<<<<<<<<<
- *     cdef int i, j
- *     for i in range(board_size):
- */
-
-static __pyx_ctuple_int__and_int __pyx_f_8cythonfn__agent_pos(__Pyx_memviewslice __pyx_v_board_view, int __pyx_v_agent_id, int __pyx_v_board_size) {
-  int __pyx_v_i;
   int __pyx_v_j;
-  __pyx_ctuple_int__and_int __pyx_r;
+  PyObject *__pyx_v_agent0_cnt = 0;
+  PyObject *__pyx_v_agent1_cnt = 0;
+  int __pyx_r;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   int __pyx_t_2;
@@ -6830,88 +4571,205 @@ static __pyx_ctuple_int__and_int __pyx_f_8cythonfn__agent_pos(__Pyx_memviewslice
   Py_ssize_t __pyx_t_8;
   Py_ssize_t __pyx_t_9;
   int __pyx_t_10;
-  __pyx_ctuple_int__and_int __pyx_t_11;
-  __Pyx_RefNannySetupContext("_agent_pos", 0);
+  PyObject *__pyx_t_11 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("_check_wins", 0);
 
-  /* "cythonfn.pyx":321
- * cdef (int, int) _agent_pos(int [:,:,:] board_view, int agent_id, int board_size):
+  /* "cythonfn.pyx":160
+ * cdef int _check_wins(int [:,:,:] board_view, int board_size):
  *     cdef int i, j
+ *     cdef agent0_cnt = 0, agent1_cnt = 0             # <<<<<<<<<<<<<<
+ *     for i in range(board_size):
+ *         for j in range(board_size):
+ */
+  __Pyx_INCREF(__pyx_int_0);
+  __pyx_v_agent0_cnt = __pyx_int_0;
+  __Pyx_INCREF(__pyx_int_0);
+  __pyx_v_agent1_cnt = __pyx_int_0;
+
+  /* "cythonfn.pyx":161
+ *     cdef int i, j
+ *     cdef agent0_cnt = 0, agent1_cnt = 0
  *     for i in range(board_size):             # <<<<<<<<<<<<<<
  *         for j in range(board_size):
- *             if board_view[agent_id, i, j]:
+ *             if board_view[0, i, j]:
  */
   __pyx_t_1 = __pyx_v_board_size;
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "cythonfn.pyx":322
- *     cdef int i, j
+    /* "cythonfn.pyx":162
+ *     cdef agent0_cnt = 0, agent1_cnt = 0
  *     for i in range(board_size):
  *         for j in range(board_size):             # <<<<<<<<<<<<<<
- *             if board_view[agent_id, i, j]:
- *                 return (i, j)
+ *             if board_view[0, i, j]:
+ *                 agent0_cnt += 1
  */
     __pyx_t_4 = __pyx_v_board_size;
     __pyx_t_5 = __pyx_t_4;
     for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
       __pyx_v_j = __pyx_t_6;
 
-      /* "cythonfn.pyx":323
+      /* "cythonfn.pyx":163
  *     for i in range(board_size):
  *         for j in range(board_size):
- *             if board_view[agent_id, i, j]:             # <<<<<<<<<<<<<<
- *                 return (i, j)
- *     return (-1, -1)
+ *             if board_view[0, i, j]:             # <<<<<<<<<<<<<<
+ *                 agent0_cnt += 1
+ *             elif board_view[1, i, j]:
  */
-      __pyx_t_7 = __pyx_v_agent_id;
+      __pyx_t_7 = 0;
       __pyx_t_8 = __pyx_v_i;
       __pyx_t_9 = __pyx_v_j;
       __pyx_t_10 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_7 * __pyx_v_board_view.strides[0]) ) + __pyx_t_8 * __pyx_v_board_view.strides[1]) ) + __pyx_t_9 * __pyx_v_board_view.strides[2]) ))) != 0);
       if (__pyx_t_10) {
 
-        /* "cythonfn.pyx":324
+        /* "cythonfn.pyx":164
  *         for j in range(board_size):
- *             if board_view[agent_id, i, j]:
- *                 return (i, j)             # <<<<<<<<<<<<<<
- *     return (-1, -1)
+ *             if board_view[0, i, j]:
+ *                 agent0_cnt += 1             # <<<<<<<<<<<<<<
+ *             elif board_view[1, i, j]:
+ *                 agent1_cnt += 1
  */
-        __pyx_t_11.f0 = __pyx_v_i;
-        __pyx_t_11.f1 = __pyx_v_j;
-        __pyx_r = __pyx_t_11;
-        goto __pyx_L0;
+        __pyx_t_11 = __Pyx_PyInt_AddObjC(__pyx_v_agent0_cnt, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 164, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __Pyx_DECREF_SET(__pyx_v_agent0_cnt, __pyx_t_11);
+        __pyx_t_11 = 0;
 
-        /* "cythonfn.pyx":323
+        /* "cythonfn.pyx":163
  *     for i in range(board_size):
  *         for j in range(board_size):
- *             if board_view[agent_id, i, j]:             # <<<<<<<<<<<<<<
- *                 return (i, j)
- *     return (-1, -1)
+ *             if board_view[0, i, j]:             # <<<<<<<<<<<<<<
+ *                 agent0_cnt += 1
+ *             elif board_view[1, i, j]:
+ */
+        goto __pyx_L7;
+      }
+
+      /* "cythonfn.pyx":165
+ *             if board_view[0, i, j]:
+ *                 agent0_cnt += 1
+ *             elif board_view[1, i, j]:             # <<<<<<<<<<<<<<
+ *                 agent1_cnt += 1
+ *     if agent0_cnt > agent1_cnt:
+ */
+      __pyx_t_9 = 1;
+      __pyx_t_8 = __pyx_v_i;
+      __pyx_t_7 = __pyx_v_j;
+      __pyx_t_10 = ((*((int *) ( /* dim=2 */ (( /* dim=1 */ (( /* dim=0 */ (__pyx_v_board_view.data + __pyx_t_9 * __pyx_v_board_view.strides[0]) ) + __pyx_t_8 * __pyx_v_board_view.strides[1]) ) + __pyx_t_7 * __pyx_v_board_view.strides[2]) ))) != 0);
+      if (__pyx_t_10) {
+
+        /* "cythonfn.pyx":166
+ *                 agent0_cnt += 1
+ *             elif board_view[1, i, j]:
+ *                 agent1_cnt += 1             # <<<<<<<<<<<<<<
+ *     if agent0_cnt > agent1_cnt:
+ *         return 1
+ */
+        __pyx_t_11 = __Pyx_PyInt_AddObjC(__pyx_v_agent1_cnt, __pyx_int_1, 1, 1, 0); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 166, __pyx_L1_error)
+        __Pyx_GOTREF(__pyx_t_11);
+        __Pyx_DECREF_SET(__pyx_v_agent1_cnt, __pyx_t_11);
+        __pyx_t_11 = 0;
+
+        /* "cythonfn.pyx":165
+ *             if board_view[0, i, j]:
+ *                 agent0_cnt += 1
+ *             elif board_view[1, i, j]:             # <<<<<<<<<<<<<<
+ *                 agent1_cnt += 1
+ *     if agent0_cnt > agent1_cnt:
  */
       }
+      __pyx_L7:;
     }
   }
 
-  /* "cythonfn.pyx":325
- *             if board_view[agent_id, i, j]:
- *                 return (i, j)
- *     return (-1, -1)             # <<<<<<<<<<<<<<
+  /* "cythonfn.pyx":167
+ *             elif board_view[1, i, j]:
+ *                 agent1_cnt += 1
+ *     if agent0_cnt > agent1_cnt:             # <<<<<<<<<<<<<<
+ *         return 1
+ *     elif agent0_cnt < agent1_cnt:
  */
-  __pyx_t_11.f0 = -1;
-  __pyx_t_11.f1 = -1;
-  __pyx_r = __pyx_t_11;
+  __pyx_t_11 = PyObject_RichCompare(__pyx_v_agent0_cnt, __pyx_v_agent1_cnt, Py_GT); __Pyx_XGOTREF(__pyx_t_11); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 167, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_11); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 167, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+  if (__pyx_t_10) {
+
+    /* "cythonfn.pyx":168
+ *                 agent1_cnt += 1
+ *     if agent0_cnt > agent1_cnt:
+ *         return 1             # <<<<<<<<<<<<<<
+ *     elif agent0_cnt < agent1_cnt:
+ *         return -1
+ */
+    __pyx_r = 1;
+    goto __pyx_L0;
+
+    /* "cythonfn.pyx":167
+ *             elif board_view[1, i, j]:
+ *                 agent1_cnt += 1
+ *     if agent0_cnt > agent1_cnt:             # <<<<<<<<<<<<<<
+ *         return 1
+ *     elif agent0_cnt < agent1_cnt:
+ */
+  }
+
+  /* "cythonfn.pyx":169
+ *     if agent0_cnt > agent1_cnt:
+ *         return 1
+ *     elif agent0_cnt < agent1_cnt:             # <<<<<<<<<<<<<<
+ *         return -1
+ *     return 0
+ */
+  __pyx_t_11 = PyObject_RichCompare(__pyx_v_agent0_cnt, __pyx_v_agent1_cnt, Py_LT); __Pyx_XGOTREF(__pyx_t_11); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 169, __pyx_L1_error)
+  __pyx_t_10 = __Pyx_PyObject_IsTrue(__pyx_t_11); if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 169, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
+  if (__pyx_t_10) {
+
+    /* "cythonfn.pyx":170
+ *         return 1
+ *     elif agent0_cnt < agent1_cnt:
+ *         return -1             # <<<<<<<<<<<<<<
+ *     return 0
+ */
+    __pyx_r = -1;
+    goto __pyx_L0;
+
+    /* "cythonfn.pyx":169
+ *     if agent0_cnt > agent1_cnt:
+ *         return 1
+ *     elif agent0_cnt < agent1_cnt:             # <<<<<<<<<<<<<<
+ *         return -1
+ *     return 0
+ */
+  }
+
+  /* "cythonfn.pyx":171
+ *     elif agent0_cnt < agent1_cnt:
+ *         return -1
+ *     return 0             # <<<<<<<<<<<<<<
+ */
+  __pyx_r = 0;
   goto __pyx_L0;
 
-  /* "cythonfn.pyx":319
- *     return 0
+  /* "cythonfn.pyx":158
+ *     return (0 <= pos_r < bottom_right and 0 <= pos_c < bottom_right)
  * 
- * cdef (int, int) _agent_pos(int [:,:,:] board_view, int agent_id, int board_size):             # <<<<<<<<<<<<<<
+ * cdef int _check_wins(int [:,:,:] board_view, int board_size):             # <<<<<<<<<<<<<<
  *     cdef int i, j
- *     for i in range(board_size):
+ *     cdef agent0_cnt = 0, agent1_cnt = 0
  */
 
   /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_11);
+  __Pyx_WriteUnraisable("cythonfn._check_wins", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
+  __pyx_r = 0;
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_agent0_cnt);
+  __Pyx_XDECREF(__pyx_v_agent1_cnt);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -7448,7 +5306,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
  * 
  * cdef inline int import_umath() except -1:
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 944, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 944, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -7580,7 +5438,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
  * 
  * cdef inline int import_ufunc() except -1:
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 950, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 950, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -7712,7 +5570,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
  * 
  * cdef extern from *:
  */
-      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 956, __pyx_L5_except_error)
+      __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 956, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -8136,7 +5994,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  *         if itemsize <= 0:
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 134, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 134, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -8168,7 +6026,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  *         if not isinstance(format, bytes):
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 137, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 137, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -8295,7 +6153,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  * 
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__19, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 149, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 149, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -8569,7 +6427,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
  * 
  *             if self.dtype_is_object:
  */
-      __pyx_t_10 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(2, 177, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(2, 177, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_Raise(__pyx_t_10, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
@@ -8813,7 +6671,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(stru
  *         info.buf = self.data
  *         info.len = self.len
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__21, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 193, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 193, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -9547,7 +7405,7 @@ static PyObject *__pyx_pf___pyx_array___reduce_cython__(CYTHON_UNUSED struct __p
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__22, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__12, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -9603,7 +7461,7 @@ static PyObject *__pyx_pf___pyx_array_2__setstate_cython__(CYTHON_UNUSED struct 
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__23, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__13, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -11332,7 +9190,7 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_6__setit
  * 
  *         have_slices, index = _unellipsify(index, self.view.ndim)
  */
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__24, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 420, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 420, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -12380,7 +10238,7 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
  *         else:
  *             if len(self.view.format) == 1:
  */
-      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__25, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 497, __pyx_L5_except_error)
+      __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 497, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_Raise(__pyx_t_6, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -12742,7 +10600,7 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_8__getbu
  * 
  *         if flags & PyBUF_ND:
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__26, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 522, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 522, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -13291,7 +11149,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_7strides___get__(st
  * 
  *         return tuple([stride for stride in self.view.strides[:self.view.ndim]])
  */
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__27, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 572, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 572, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -13408,7 +11266,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_10suboffsets___get_
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->view.ndim); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 579, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = PyNumber_Multiply(__pyx_tuple__28, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 579, __pyx_L1_error)
+    __pyx_t_3 = PyNumber_Multiply(__pyx_tuple__18, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 579, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_r = __pyx_t_3;
@@ -14446,7 +12304,7 @@ static PyObject *__pyx_pf___pyx_memoryview___reduce_cython__(CYTHON_UNUSED struc
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__29, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__19, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -14502,7 +12360,7 @@ static PyObject *__pyx_pf___pyx_memoryview_2__setstate_cython__(CYTHON_UNUSED st
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__30, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -14859,9 +12717,9 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
         __Pyx_GOTREF(__pyx_t_7);
         { Py_ssize_t __pyx_temp;
           for (__pyx_temp=0; __pyx_temp < ((__pyx_v_ndim - __pyx_t_8) + 1); __pyx_temp++) {
-            __Pyx_INCREF(__pyx_slice__31);
-            __Pyx_GIVEREF(__pyx_slice__31);
-            PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_slice__31);
+            __Pyx_INCREF(__pyx_slice__21);
+            __Pyx_GIVEREF(__pyx_slice__21);
+            PyList_SET_ITEM(__pyx_t_7, __pyx_temp, __pyx_slice__21);
           }
         }
         __pyx_t_9 = __Pyx_PyList_Extend(__pyx_v_result, __pyx_t_7); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 684, __pyx_L1_error)
@@ -14894,7 +12752,7 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
  *         else:
  */
       /*else*/ {
-        __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_result, __pyx_slice__31); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 687, __pyx_L1_error)
+        __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_result, __pyx_slice__21); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 687, __pyx_L1_error)
       }
       __pyx_L7:;
 
@@ -15034,9 +12892,9 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
     __Pyx_GOTREF(__pyx_t_3);
     { Py_ssize_t __pyx_temp;
       for (__pyx_temp=0; __pyx_temp < __pyx_v_nslices; __pyx_temp++) {
-        __Pyx_INCREF(__pyx_slice__31);
-        __Pyx_GIVEREF(__pyx_slice__31);
-        PyList_SET_ITEM(__pyx_t_3, __pyx_temp, __pyx_slice__31);
+        __Pyx_INCREF(__pyx_slice__21);
+        __Pyx_GIVEREF(__pyx_slice__21);
+        PyList_SET_ITEM(__pyx_t_3, __pyx_temp, __pyx_slice__21);
       }
     }
     __pyx_t_9 = __Pyx_PyList_Extend(__pyx_v_result, __pyx_t_3); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 698, __pyx_L1_error)
@@ -15163,7 +13021,7 @@ static PyObject *assert_direct_dimensions(Py_ssize_t *__pyx_v_suboffsets, int __
  * 
  * 
  */
-      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__32, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 705, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__22, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 705, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_Raise(__pyx_t_5, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -17347,7 +15205,7 @@ static PyObject *__pyx_pf___pyx_memoryviewslice___reduce_cython__(CYTHON_UNUSED 
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__33, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__23, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 2, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -17403,7 +15261,7 @@ static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUS
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__34, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__24, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -20680,7 +18538,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSE
  */
   __pyx_t_1 = __Pyx_PyInt_From_long(__pyx_v___pyx_checksum); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = (__Pyx_PySequence_ContainsTF(__pyx_t_1, __pyx_tuple__35, Py_NE)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __pyx_t_2 = (__Pyx_PySequence_ContainsTF(__pyx_t_1, __pyx_tuple__25, Py_NE)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
@@ -21767,12 +19625,13 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_b_O, __pyx_k_O, sizeof(__pyx_k_O), 0, 0, 0, 1},
   {&__pyx_kp_s_Out_of_bounds_on_buffer_access_a, __pyx_k_Out_of_bounds_on_buffer_access_a, sizeof(__pyx_k_Out_of_bounds_on_buffer_access_a), 0, 0, 1, 0},
   {&__pyx_n_s_PickleError, __pyx_k_PickleError, sizeof(__pyx_k_PickleError), 0, 0, 1, 1},
+  {&__pyx_kp_u_There_is_no_stone_to_flip, __pyx_k_There_is_no_stone_to_flip, sizeof(__pyx_k_There_is_no_stone_to_flip), 0, 1, 0, 0},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
   {&__pyx_kp_s_Unable_to_convert_item_to_object, __pyx_k_Unable_to_convert_item_to_object, sizeof(__pyx_k_Unable_to_convert_item_to_object), 0, 0, 1, 0},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_n_s_View_MemoryView, __pyx_k_View_MemoryView, sizeof(__pyx_k_View_MemoryView), 0, 0, 1, 1},
-  {&__pyx_n_s_action, __pyx_k_action, sizeof(__pyx_k_action), 0, 0, 1, 1},
-  {&__pyx_n_s_action_type, __pyx_k_action_type, sizeof(__pyx_k_action_type), 0, 0, 1, 1},
+  {&__pyx_n_s_action_c, __pyx_k_action_c, sizeof(__pyx_k_action_c), 0, 0, 1, 1},
+  {&__pyx_n_s_action_r, __pyx_k_action_r, sizeof(__pyx_k_action_r), 0, 0, 1, 1},
   {&__pyx_n_s_agent_id, __pyx_k_agent_id, sizeof(__pyx_k_agent_id), 0, 0, 1, 1},
   {&__pyx_n_s_allocate_buffer, __pyx_k_allocate_buffer, sizeof(__pyx_k_allocate_buffer), 0, 0, 1, 1},
   {&__pyx_n_s_base, __pyx_k_base, sizeof(__pyx_k_base), 0, 0, 1, 1},
@@ -21781,54 +19640,44 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_board_view, __pyx_k_board_view, sizeof(__pyx_k_board_view), 0, 0, 1, 1},
   {&__pyx_n_s_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 0, 1, 1},
   {&__pyx_n_u_c, __pyx_k_c, sizeof(__pyx_k_c), 0, 1, 0, 1},
-  {&__pyx_kp_u_cannot_create_intersecting_walls, __pyx_k_cannot_create_intersecting_walls, sizeof(__pyx_k_cannot_create_intersecting_walls), 0, 1, 0, 0},
-  {&__pyx_kp_u_cannot_diagonally_jump_if_linear, __pyx_k_cannot_diagonally_jump_if_linear, sizeof(__pyx_k_cannot_diagonally_jump_if_linear), 0, 1, 0, 0},
-  {&__pyx_kp_u_cannot_jump_over_nothing, __pyx_k_cannot_jump_over_nothing, sizeof(__pyx_k_cannot_jump_over_nothing), 0, 1, 0, 0},
-  {&__pyx_kp_u_cannot_jump_over_walls, __pyx_k_cannot_jump_over_walls, sizeof(__pyx_k_cannot_jump_over_walls), 0, 1, 0, 0},
-  {&__pyx_kp_u_cannot_move_diagonally, __pyx_k_cannot_move_diagonally, sizeof(__pyx_k_cannot_move_diagonally), 0, 1, 0, 0},
-  {&__pyx_kp_u_cannot_move_more_than_two_blocks, __pyx_k_cannot_move_more_than_two_blocks, sizeof(__pyx_k_cannot_move_more_than_two_blocks), 0, 1, 0, 0},
-  {&__pyx_kp_u_cannot_move_to_opponent_s_positi, __pyx_k_cannot_move_to_opponent_s_positi, sizeof(__pyx_k_cannot_move_to_opponent_s_positi), 0, 1, 0, 0},
-  {&__pyx_kp_u_cannot_move_zero_blocks, __pyx_k_cannot_move_zero_blocks, sizeof(__pyx_k_cannot_move_zero_blocks), 0, 1, 0, 0},
-  {&__pyx_kp_u_cannot_place_wall_blocking_all_p, __pyx_k_cannot_place_wall_blocking_all_p, sizeof(__pyx_k_cannot_place_wall_blocking_all_p), 0, 1, 0, 0},
-  {&__pyx_kp_u_cannot_place_wall_on_the_edge, __pyx_k_cannot_place_wall_on_the_edge, sizeof(__pyx_k_cannot_place_wall_on_the_edge), 0, 1, 0, 0},
+  {&__pyx_kp_u_cannot_put_a_stone_on_another_st, __pyx_k_cannot_put_a_stone_on_another_st, sizeof(__pyx_k_cannot_put_a_stone_on_another_st), 0, 1, 0, 0},
+  {&__pyx_kp_u_cannot_put_a_stone_on_opponent_s, __pyx_k_cannot_put_a_stone_on_opponent_s, sizeof(__pyx_k_cannot_put_a_stone_on_opponent_s), 0, 1, 0, 0},
+  {&__pyx_kp_u_cannot_skip_if_there_is_possible, __pyx_k_cannot_skip_if_there_is_possible, sizeof(__pyx_k_cannot_skip_if_there_is_possible), 0, 1, 0, 0},
   {&__pyx_n_s_class, __pyx_k_class, sizeof(__pyx_k_class), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_kp_s_contiguous_and_direct, __pyx_k_contiguous_and_direct, sizeof(__pyx_k_contiguous_and_direct), 0, 0, 1, 0},
   {&__pyx_kp_s_contiguous_and_indirect, __pyx_k_contiguous_and_indirect, sizeof(__pyx_k_contiguous_and_indirect), 0, 0, 1, 0},
   {&__pyx_n_s_copy, __pyx_k_copy, sizeof(__pyx_k_copy), 0, 0, 1, 1},
-  {&__pyx_n_s_curpos_x, __pyx_k_curpos_x, sizeof(__pyx_k_curpos_x), 0, 0, 1, 1},
-  {&__pyx_n_s_curpos_y, __pyx_k_curpos_y, sizeof(__pyx_k_curpos_y), 0, 0, 1, 1},
-  {&__pyx_n_s_cx, __pyx_k_cx, sizeof(__pyx_k_cx), 0, 0, 1, 1},
-  {&__pyx_n_s_cy, __pyx_k_cy, sizeof(__pyx_k_cy), 0, 0, 1, 1},
   {&__pyx_n_s_cythonfn, __pyx_k_cythonfn, sizeof(__pyx_k_cythonfn), 0, 0, 1, 1},
   {&__pyx_kp_s_cythonfn_pyx, __pyx_k_cythonfn_pyx, sizeof(__pyx_k_cythonfn_pyx), 0, 0, 1, 0},
-  {&__pyx_n_s_delpos_x, __pyx_k_delpos_x, sizeof(__pyx_k_delpos_x), 0, 0, 1, 1},
-  {&__pyx_n_s_delpos_y, __pyx_k_delpos_y, sizeof(__pyx_k_delpos_y), 0, 0, 1, 1},
   {&__pyx_n_s_dict, __pyx_k_dict, sizeof(__pyx_k_dict), 0, 0, 1, 1},
-  {&__pyx_n_s_dir_id, __pyx_k_dir_id, sizeof(__pyx_k_dir_id), 0, 0, 1, 1},
   {&__pyx_n_s_directions, __pyx_k_directions, sizeof(__pyx_k_directions), 0, 0, 1, 1},
-  {&__pyx_n_s_dtype, __pyx_k_dtype, sizeof(__pyx_k_dtype), 0, 0, 1, 1},
+  {&__pyx_n_s_done, __pyx_k_done, sizeof(__pyx_k_done), 0, 0, 1, 1},
   {&__pyx_n_s_dtype_is_object, __pyx_k_dtype_is_object, sizeof(__pyx_k_dtype_is_object), 0, 0, 1, 1},
   {&__pyx_n_s_encode, __pyx_k_encode, sizeof(__pyx_k_encode), 0, 0, 1, 1},
   {&__pyx_n_s_enumerate, __pyx_k_enumerate, sizeof(__pyx_k_enumerate), 0, 0, 1, 1},
   {&__pyx_n_s_error, __pyx_k_error, sizeof(__pyx_k_error), 0, 0, 1, 1},
-  {&__pyx_n_s_fast_legal_actions, __pyx_k_fast_legal_actions, sizeof(__pyx_k_fast_legal_actions), 0, 0, 1, 1},
   {&__pyx_n_s_fast_step, __pyx_k_fast_step, sizeof(__pyx_k_fast_step), 0, 0, 1, 1},
+  {&__pyx_n_s_flag, __pyx_k_flag, sizeof(__pyx_k_flag), 0, 0, 1, 1},
   {&__pyx_n_s_flags, __pyx_k_flags, sizeof(__pyx_k_flags), 0, 0, 1, 1},
+  {&__pyx_n_s_flipped_something, __pyx_k_flipped_something, sizeof(__pyx_k_flipped_something), 0, 0, 1, 1},
   {&__pyx_n_s_format, __pyx_k_format, sizeof(__pyx_k_format), 0, 0, 1, 1},
   {&__pyx_n_s_fortran, __pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 0, 1, 1},
   {&__pyx_n_u_fortran, __pyx_k_fortran, sizeof(__pyx_k_fortran), 0, 1, 0, 1},
   {&__pyx_n_s_getstate, __pyx_k_getstate, sizeof(__pyx_k_getstate), 0, 0, 1, 1},
   {&__pyx_kp_s_got_differing_extents_in_dimensi, __pyx_k_got_differing_extents_in_dimensi, sizeof(__pyx_k_got_differing_extents_in_dimensi), 0, 0, 1, 0},
+  {&__pyx_n_s_has_action0, __pyx_k_has_action0, sizeof(__pyx_k_has_action0), 0, 0, 1, 1},
+  {&__pyx_n_s_has_action1, __pyx_k_has_action1, sizeof(__pyx_k_has_action1), 0, 0, 1, 1},
+  {&__pyx_n_s_i, __pyx_k_i, sizeof(__pyx_k_i), 0, 0, 1, 1},
   {&__pyx_n_s_id, __pyx_k_id, sizeof(__pyx_k_id), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
-  {&__pyx_n_s_int, __pyx_k_int, sizeof(__pyx_k_int), 0, 0, 1, 1},
-  {&__pyx_kp_u_invalid_action_type, __pyx_k_invalid_action_type, sizeof(__pyx_k_invalid_action_type), 0, 1, 0, 0},
   {&__pyx_kp_u_invalid_agent_id, __pyx_k_invalid_agent_id, sizeof(__pyx_k_invalid_agent_id), 0, 1, 0, 0},
   {&__pyx_n_s_itemsize, __pyx_k_itemsize, sizeof(__pyx_k_itemsize), 0, 0, 1, 1},
   {&__pyx_kp_s_itemsize_0_for_cython_array, __pyx_k_itemsize_0_for_cython_array, sizeof(__pyx_k_itemsize_0_for_cython_array), 0, 0, 1, 0},
-  {&__pyx_n_s_legal_actions_np, __pyx_k_legal_actions_np, sizeof(__pyx_k_legal_actions_np), 0, 0, 1, 1},
-  {&__pyx_n_s_legal_actions_np_view, __pyx_k_legal_actions_np_view, sizeof(__pyx_k_legal_actions_np_view), 0, 0, 1, 1},
+  {&__pyx_n_s_j, __pyx_k_j, sizeof(__pyx_k_j), 0, 0, 1, 1},
+  {&__pyx_n_s_k, __pyx_k_k, sizeof(__pyx_k_k), 0, 0, 1, 1},
+  {&__pyx_n_s_legal_actions, __pyx_k_legal_actions, sizeof(__pyx_k_legal_actions), 0, 0, 1, 1},
+  {&__pyx_n_s_legal_actions_view, __pyx_k_legal_actions_view, sizeof(__pyx_k_legal_actions_view), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
   {&__pyx_n_s_memview, __pyx_k_memview, sizeof(__pyx_k_memview), 0, 0, 1, 1},
   {&__pyx_n_s_mode, __pyx_k_mode, sizeof(__pyx_k_mode), 0, 0, 1, 1},
@@ -21836,28 +19685,20 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_name_2, __pyx_k_name_2, sizeof(__pyx_k_name_2), 0, 0, 1, 1},
   {&__pyx_n_s_ndim, __pyx_k_ndim, sizeof(__pyx_k_ndim), 0, 0, 1, 1},
   {&__pyx_n_s_new, __pyx_k_new, sizeof(__pyx_k_new), 0, 0, 1, 1},
-  {&__pyx_n_s_newpos_x, __pyx_k_newpos_x, sizeof(__pyx_k_newpos_x), 0, 0, 1, 1},
-  {&__pyx_n_s_newpos_y, __pyx_k_newpos_y, sizeof(__pyx_k_newpos_y), 0, 0, 1, 1},
-  {&__pyx_n_s_next_pos_x, __pyx_k_next_pos_x, sizeof(__pyx_k_next_pos_x), 0, 0, 1, 1},
-  {&__pyx_n_s_next_pos_y, __pyx_k_next_pos_y, sizeof(__pyx_k_next_pos_y), 0, 0, 1, 1},
   {&__pyx_kp_s_no_default___reduce___due_to_non, __pyx_k_no_default___reduce___due_to_non, sizeof(__pyx_k_no_default___reduce___due_to_non), 0, 0, 1, 0},
-  {&__pyx_kp_u_no_walls_left_for_agent, __pyx_k_no_walls_left_for_agent, sizeof(__pyx_k_no_walls_left_for_agent), 0, 1, 0, 0},
-  {&__pyx_n_s_nowpos_x, __pyx_k_nowpos_x, sizeof(__pyx_k_nowpos_x), 0, 0, 1, 1},
-  {&__pyx_n_s_nowpos_y, __pyx_k_nowpos_y, sizeof(__pyx_k_nowpos_y), 0, 0, 1, 1},
+  {&__pyx_n_s_now_c, __pyx_k_now_c, sizeof(__pyx_k_now_c), 0, 0, 1, 1},
+  {&__pyx_n_s_now_r, __pyx_k_now_r, sizeof(__pyx_k_now_r), 0, 0, 1, 1},
   {&__pyx_n_s_np, __pyx_k_np, sizeof(__pyx_k_np), 0, 0, 1, 1},
   {&__pyx_n_s_numpy, __pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 0, 1, 1},
   {&__pyx_kp_u_numpy_core_multiarray_failed_to, __pyx_k_numpy_core_multiarray_failed_to, sizeof(__pyx_k_numpy_core_multiarray_failed_to), 0, 1, 0, 0},
   {&__pyx_kp_u_numpy_core_umath_failed_to_impor, __pyx_k_numpy_core_umath_failed_to_impor, sizeof(__pyx_k_numpy_core_umath_failed_to_impor), 0, 1, 0, 0},
   {&__pyx_n_s_obj, __pyx_k_obj, sizeof(__pyx_k_obj), 0, 0, 1, 1},
-  {&__pyx_n_s_opppos_x, __pyx_k_opppos_x, sizeof(__pyx_k_opppos_x), 0, 0, 1, 1},
-  {&__pyx_n_s_opppos_y, __pyx_k_opppos_y, sizeof(__pyx_k_opppos_y), 0, 0, 1, 1},
-  {&__pyx_n_s_original_jump_pos_x, __pyx_k_original_jump_pos_x, sizeof(__pyx_k_original_jump_pos_x), 0, 0, 1, 1},
-  {&__pyx_n_s_original_jump_pos_y, __pyx_k_original_jump_pos_y, sizeof(__pyx_k_original_jump_pos_y), 0, 0, 1, 1},
   {&__pyx_kp_u_out_of_board, __pyx_k_out_of_board, sizeof(__pyx_k_out_of_board), 0, 1, 0, 0},
   {&__pyx_n_s_pack, __pyx_k_pack, sizeof(__pyx_k_pack), 0, 0, 1, 1},
   {&__pyx_n_s_pickle, __pyx_k_pickle, sizeof(__pyx_k_pickle), 0, 0, 1, 1},
   {&__pyx_n_s_pre_board, __pyx_k_pre_board, sizeof(__pyx_k_pre_board), 0, 0, 1, 1},
-  {&__pyx_n_s_pre_walls_remaining, __pyx_k_pre_walls_remaining, sizeof(__pyx_k_pre_walls_remaining), 0, 0, 1, 1},
+  {&__pyx_n_s_pre_legal_actions, __pyx_k_pre_legal_actions, sizeof(__pyx_k_pre_legal_actions), 0, 0, 1, 1},
+  {&__pyx_n_s_pre_legal_actions_view, __pyx_k_pre_legal_actions_view, sizeof(__pyx_k_pre_legal_actions_view), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_PickleError, __pyx_k_pyx_PickleError, sizeof(__pyx_k_pyx_PickleError), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_checksum, __pyx_k_pyx_checksum, sizeof(__pyx_k_pyx_checksum), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_getbuffer, __pyx_k_pyx_getbuffer, sizeof(__pyx_k_pyx_getbuffer), 0, 0, 1, 1},
@@ -21870,13 +19711,12 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_reduce, __pyx_k_reduce, sizeof(__pyx_k_reduce), 0, 0, 1, 1},
   {&__pyx_n_s_reduce_cython, __pyx_k_reduce_cython, sizeof(__pyx_k_reduce_cython), 0, 0, 1, 1},
   {&__pyx_n_s_reduce_ex, __pyx_k_reduce_ex, sizeof(__pyx_k_reduce_ex), 0, 0, 1, 1},
-  {&__pyx_kp_u_right_section_out_of_board, __pyx_k_right_section_out_of_board, sizeof(__pyx_k_right_section_out_of_board), 0, 1, 0, 0},
+  {&__pyx_n_s_reward, __pyx_k_reward, sizeof(__pyx_k_reward), 0, 0, 1, 1},
   {&__pyx_n_s_setstate, __pyx_k_setstate, sizeof(__pyx_k_setstate), 0, 0, 1, 1},
   {&__pyx_n_s_setstate_cython, __pyx_k_setstate_cython, sizeof(__pyx_k_setstate_cython), 0, 0, 1, 1},
   {&__pyx_n_s_shape, __pyx_k_shape, sizeof(__pyx_k_shape), 0, 0, 1, 1},
   {&__pyx_n_s_size, __pyx_k_size, sizeof(__pyx_k_size), 0, 0, 1, 1},
   {&__pyx_n_s_start, __pyx_k_start, sizeof(__pyx_k_start), 0, 0, 1, 1},
-  {&__pyx_n_s_state, __pyx_k_state, sizeof(__pyx_k_state), 0, 0, 1, 1},
   {&__pyx_n_s_step, __pyx_k_step, sizeof(__pyx_k_step), 0, 0, 1, 1},
   {&__pyx_n_s_stop, __pyx_k_stop, sizeof(__pyx_k_stop), 0, 0, 1, 1},
   {&__pyx_kp_s_strided_and_direct, __pyx_k_strided_and_direct, sizeof(__pyx_k_strided_and_direct), 0, 0, 1, 0},
@@ -21884,24 +19724,16 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_strided_and_indirect, __pyx_k_strided_and_indirect, sizeof(__pyx_k_strided_and_indirect), 0, 0, 1, 0},
   {&__pyx_kp_s_stringsource, __pyx_k_stringsource, sizeof(__pyx_k_stringsource), 0, 0, 1, 0},
   {&__pyx_n_s_struct, __pyx_k_struct, sizeof(__pyx_k_struct), 0, 0, 1, 1},
-  {&__pyx_n_s_taxicab_dist, __pyx_k_taxicab_dist, sizeof(__pyx_k_taxicab_dist), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_kp_s_unable_to_allocate_array_data, __pyx_k_unable_to_allocate_array_data, sizeof(__pyx_k_unable_to_allocate_array_data), 0, 0, 1, 0},
   {&__pyx_kp_s_unable_to_allocate_shape_and_str, __pyx_k_unable_to_allocate_shape_and_str, sizeof(__pyx_k_unable_to_allocate_shape_and_str), 0, 0, 1, 0},
   {&__pyx_n_s_unpack, __pyx_k_unpack, sizeof(__pyx_k_unpack), 0, 0, 1, 1},
   {&__pyx_n_s_update, __pyx_k_update, sizeof(__pyx_k_update), 0, 0, 1, 1},
-  {&__pyx_kp_u_wall_already_placed, __pyx_k_wall_already_placed, sizeof(__pyx_k_wall_already_placed), 0, 1, 0, 0},
-  {&__pyx_n_s_walls_remaining, __pyx_k_walls_remaining, sizeof(__pyx_k_walls_remaining), 0, 0, 1, 1},
-  {&__pyx_n_s_walls_remaining_view, __pyx_k_walls_remaining_view, sizeof(__pyx_k_walls_remaining_view), 0, 0, 1, 1},
-  {&__pyx_n_s_x, __pyx_k_x, sizeof(__pyx_k_x), 0, 0, 1, 1},
-  {&__pyx_n_s_y, __pyx_k_y, sizeof(__pyx_k_y), 0, 0, 1, 1},
-  {&__pyx_n_s_zero_index, __pyx_k_zero_index, sizeof(__pyx_k_zero_index), 0, 0, 1, 1},
-  {&__pyx_n_s_zeros, __pyx_k_zeros, sizeof(__pyx_k_zeros), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 29, __pyx_L1_error)
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 92, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(0, 35, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 62, __pyx_L1_error)
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(1, 944, __pyx_L1_error)
   __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(2, 149, __pyx_L1_error)
   __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(2, 152, __pyx_L1_error)
@@ -21918,151 +19750,49 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "cythonfn.pyx":40
+  /* "cythonfn.pyx":43
+ *             return (board, legal_actions, reward[0], reward[1], done)
+ *         else:
+ *             raise ValueError("cannot skip if there is possible action")             # <<<<<<<<<<<<<<
  * 
- *         if newpos_x == opppos_x and newpos_y == opppos_y:
- *             raise ValueError("cannot move to opponent's position")             # <<<<<<<<<<<<<<
- * 
- *         delpos_x = newpos_x - curpos_x
+ *     if board_view[1-agent_id, action_r, action_c]:
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_cannot_move_to_opponent_s_positi); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_u_cannot_skip_if_there_is_possible); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 43, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
   /* "cythonfn.pyx":46
- *         taxicab_dist = abs(delpos_x) + abs(delpos_y)
- *         if taxicab_dist == 0:
- *             raise ValueError("cannot move zero blocks")             # <<<<<<<<<<<<<<
- *         elif taxicab_dist > 2:
- *             raise ValueError("cannot move more than two blocks")
+ * 
+ *     if board_view[1-agent_id, action_r, action_c]:
+ *         raise ValueError("cannot put a stone on opponent's stone")             # <<<<<<<<<<<<<<
+ *     if board_view[agent_id, action_r, action_c]:
+ *         raise ValueError("cannot put a stone on another stone")
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_u_cannot_move_zero_blocks); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_u_cannot_put_a_stone_on_opponent_s); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
   /* "cythonfn.pyx":48
- *             raise ValueError("cannot move zero blocks")
- *         elif taxicab_dist > 2:
- *             raise ValueError("cannot move more than two blocks")             # <<<<<<<<<<<<<<
- *         elif (
- *             taxicab_dist == 2
+ *         raise ValueError("cannot put a stone on opponent's stone")
+ *     if board_view[agent_id, action_r, action_c]:
+ *         raise ValueError("cannot put a stone on another stone")             # <<<<<<<<<<<<<<
+ * 
+ *     directions[0][:] = [1, 1]
  */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_u_cannot_move_more_than_two_blocks); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_u_cannot_put_a_stone_on_another_st); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "cythonfn.pyx":54
- *             and not (curpos_x + delpos_x / 2 == opppos_x and curpos_y + delpos_y / 2 == opppos_y)
- *         ):
- *             raise ValueError("cannot jump over nothing")             # <<<<<<<<<<<<<<
+  /* "cythonfn.pyx":89
+ *                 break
+ *     if not flipped_something:
+ *         raise ValueError("There is no stone to flip")             # <<<<<<<<<<<<<<
  * 
- *         if delpos_x and delpos_y:  # If moving diagonally
+ *     for i in range(board_size):
  */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_u_cannot_jump_over_nothing); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_u_There_is_no_stone_to_flip); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
-
-  /* "cythonfn.pyx":62
- *                 # Only diagonal jumps are permitted.
- *                 # Agents cannot simply move in diagonal direction.
- *                 raise ValueError("cannot move diagonally")             # <<<<<<<<<<<<<<
- *             elif _check_wall_blocked(board_view, curpos_x, curpos_y, opppos_x, opppos_y):
- *                 raise ValueError("cannot jump over walls")
- */
-  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_u_cannot_move_diagonally); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 62, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__5);
-  __Pyx_GIVEREF(__pyx_tuple__5);
-
-  /* "cythonfn.pyx":64
- *                 raise ValueError("cannot move diagonally")
- *             elif _check_wall_blocked(board_view, curpos_x, curpos_y, opppos_x, opppos_y):
- *                 raise ValueError("cannot jump over walls")             # <<<<<<<<<<<<<<
- * 
- *             original_jump_pos_x = curpos_x + 2 * (opppos_x - curpos_x)
- */
-  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_u_cannot_jump_over_walls); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 64, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__6);
-  __Pyx_GIVEREF(__pyx_tuple__6);
-
-  /* "cythonfn.pyx":71
- *                 board_view, curpos_x, curpos_y, original_jump_pos_x, original_jump_pos_y
- *             ):
- *                 raise ValueError(             # <<<<<<<<<<<<<<
- *                     "cannot diagonally jump if linear jump is possible"
- *                 )
- */
-  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_u_cannot_diagonally_jump_if_linear); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 71, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__7);
-  __Pyx_GIVEREF(__pyx_tuple__7);
-
-  /* "cythonfn.pyx":86
- *             raise ValueError(f"no walls left for agent {agent_id}")
- *         if y == board_size-1:
- *             raise ValueError("cannot place wall on the edge")             # <<<<<<<<<<<<<<
- *         if x == board_size-1:
- *             raise ValueError("right section out of board")
- */
-  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_u_cannot_place_wall_on_the_edge); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 86, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__8);
-  __Pyx_GIVEREF(__pyx_tuple__8);
-
-  /* "cythonfn.pyx":88
- *             raise ValueError("cannot place wall on the edge")
- *         if x == board_size-1:
- *             raise ValueError("right section out of board")             # <<<<<<<<<<<<<<
- *         if board_view[2, x, y] or board_view[2, x+1, y]:
- *             raise ValueError("wall already placed")
- */
-  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_u_right_section_out_of_board); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 88, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__9);
-  __Pyx_GIVEREF(__pyx_tuple__9);
-
-  /* "cythonfn.pyx":90
- *             raise ValueError("right section out of board")
- *         if board_view[2, x, y] or board_view[2, x+1, y]:
- *             raise ValueError("wall already placed")             # <<<<<<<<<<<<<<
- *         zero_index = -1
- *         for cy in range(y, -1, -1):
- */
-  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_u_wall_already_placed); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 90, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__10);
-  __Pyx_GIVEREF(__pyx_tuple__10);
-
-  /* "cythonfn.pyx":98
- *         if zero_index == -1:
- *             if y % 2 == 0:
- *                 raise ValueError("cannot create intersecting walls")             # <<<<<<<<<<<<<<
- *         elif (y - zero_index) % 2 == 1:
- *             raise ValueError("cannot create intersecting walls")
- */
-  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_u_cannot_create_intersecting_walls); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 98, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__11);
-  __Pyx_GIVEREF(__pyx_tuple__11);
-
-  /* "cythonfn.pyx":133
- *     if action_type > 0:
- *         if not _check_path_exists(board_view, 0, board_size) or not _check_path_exists(board_view, 1, board_size):
- *             raise ValueError("cannot place wall blocking all paths")             # <<<<<<<<<<<<<<
- * 
- *     return (board, walls_remaining, _check_wins(board_view, board_size))
- */
-  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_kp_u_cannot_place_wall_blocking_all_p); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 133, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__12);
-  __Pyx_GIVEREF(__pyx_tuple__12);
-
-  /* "cythonfn.pyx":205
- *     directions[11][:] = [0, 2]
- * 
- *     legal_actions_np = np.zeros((3, 9, 9), dtype=np.int_)             # <<<<<<<<<<<<<<
- *     cdef int [:,:,:] legal_actions_np_view = legal_actions_np
- *     (nowpos_x, nowpos_y) = _agent_pos(board_view, agent_id, board_size)
- */
-  __pyx_tuple__13 = PyTuple_Pack(3, __pyx_int_3, __pyx_int_9, __pyx_int_9); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 205, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__13);
-  __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_tuple__13); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(0, 205, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__14);
-  __Pyx_GIVEREF(__pyx_tuple__14);
 
   /* "E:/program_etc/anaconda3/envs/fights_ai/lib/site-packages/numpy/__init__.pxd":944
  *         __pyx_import_array()
@@ -22071,9 +19801,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * cdef inline int import_umath() except -1:
  */
-  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(1, 944, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__15);
-  __Pyx_GIVEREF(__pyx_tuple__15);
+  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(1, 944, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__5);
+  __Pyx_GIVEREF(__pyx_tuple__5);
 
   /* "E:/program_etc/anaconda3/envs/fights_ai/lib/site-packages/numpy/__init__.pxd":950
  *         _import_umath()
@@ -22082,9 +19812,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * cdef inline int import_ufunc() except -1:
  */
-  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(1, 950, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__16);
-  __Pyx_GIVEREF(__pyx_tuple__16);
+  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(1, 950, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__6);
+  __Pyx_GIVEREF(__pyx_tuple__6);
 
   /* "View.MemoryView":134
  * 
@@ -22093,9 +19823,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         if itemsize <= 0:
  */
-  __pyx_tuple__17 = PyTuple_Pack(1, __pyx_kp_s_Empty_shape_tuple_for_cython_arr); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(2, 134, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__17);
-  __Pyx_GIVEREF(__pyx_tuple__17);
+  __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_s_Empty_shape_tuple_for_cython_arr); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(2, 134, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__7);
+  __Pyx_GIVEREF(__pyx_tuple__7);
 
   /* "View.MemoryView":137
  * 
@@ -22104,9 +19834,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         if not isinstance(format, bytes):
  */
-  __pyx_tuple__18 = PyTuple_Pack(1, __pyx_kp_s_itemsize_0_for_cython_array); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(2, 137, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__18);
-  __Pyx_GIVEREF(__pyx_tuple__18);
+  __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_s_itemsize_0_for_cython_array); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(2, 137, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__8);
+  __Pyx_GIVEREF(__pyx_tuple__8);
 
   /* "View.MemoryView":149
  * 
@@ -22115,9 +19845,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__19 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_shape_and_str); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(2, 149, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__19);
-  __Pyx_GIVEREF(__pyx_tuple__19);
+  __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_shape_and_str); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(2, 149, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__9);
+  __Pyx_GIVEREF(__pyx_tuple__9);
 
   /* "View.MemoryView":177
  *             self.data = <char *>malloc(self.len)
@@ -22126,9 +19856,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *             if self.dtype_is_object:
  */
-  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_array_data); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(2, 177, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__20);
-  __Pyx_GIVEREF(__pyx_tuple__20);
+  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_array_data); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(2, 177, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__10);
+  __Pyx_GIVEREF(__pyx_tuple__10);
 
   /* "View.MemoryView":193
  *             bufmode = PyBUF_F_CONTIGUOUS | PyBUF_ANY_CONTIGUOUS
@@ -22137,9 +19867,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         info.buf = self.data
  *         info.len = self.len
  */
-  __pyx_tuple__21 = PyTuple_Pack(1, __pyx_kp_s_Can_only_create_a_buffer_that_is); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(2, 193, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__21);
-  __Pyx_GIVEREF(__pyx_tuple__21);
+  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_s_Can_only_create_a_buffer_that_is); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(2, 193, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__11);
+  __Pyx_GIVEREF(__pyx_tuple__11);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -22147,18 +19877,18 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(2, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__22);
-  __Pyx_GIVEREF(__pyx_tuple__22);
+  __pyx_tuple__12 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__12);
+  __Pyx_GIVEREF(__pyx_tuple__12);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(2, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__23);
-  __Pyx_GIVEREF(__pyx_tuple__23);
+  __pyx_tuple__13 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__13);
+  __Pyx_GIVEREF(__pyx_tuple__13);
 
   /* "View.MemoryView":420
  *     def __setitem__(memoryview self, object index, object value):
@@ -22167,9 +19897,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         have_slices, index = _unellipsify(index, self.view.ndim)
  */
-  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_kp_s_Cannot_assign_to_read_only_memor); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(2, 420, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__24);
-  __Pyx_GIVEREF(__pyx_tuple__24);
+  __pyx_tuple__14 = PyTuple_Pack(1, __pyx_kp_s_Cannot_assign_to_read_only_memor); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(2, 420, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__14);
+  __Pyx_GIVEREF(__pyx_tuple__14);
 
   /* "View.MemoryView":497
  *             result = struct.unpack(self.view.format, bytesitem)
@@ -22178,9 +19908,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *         else:
  *             if len(self.view.format) == 1:
  */
-  __pyx_tuple__25 = PyTuple_Pack(1, __pyx_kp_s_Unable_to_convert_item_to_object); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(2, 497, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__25);
-  __Pyx_GIVEREF(__pyx_tuple__25);
+  __pyx_tuple__15 = PyTuple_Pack(1, __pyx_kp_s_Unable_to_convert_item_to_object); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(2, 497, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__15);
+  __Pyx_GIVEREF(__pyx_tuple__15);
 
   /* "View.MemoryView":522
  *     def __getbuffer__(self, Py_buffer *info, int flags):
@@ -22189,9 +19919,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         if flags & PyBUF_ND:
  */
-  __pyx_tuple__26 = PyTuple_Pack(1, __pyx_kp_s_Cannot_create_writable_memory_vi); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(2, 522, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__26);
-  __Pyx_GIVEREF(__pyx_tuple__26);
+  __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_s_Cannot_create_writable_memory_vi); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(2, 522, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__16);
+  __Pyx_GIVEREF(__pyx_tuple__16);
 
   /* "View.MemoryView":572
  *         if self.view.strides == NULL:
@@ -22200,9 +19930,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         return tuple([stride for stride in self.view.strides[:self.view.ndim]])
  */
-  __pyx_tuple__27 = PyTuple_Pack(1, __pyx_kp_s_Buffer_view_does_not_expose_stri); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(2, 572, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__27);
-  __Pyx_GIVEREF(__pyx_tuple__27);
+  __pyx_tuple__17 = PyTuple_Pack(1, __pyx_kp_s_Buffer_view_does_not_expose_stri); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(2, 572, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__17);
+  __Pyx_GIVEREF(__pyx_tuple__17);
 
   /* "View.MemoryView":579
  *     def suboffsets(self):
@@ -22211,12 +19941,12 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *         return tuple([suboffset for suboffset in self.view.suboffsets[:self.view.ndim]])
  */
-  __pyx_tuple__28 = PyTuple_New(1); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(2, 579, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__28);
+  __pyx_tuple__18 = PyTuple_New(1); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(2, 579, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__18);
   __Pyx_INCREF(__pyx_int_neg_1);
   __Pyx_GIVEREF(__pyx_int_neg_1);
-  PyTuple_SET_ITEM(__pyx_tuple__28, 0, __pyx_int_neg_1);
-  __Pyx_GIVEREF(__pyx_tuple__28);
+  PyTuple_SET_ITEM(__pyx_tuple__18, 0, __pyx_int_neg_1);
+  __Pyx_GIVEREF(__pyx_tuple__18);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -22224,18 +19954,18 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__29 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(2, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__29);
-  __Pyx_GIVEREF(__pyx_tuple__29);
+  __pyx_tuple__19 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__19);
+  __Pyx_GIVEREF(__pyx_tuple__19);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__30 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(2, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__30);
-  __Pyx_GIVEREF(__pyx_tuple__30);
+  __pyx_tuple__20 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__20);
+  __Pyx_GIVEREF(__pyx_tuple__20);
 
   /* "View.MemoryView":684
  *         if item is Ellipsis:
@@ -22244,9 +19974,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *                 seen_ellipsis = True
  *             else:
  */
-  __pyx_slice__31 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__31)) __PYX_ERR(2, 684, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_slice__31);
-  __Pyx_GIVEREF(__pyx_slice__31);
+  __pyx_slice__21 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__21)) __PYX_ERR(2, 684, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_slice__21);
+  __Pyx_GIVEREF(__pyx_slice__21);
 
   /* "View.MemoryView":705
  *     for suboffset in suboffsets[:ndim]:
@@ -22255,9 +19985,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_kp_s_Indirect_dimensions_not_supporte); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(2, 705, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__32);
-  __Pyx_GIVEREF(__pyx_tuple__32);
+  __pyx_tuple__22 = PyTuple_Pack(1, __pyx_kp_s_Indirect_dimensions_not_supporte); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(2, 705, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__22);
+  __Pyx_GIVEREF(__pyx_tuple__22);
 
   /* "(tree fragment)":2
  * def __reduce_cython__(self):
@@ -22265,45 +19995,33 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  */
-  __pyx_tuple__33 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(2, 2, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__33);
-  __Pyx_GIVEREF(__pyx_tuple__33);
+  __pyx_tuple__23 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(2, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__23);
+  __Pyx_GIVEREF(__pyx_tuple__23);
 
   /* "(tree fragment)":4
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
  * def __setstate_cython__(self, __pyx_state):
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
  */
-  __pyx_tuple__34 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(2, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__34);
-  __Pyx_GIVEREF(__pyx_tuple__34);
-  __pyx_tuple__35 = PyTuple_Pack(3, __pyx_int_184977713, __pyx_int_136983863, __pyx_int_112105877); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(2, 4, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__35);
-  __Pyx_GIVEREF(__pyx_tuple__35);
+  __pyx_tuple__24 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__24)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__24);
+  __Pyx_GIVEREF(__pyx_tuple__24);
+  __pyx_tuple__25 = PyTuple_Pack(3, __pyx_int_184977713, __pyx_int_136983863, __pyx_int_112105877); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(2, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__25);
+  __Pyx_GIVEREF(__pyx_tuple__25);
 
   /* "cythonfn.pyx":6
  * cimport numpy as np
  * 
  * def fast_step(             # <<<<<<<<<<<<<<
  *     pre_board,
- *     pre_walls_remaining,
+ *     pre_legal_actions,
  */
-  __pyx_tuple__36 = PyTuple_Pack(26, __pyx_n_s_pre_board, __pyx_n_s_pre_walls_remaining, __pyx_n_s_agent_id, __pyx_n_s_action, __pyx_n_s_board_size, __pyx_n_s_action_type, __pyx_n_s_x, __pyx_n_s_y, __pyx_n_s_board, __pyx_n_s_walls_remaining, __pyx_n_s_board_view, __pyx_n_s_walls_remaining_view, __pyx_n_s_curpos_x, __pyx_n_s_curpos_y, __pyx_n_s_newpos_x, __pyx_n_s_newpos_y, __pyx_n_s_opppos_x, __pyx_n_s_opppos_y, __pyx_n_s_delpos_x, __pyx_n_s_delpos_y, __pyx_n_s_taxicab_dist, __pyx_n_s_original_jump_pos_x, __pyx_n_s_original_jump_pos_y, __pyx_n_s_cx, __pyx_n_s_cy, __pyx_n_s_zero_index); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 6, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__36);
-  __Pyx_GIVEREF(__pyx_tuple__36);
-  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(5, 0, 26, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_cythonfn_pyx, __pyx_n_s_fast_step, 6, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 6, __pyx_L1_error)
-
-  /* "cythonfn.pyx":186
- *     return 1
- * 
- * def fast_legal_actions(state, int agent_id, int board_size):             # <<<<<<<<<<<<<<
- * 
- *     cdef int dir_id, action_type, next_pos_x, next_pos_y, cx, cy, nowpos_x, nowpos_y
- */
-  __pyx_tuple__38 = PyTuple_Pack(15, __pyx_n_s_state, __pyx_n_s_agent_id, __pyx_n_s_board_size, __pyx_n_s_dir_id, __pyx_n_s_action_type, __pyx_n_s_next_pos_x, __pyx_n_s_next_pos_y, __pyx_n_s_cx, __pyx_n_s_cy, __pyx_n_s_nowpos_x, __pyx_n_s_nowpos_y, __pyx_n_s_directions, __pyx_n_s_board_view, __pyx_n_s_legal_actions_np, __pyx_n_s_legal_actions_np_view); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(0, 186, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__38);
-  __Pyx_GIVEREF(__pyx_tuple__38);
-  __pyx_codeobj__39 = (PyObject*)__Pyx_PyCode_New(3, 0, 15, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__38, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_cythonfn_pyx, __pyx_n_s_fast_legal_actions, 186, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__39)) __PYX_ERR(0, 186, __pyx_L1_error)
+  __pyx_tuple__26 = PyTuple_Pack(23, __pyx_n_s_pre_board, __pyx_n_s_pre_legal_actions, __pyx_n_s_agent_id, __pyx_n_s_action_r, __pyx_n_s_action_c, __pyx_n_s_board_size, __pyx_n_s_board, __pyx_n_s_board_view, __pyx_n_s_legal_actions, __pyx_n_s_pre_legal_actions_view, __pyx_n_s_legal_actions_view, __pyx_n_s_reward, __pyx_n_s_done, __pyx_n_s_i, __pyx_n_s_j, __pyx_n_s_k, __pyx_n_s_directions, __pyx_n_s_flag, __pyx_n_s_flipped_something, __pyx_n_s_now_r, __pyx_n_s_now_c, __pyx_n_s_has_action0, __pyx_n_s_has_action1); if (unlikely(!__pyx_tuple__26)) __PYX_ERR(0, 6, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__26);
+  __Pyx_GIVEREF(__pyx_tuple__26);
+  __pyx_codeobj__27 = (PyObject*)__Pyx_PyCode_New(6, 0, 23, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__26, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_cythonfn_pyx, __pyx_n_s_fast_step, 6, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__27)) __PYX_ERR(0, 6, __pyx_L1_error)
 
   /* "View.MemoryView":287
  *         return self.name
@@ -22312,9 +20030,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * cdef strided = Enum("<strided and direct>") # default
  * cdef indirect = Enum("<strided and indirect>")
  */
-  __pyx_tuple__40 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(2, 287, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__40);
-  __Pyx_GIVEREF(__pyx_tuple__40);
+  __pyx_tuple__28 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(2, 287, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__28);
+  __Pyx_GIVEREF(__pyx_tuple__28);
 
   /* "View.MemoryView":288
  * 
@@ -22323,9 +20041,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * cdef indirect = Enum("<strided and indirect>")
  * 
  */
-  __pyx_tuple__41 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__41)) __PYX_ERR(2, 288, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__41);
-  __Pyx_GIVEREF(__pyx_tuple__41);
+  __pyx_tuple__29 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(2, 288, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__29);
+  __Pyx_GIVEREF(__pyx_tuple__29);
 
   /* "View.MemoryView":289
  * cdef generic = Enum("<strided and direct or indirect>")
@@ -22334,9 +20052,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__42 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(2, 289, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__42);
-  __Pyx_GIVEREF(__pyx_tuple__42);
+  __pyx_tuple__30 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(2, 289, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__30);
+  __Pyx_GIVEREF(__pyx_tuple__30);
 
   /* "View.MemoryView":292
  * 
@@ -22345,9 +20063,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * cdef indirect_contiguous = Enum("<contiguous and indirect>")
  * 
  */
-  __pyx_tuple__43 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__43)) __PYX_ERR(2, 292, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__43);
-  __Pyx_GIVEREF(__pyx_tuple__43);
+  __pyx_tuple__31 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(2, 292, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__31);
+  __Pyx_GIVEREF(__pyx_tuple__31);
 
   /* "View.MemoryView":293
  * 
@@ -22356,19 +20074,19 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  * 
  */
-  __pyx_tuple__44 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__44)) __PYX_ERR(2, 293, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__44);
-  __Pyx_GIVEREF(__pyx_tuple__44);
+  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(2, 293, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__32);
+  __Pyx_GIVEREF(__pyx_tuple__32);
 
   /* "(tree fragment)":1
  * def __pyx_unpickle_Enum(__pyx_type, long __pyx_checksum, __pyx_state):             # <<<<<<<<<<<<<<
  *     cdef object __pyx_PickleError
  *     cdef object __pyx_result
  */
-  __pyx_tuple__45 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__45)) __PYX_ERR(2, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__45);
-  __Pyx_GIVEREF(__pyx_tuple__45);
-  __pyx_codeobj__46 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__45, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__46)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __pyx_tuple__33 = PyTuple_Pack(5, __pyx_n_s_pyx_type, __pyx_n_s_pyx_checksum, __pyx_n_s_pyx_state, __pyx_n_s_pyx_PickleError, __pyx_n_s_pyx_result); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(2, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__33);
+  __Pyx_GIVEREF(__pyx_tuple__33);
+  __pyx_codeobj__34 = (PyObject*)__Pyx_PyCode_New(3, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__33, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_stringsource, __pyx_n_s_pyx_unpickle_Enum, 1, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__34)) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -22380,8 +20098,6 @@ static CYTHON_SMALL_CODE int __Pyx_InitGlobals(void) {
   if (__Pyx_InitStrings(__pyx_string_tab) < 0) __PYX_ERR(0, 1, __pyx_L1_error);
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_3 = PyInt_FromLong(3); if (unlikely(!__pyx_int_3)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __pyx_int_9 = PyInt_FromLong(9); if (unlikely(!__pyx_int_9)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_112105877 = PyInt_FromLong(112105877L); if (unlikely(!__pyx_int_112105877)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_136983863 = PyInt_FromLong(136983863L); if (unlikely(!__pyx_int_136983863)) __PYX_ERR(0, 1, __pyx_L1_error)
   __pyx_int_184977713 = PyInt_FromLong(184977713L); if (unlikely(!__pyx_int_184977713)) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -22787,23 +20503,11 @@ if (!__Pyx_RefNanny) {
  * 
  * def fast_step(             # <<<<<<<<<<<<<<
  *     pre_board,
- *     pre_walls_remaining,
+ *     pre_legal_actions,
  */
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_8cythonfn_1fast_step, NULL, __pyx_n_s_cythonfn); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_fast_step, __pyx_t_1) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "cythonfn.pyx":186
- *     return 1
- * 
- * def fast_legal_actions(state, int agent_id, int board_size):             # <<<<<<<<<<<<<<
- * 
- *     cdef int dir_id, action_type, next_pos_x, next_pos_y, cx, cy, nowpos_x, nowpos_y
- */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_8cythonfn_3fast_legal_actions, NULL, __pyx_n_s_cythonfn); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 186, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_fast_legal_actions, __pyx_t_1) < 0) __PYX_ERR(0, 186, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "cythonfn.pyx":1
@@ -22836,7 +20540,7 @@ if (!__Pyx_RefNanny) {
  * cdef strided = Enum("<strided and direct>") # default
  * cdef indirect = Enum("<strided and indirect>")
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__40, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 287, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__28, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 287, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XGOTREF(generic);
   __Pyx_DECREF_SET(generic, __pyx_t_1);
@@ -22850,7 +20554,7 @@ if (!__Pyx_RefNanny) {
  * cdef indirect = Enum("<strided and indirect>")
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__41, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 288, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__29, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 288, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XGOTREF(strided);
   __Pyx_DECREF_SET(strided, __pyx_t_1);
@@ -22864,7 +20568,7 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__42, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 289, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__30, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 289, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XGOTREF(indirect);
   __Pyx_DECREF_SET(indirect, __pyx_t_1);
@@ -22878,7 +20582,7 @@ if (!__Pyx_RefNanny) {
  * cdef indirect_contiguous = Enum("<contiguous and indirect>")
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__43, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 292, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__31, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 292, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XGOTREF(contiguous);
   __Pyx_DECREF_SET(contiguous, __pyx_t_1);
@@ -22892,7 +20596,7 @@ if (!__Pyx_RefNanny) {
  * 
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__44, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 293, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__32, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 293, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XGOTREF(indirect_contiguous);
   __Pyx_DECREF_SET(indirect_contiguous, __pyx_t_1);
@@ -23179,93 +20883,6 @@ invalid_keyword:
     #endif
 bad:
     return -1;
-}
-
-/* GetItemInt */
-static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
-    PyObject *r;
-    if (!j) return NULL;
-    r = PyObject_GetItem(o, j);
-    Py_DECREF(j);
-    return r;
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
-                                                              CYTHON_NCP_UNUSED int wraparound,
-                                                              CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    Py_ssize_t wrapped_i = i;
-    if (wraparound & unlikely(i < 0)) {
-        wrapped_i += PyList_GET_SIZE(o);
-    }
-    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyList_GET_SIZE(o)))) {
-        PyObject *r = PyList_GET_ITEM(o, wrapped_i);
-        Py_INCREF(r);
-        return r;
-    }
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-#else
-    return PySequence_GetItem(o, i);
-#endif
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
-                                                              CYTHON_NCP_UNUSED int wraparound,
-                                                              CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-    Py_ssize_t wrapped_i = i;
-    if (wraparound & unlikely(i < 0)) {
-        wrapped_i += PyTuple_GET_SIZE(o);
-    }
-    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyTuple_GET_SIZE(o)))) {
-        PyObject *r = PyTuple_GET_ITEM(o, wrapped_i);
-        Py_INCREF(r);
-        return r;
-    }
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
-#else
-    return PySequence_GetItem(o, i);
-#endif
-}
-static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
-                                                     CYTHON_NCP_UNUSED int wraparound,
-                                                     CYTHON_NCP_UNUSED int boundscheck) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS && CYTHON_USE_TYPE_SLOTS
-    if (is_list || PyList_CheckExact(o)) {
-        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
-        if ((!boundscheck) || (likely(__Pyx_is_valid_index(n, PyList_GET_SIZE(o))))) {
-            PyObject *r = PyList_GET_ITEM(o, n);
-            Py_INCREF(r);
-            return r;
-        }
-    }
-    else if (PyTuple_CheckExact(o)) {
-        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
-        if ((!boundscheck) || likely(__Pyx_is_valid_index(n, PyTuple_GET_SIZE(o)))) {
-            PyObject *r = PyTuple_GET_ITEM(o, n);
-            Py_INCREF(r);
-            return r;
-        }
-    } else {
-        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
-        if (likely(m && m->sq_item)) {
-            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
-                Py_ssize_t l = m->sq_length(o);
-                if (likely(l >= 0)) {
-                    i += l;
-                } else {
-                    if (!PyErr_ExceptionMatches(PyExc_OverflowError))
-                        return NULL;
-                    PyErr_Clear();
-                }
-            }
-            return m->sq_item(o, i);
-        }
-    }
-#else
-    if (is_list || PySequence_Check(o)) {
-        return PySequence_GetItem(o, i);
-    }
-#endif
-    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
 }
 
 /* PyDictVersioning */
@@ -24114,6 +21731,130 @@ static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
 #endif
 }
 
+/* PyIntBinop */
+#if !CYTHON_COMPILING_IN_PYPY
+static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, int inplace, int zerodivision_check) {
+    (void)inplace;
+    (void)zerodivision_check;
+    #if PY_MAJOR_VERSION < 3
+    if (likely(PyInt_CheckExact(op1))) {
+        const long b = intval;
+        long x;
+        long a = PyInt_AS_LONG(op1);
+            x = (long)((unsigned long)a + b);
+            if (likely((x^a) >= 0 || (x^b) >= 0))
+                return PyInt_FromLong(x);
+            return PyLong_Type.tp_as_number->nb_add(op1, op2);
+    }
+    #endif
+    #if CYTHON_USE_PYLONG_INTERNALS
+    if (likely(PyLong_CheckExact(op1))) {
+        const long b = intval;
+        long a, x;
+#ifdef HAVE_LONG_LONG
+        const PY_LONG_LONG llb = intval;
+        PY_LONG_LONG lla, llx;
+#endif
+        const digit* digits = ((PyLongObject*)op1)->ob_digit;
+        const Py_ssize_t size = Py_SIZE(op1);
+        if (likely(__Pyx_sst_abs(size) <= 1)) {
+            a = likely(size) ? digits[0] : 0;
+            if (size == -1) a = -a;
+        } else {
+            switch (size) {
+                case -2:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        a = -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case 2:
+                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
+                        a = (long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case -3:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        a = -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case 3:
+                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
+                        a = (long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case -4:
+                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                        a = -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
+                        lla = -(PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                case 4:
+                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
+                        a = (long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
+                        break;
+#ifdef HAVE_LONG_LONG
+                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
+                        lla = (PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
+                        goto long_long;
+#endif
+                    }
+                    CYTHON_FALLTHROUGH;
+                default: return PyLong_Type.tp_as_number->nb_add(op1, op2);
+            }
+        }
+                x = a + b;
+            return PyLong_FromLong(x);
+#ifdef HAVE_LONG_LONG
+        long_long:
+                llx = lla + llb;
+            return PyLong_FromLongLong(llx);
+#endif
+        
+        
+    }
+    #endif
+    if (PyFloat_CheckExact(op1)) {
+        const long b = intval;
+        double a = PyFloat_AS_DOUBLE(op1);
+            double result;
+            PyFPE_START_PROTECT("add", return NULL)
+            result = ((double)a) + (double)b;
+            PyFPE_END_PROTECT(result)
+            return PyFloat_FromDouble(result);
+    }
+    return (inplace ? PyNumber_InPlaceAdd : PyNumber_Add)(op1, op2);
+}
+#endif
+
 /* GetTopmostException */
 #if CYTHON_USE_EXC_INFO_STACK
 static _PyErr_StackItem *
@@ -24452,6 +22193,93 @@ static CYTHON_INLINE PyObject *__Pyx_GetAttr(PyObject *o, PyObject *n) {
     return PyObject_GetAttr(o, n);
 }
 
+/* GetItemInt */
+static PyObject *__Pyx_GetItemInt_Generic(PyObject *o, PyObject* j) {
+    PyObject *r;
+    if (!j) return NULL;
+    r = PyObject_GetItem(o, j);
+    Py_DECREF(j);
+    return r;
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_List_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    Py_ssize_t wrapped_i = i;
+    if (wraparound & unlikely(i < 0)) {
+        wrapped_i += PyList_GET_SIZE(o);
+    }
+    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyList_GET_SIZE(o)))) {
+        PyObject *r = PyList_GET_ITEM(o, wrapped_i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Tuple_Fast(PyObject *o, Py_ssize_t i,
+                                                              CYTHON_NCP_UNUSED int wraparound,
+                                                              CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
+    Py_ssize_t wrapped_i = i;
+    if (wraparound & unlikely(i < 0)) {
+        wrapped_i += PyTuple_GET_SIZE(o);
+    }
+    if ((!boundscheck) || likely(__Pyx_is_valid_index(wrapped_i, PyTuple_GET_SIZE(o)))) {
+        PyObject *r = PyTuple_GET_ITEM(o, wrapped_i);
+        Py_INCREF(r);
+        return r;
+    }
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+#else
+    return PySequence_GetItem(o, i);
+#endif
+}
+static CYTHON_INLINE PyObject *__Pyx_GetItemInt_Fast(PyObject *o, Py_ssize_t i, int is_list,
+                                                     CYTHON_NCP_UNUSED int wraparound,
+                                                     CYTHON_NCP_UNUSED int boundscheck) {
+#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS && CYTHON_USE_TYPE_SLOTS
+    if (is_list || PyList_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyList_GET_SIZE(o);
+        if ((!boundscheck) || (likely(__Pyx_is_valid_index(n, PyList_GET_SIZE(o))))) {
+            PyObject *r = PyList_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    }
+    else if (PyTuple_CheckExact(o)) {
+        Py_ssize_t n = ((!wraparound) | likely(i >= 0)) ? i : i + PyTuple_GET_SIZE(o);
+        if ((!boundscheck) || likely(__Pyx_is_valid_index(n, PyTuple_GET_SIZE(o)))) {
+            PyObject *r = PyTuple_GET_ITEM(o, n);
+            Py_INCREF(r);
+            return r;
+        }
+    } else {
+        PySequenceMethods *m = Py_TYPE(o)->tp_as_sequence;
+        if (likely(m && m->sq_item)) {
+            if (wraparound && unlikely(i < 0) && likely(m->sq_length)) {
+                Py_ssize_t l = m->sq_length(o);
+                if (likely(l >= 0)) {
+                    i += l;
+                } else {
+                    if (!PyErr_ExceptionMatches(PyExc_OverflowError))
+                        return NULL;
+                    PyErr_Clear();
+                }
+            }
+            return m->sq_item(o, i);
+        }
+    }
+#else
+    if (is_list || PySequence_Check(o)) {
+        return PySequence_GetItem(o, i);
+    }
+#endif
+    return __Pyx_GetItemInt_Generic(o, PyInt_FromSsize_t(i));
+}
+
 /* ObjectGetItem */
 #if CYTHON_USE_TYPE_SLOTS
 static PyObject *__Pyx_PyObject_GetIndex(PyObject *obj, PyObject* index) {
@@ -24757,130 +22585,6 @@ static CYTHON_INLINE int __Pyx_PyErr_GivenExceptionMatches2(PyObject *err, PyObj
         return __Pyx_inner_PyErr_GivenExceptionMatches2(err, exc_type1, exc_type2);
     }
     return (PyErr_GivenExceptionMatches(err, exc_type1) || PyErr_GivenExceptionMatches(err, exc_type2));
-}
-#endif
-
-/* PyIntBinop */
-#if !CYTHON_COMPILING_IN_PYPY
-static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, int inplace, int zerodivision_check) {
-    (void)inplace;
-    (void)zerodivision_check;
-    #if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_CheckExact(op1))) {
-        const long b = intval;
-        long x;
-        long a = PyInt_AS_LONG(op1);
-            x = (long)((unsigned long)a + b);
-            if (likely((x^a) >= 0 || (x^b) >= 0))
-                return PyInt_FromLong(x);
-            return PyLong_Type.tp_as_number->nb_add(op1, op2);
-    }
-    #endif
-    #if CYTHON_USE_PYLONG_INTERNALS
-    if (likely(PyLong_CheckExact(op1))) {
-        const long b = intval;
-        long a, x;
-#ifdef HAVE_LONG_LONG
-        const PY_LONG_LONG llb = intval;
-        PY_LONG_LONG lla, llx;
-#endif
-        const digit* digits = ((PyLongObject*)op1)->ob_digit;
-        const Py_ssize_t size = Py_SIZE(op1);
-        if (likely(__Pyx_sst_abs(size) <= 1)) {
-            a = likely(size) ? digits[0] : 0;
-            if (size == -1) a = -a;
-        } else {
-            switch (size) {
-                case -2:
-                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                        a = -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
-                        lla = -(PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case 2:
-                    if (8 * sizeof(long) - 1 > 2 * PyLong_SHIFT) {
-                        a = (long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 2 * PyLong_SHIFT) {
-                        lla = (PY_LONG_LONG) (((((unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case -3:
-                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                        a = -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
-                        lla = -(PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case 3:
-                    if (8 * sizeof(long) - 1 > 3 * PyLong_SHIFT) {
-                        a = (long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 3 * PyLong_SHIFT) {
-                        lla = (PY_LONG_LONG) (((((((unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case -4:
-                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                        a = -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
-                        lla = -(PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                case 4:
-                    if (8 * sizeof(long) - 1 > 4 * PyLong_SHIFT) {
-                        a = (long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0]));
-                        break;
-#ifdef HAVE_LONG_LONG
-                    } else if (8 * sizeof(PY_LONG_LONG) - 1 > 4 * PyLong_SHIFT) {
-                        lla = (PY_LONG_LONG) (((((((((unsigned PY_LONG_LONG)digits[3]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[2]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[1]) << PyLong_SHIFT) | (unsigned PY_LONG_LONG)digits[0]));
-                        goto long_long;
-#endif
-                    }
-                    CYTHON_FALLTHROUGH;
-                default: return PyLong_Type.tp_as_number->nb_add(op1, op2);
-            }
-        }
-                x = a + b;
-            return PyLong_FromLong(x);
-#ifdef HAVE_LONG_LONG
-        long_long:
-                llx = lla + llb;
-            return PyLong_FromLongLong(llx);
-#endif
-        
-        
-    }
-    #endif
-    if (PyFloat_CheckExact(op1)) {
-        const long b = intval;
-        double a = PyFloat_AS_DOUBLE(op1);
-            double result;
-            PyFPE_START_PROTECT("add", return NULL)
-            result = ((double)a) + (double)b;
-            PyFPE_END_PROTECT(result)
-            return PyFloat_FromDouble(result);
-    }
-    return (inplace ? PyNumber_InPlaceAdd : PyNumber_Add)(op1, op2);
 }
 #endif
 
@@ -26278,29 +23982,6 @@ __pyx_fail:
     return result;
 }
 
-/* ObjectToMemviewSlice */
-  static CYTHON_INLINE __Pyx_memviewslice __Pyx_PyObject_to_MemoryviewSlice_ds_int(PyObject *obj, int writable_flag) {
-    __Pyx_memviewslice result = { 0, 0, { 0 }, { 0 }, { 0 } };
-    __Pyx_BufFmt_StackElem stack[1];
-    int axes_specs[] = { (__Pyx_MEMVIEW_DIRECT | __Pyx_MEMVIEW_STRIDED) };
-    int retcode;
-    if (obj == Py_None) {
-        result.memview = (struct __pyx_memoryview_obj *) Py_None;
-        return result;
-    }
-    retcode = __Pyx_ValidateAndInit_memviewslice(axes_specs, 0,
-                                                 PyBUF_RECORDS_RO | writable_flag, 1,
-                                                 &__Pyx_TypeInfo_int, stack,
-                                                 &result, obj);
-    if (unlikely(retcode == -1))
-        goto __pyx_fail;
-    return result;
-__pyx_fail:
-    result.memview = NULL;
-    result.data = NULL;
-    return result;
-}
-
 /* Declarations */
   #if CYTHON_CCOMPLEX
   #ifdef __cplusplus
@@ -26873,44 +24554,6 @@ raise_neg_overflow:
 }
 
 /* CIntToPy */
-  static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
-#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wconversion"
-#endif
-    const long neg_one = (long) -1, const_zero = (long) 0;
-#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
-#pragma GCC diagnostic pop
-#endif
-    const int is_unsigned = neg_one > const_zero;
-    if (is_unsigned) {
-        if (sizeof(long) < sizeof(long)) {
-            return PyInt_FromLong((long) value);
-        } else if (sizeof(long) <= sizeof(unsigned long)) {
-            return PyLong_FromUnsignedLong((unsigned long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
-            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
-#endif
-        }
-    } else {
-        if (sizeof(long) <= sizeof(long)) {
-            return PyInt_FromLong((long) value);
-#ifdef HAVE_LONG_LONG
-        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
-            return PyLong_FromLongLong((PY_LONG_LONG) value);
-#endif
-        }
-    }
-    {
-        int one = 1; int little = (int)*(unsigned char *)&one;
-        unsigned char *bytes = (unsigned char *)&value;
-        return _PyLong_FromByteArray(bytes, sizeof(long),
-                                     little, !is_unsigned);
-    }
-}
-
-/* CIntToPy */
   static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
 #ifdef __Pyx_HAS_GCC_DIAGNOSTIC
 #pragma GCC diagnostic push
@@ -27142,6 +24785,44 @@ raise_neg_overflow:
     PyErr_SetString(PyExc_OverflowError,
         "can't convert negative value to long");
     return (long) -1;
+}
+
+/* CIntToPy */
+  static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+    const long neg_one = (long) -1, const_zero = (long) 0;
+#ifdef __Pyx_HAS_GCC_DIAGNOSTIC
+#pragma GCC diagnostic pop
+#endif
+    const int is_unsigned = neg_one > const_zero;
+    if (is_unsigned) {
+        if (sizeof(long) < sizeof(long)) {
+            return PyInt_FromLong((long) value);
+        } else if (sizeof(long) <= sizeof(unsigned long)) {
+            return PyLong_FromUnsignedLong((unsigned long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(unsigned PY_LONG_LONG)) {
+            return PyLong_FromUnsignedLongLong((unsigned PY_LONG_LONG) value);
+#endif
+        }
+    } else {
+        if (sizeof(long) <= sizeof(long)) {
+            return PyInt_FromLong((long) value);
+#ifdef HAVE_LONG_LONG
+        } else if (sizeof(long) <= sizeof(PY_LONG_LONG)) {
+            return PyLong_FromLongLong((PY_LONG_LONG) value);
+#endif
+        }
+    }
+    {
+        int one = 1; int little = (int)*(unsigned char *)&one;
+        unsigned char *bytes = (unsigned char *)&value;
+        return _PyLong_FromByteArray(bytes, sizeof(long),
+                                     little, !is_unsigned);
+    }
 }
 
 /* CIntFromPy */
