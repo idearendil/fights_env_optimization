@@ -57,7 +57,7 @@ def run_original():
     assert pre_env.OthelloEnv.env_id == RandomAgent.env_id
     start = time.time()
 
-    for game in range(1000):
+    for game in range(2000):
 
         state = pre_env.OthelloEnv().initialize_state()
         agents = [RandomAgent(0, game), RandomAgent(1, game)]
@@ -79,7 +79,7 @@ def run_faster():
     assert new_env.OthelloEnv.env_id == RandomAgent.env_id
     start = time.time()
 
-    for game in range(1000):
+    for game in range(2000):
 
         state = new_env.OthelloEnv().initialize_state()
         agents = [FasterAgent(0, game), FasterAgent(1, game)]
