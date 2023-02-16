@@ -94,8 +94,8 @@ def fast_step(
                 legal_actions_view[0, i, j] = 0
                 legal_actions_view[1, i, j] = 0
             else:
-                legal_actions_view[0, i, j] = is_flippable(board_view, 0, i, j, board_size)
-                legal_actions_view[1, i, j] = is_flippable(board_view, 1, i, j, board_size)
+                legal_actions_view[0, i, j] = is_flippable(board_view, 0, i, j, board_size, directions)
+                legal_actions_view[1, i, j] = is_flippable(board_view, 1, i, j, board_size, directions)
 
     has_action0 = 0
     has_action1 = 0
@@ -118,20 +118,11 @@ def fast_step(
 
     return (board, legal_actions, reward[0], reward[1], done)
 
-cdef int is_flippable(int [:,:,:] board_view, int agent_id, int r, int c, int board_size):
+cdef int is_flippable(int [:,:,:] board_view, int agent_id, int r, int c, int board_size, int [8][2] directions):
     
     cdef int i, j
     cdef int flag
-    cdef int directions[8][2]
     cdef int now_r, now_c
-    directions[0][:] = [1, 1]
-    directions[1][:] = [1, 0]
-    directions[2][:] = [1, -1]
-    directions[3][:] = [0, -1]
-    directions[4][:] = [-1, -1]
-    directions[5][:] = [-1, 0]
-    directions[6][:] = [-1, 1]
-    directions[7][:] = [0, 1]
 
     for i in range(8):
         flag = 0

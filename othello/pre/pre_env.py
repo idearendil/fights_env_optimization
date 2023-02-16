@@ -60,8 +60,7 @@ class OthelloState(BaseState):
     Array of shape ''(C, W, H)'',
     where C is channel index
     and W, H is board width, height.
-    * Note that (agent_id, :, :) are all 0 when there is no legal action for the agent,
-      which means (W=3, H=3) is 0 too when the agent can only jump
+    * Note that (W=3, H=3) is 1 when the agent can only jump
     Channels
         - ''C = 0'': one-hot encoded possible positions of agent 0. (black)
         - ''C = 1'': one-hot encoded possible positions of agent 1. (white)
