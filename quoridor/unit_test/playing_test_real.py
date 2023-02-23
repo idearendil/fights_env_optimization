@@ -23,8 +23,7 @@ from colorama import Fore, Style
 
 from fights.base import BaseAgent
 
-from pre import pre_env
-from new import new_env
+from fights.envs import quoridor
 
 class ManualAgent(BaseAgent):
     env_id = ("quoridor", 0)  # type: ignore
@@ -32,7 +31,7 @@ class ManualAgent(BaseAgent):
     def __init__(self, agent_id: int) -> None:
         self.agent_id = agent_id  # type: ignore
 
-    def __call__(self, state: new_env.QuoridorState) -> new_env.QuoridorAction:
+    def __call__(self, state: quoridor.QuoridorState) -> quoridor.QuoridorAction:
         a, b, c = input().split()
         return [int(a), int(b), int(c)]
     
@@ -43,8 +42,8 @@ class RandomAgent(BaseAgent):
         self.agent_id = agent_id  # type: ignore
         self._rng = np.random.default_rng(seed)
 
-    def __call__(self, state: new_env.QuoridorState) -> new_env.QuoridorAction:
-        legal_actions_np = new_env.QuoridorEnv().legal_actions(state, self.agent_id)
+    def __call__(self, state: quoridor.QuoridorState) -> quoridor.QuoridorAction:
+        legal_actions_np = quoridor.QuoridorEnv().legal_actions(state, self.agent_id)
         return self._rng.choice(np.argwhere(legal_actions_np == 1))
 
 def fallback_to_ascii(s: str) -> str:
@@ -60,10 +59,10 @@ def colorize_walls(s: str) -> str:
     )
 
 def run():
-    assert new_env.QuoridorEnv.env_id == RandomAgent.env_id
+    assert quoridor.QuoridorEnv.env_id == RandomAgent.env_id
     colorama.init()
 
-    state = new_env.QuoridorEnv().initialize_state()
+    state = quoridor.QuoridorEnv().initialize_state()
     agents = [RandomAgent(0, 1), ManualAgent(1)]
 
     #print("\x1b[2J")
@@ -76,7 +75,7 @@ def run():
             
             action = agent(state)
             
-            state = new_env.QuoridorEnv().step(state, agent.agent_id, action)
+            state = quoridor.QuoridorEnv().step(state, agent.agent_id, action)
 
             #print("\x1b[1;1H")
             print(fallback_to_ascii(colorize_walls(str(state))))
